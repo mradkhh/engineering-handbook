@@ -1,0 +1,230 @@
+# Suhbat namunalari
+
+Bu bob ish paytidagi tipik gaplarni beradi: stand-up, review, e'lon va muammo haqida xabar. Har bir namunada to'g'ri ibora, noto'g'ri ibora va farqi bor.
+
+Maqsad — har bir gap bitta ma'noga ega bo'lishi. Eshitgan odam qayta so'ramasdan nima bo'lganini va nima kerakligini tushunadi.
+
+## Gapirish qoidalari
+
+Har bir namuna quyidagi qoidalarga tayanadi.
+
+<Rule level="MUST">
+
+Git va ish oqimi amallari inglizcha so'z va «qilmoq» bilan aytiladi: «rebase qildim», «push qildim», «review qildim». «Rebase oldim», «pushladim» kabi shakllar ishlatilmaydi.
+
+</Rule>
+
+<Rule level="SHOULD">
+
+Amalning aniq nomini ayting. «Yangiladim» emas, «fetch qildim» yoki «rebase qildim».
+
+</Rule>
+
+<Rule level="SHOULD">
+
+Ish haqida gapirganda tiket, PR yoki commit raqamini qo'shing: «#172», «PR #181», «`4b7c1d3`». Yozma xabarda havola bering.
+
+</Rule>
+
+Yaxshi xabarning shakli: **amal + nima + natija + keyingi qadam**.
+
+## Stand-up
+
+Stand-up — qisqa kunlik uchrashuv. Har bir odam uchta savolga javob beradi: kecha nima qildi, bugun nima qiladi, nima to'sib turibdi.
+
+<Phrase ok="Kecha #172'ning oluvchilar modulini tugatdim, PR #181 ochdim." bad="Kecha bildirishnomalar ustida ishladim.">
+
+Natijani ayting: tugadimi, PR bormi. «Ishladim» natijani bildirmaydi.
+
+</Phrase>
+
+<Phrase ok="Bugun #181'dagi review izohlarini tuzataman, keyin #175'ni boshlayman." bad="Bugun ham shu ishni davom ettiraman.">
+
+Bugungi ishni tiket raqami bilan ayting.
+
+</Phrase>
+
+<Phrase ok="Blocker: #175 #172'ni kutyapti. #181'ga review kerak." bad="Hammasi yaxshi, faqat biroz qiyin.">
+
+Blocker — ishni to'xtatib turgan narsa. Uni kim yechishini ham ayting.
+
+</Phrase>
+
+## Tiketni boshlash
+
+<Phrase ok="#172'ni oldim, 172-notification-recipients branch'ini origin/dev'dan ochdim." bad="Ishni boshladim.">
+
+Qaysi tiket va qaysi branch ekanini ayting. Boshqalar shu tiketni ikkinchi marta olmaydi.
+
+</Phrase>
+
+## Review so'rash
+
+<Term t="PTAL" /> — «iltimos, ko'rib chiqing». U review so'rash yoki tuzatishdan keyin qayta so'rash uchun ishlatiladi.
+
+<Phrase ok="PTAL: PR #181, #172 bo'yicha. 280 qator, testlar o'tdi." bad="Kodni qarab qo'ying.">
+
+PR havolasi, hajmi va tekshiruv holatini yozing. Reviewer qancha vaqt kerakligini darhol ko'radi.
+
+</Phrase>
+
+<Phrase ok="Izohlarni tuzatdim, PTAL." bad="Tayyor, ko'rib qo'ying yana.">
+
+Qayta review so'raganda nima o'zgarganini qisqa ayting.
+
+</Phrase>
+
+## Review izohlari: prefikslar
+
+Har bir review izohi prefiks bilan boshlanadi. Prefiks izohning og'irligini ko'rsatadi.
+
+| Prefiks | Ma'nosi | Merge'ni to'xtatadimi |
+|---|---|---|
+| `blocking:` | Tuzatilishi shart. | Ha |
+| `nit:` | Mayda, majburiy emas: nom, bo'sh joy, uslub. | Yo'q |
+| `question:` | Tushunish uchun savol. Javob kerak. | Javobga bog'liq |
+| `suggestion:` | Yaxshilash taklifi. Muallif qaror qiladi. | Yo'q |
+
+<Phrase ok="blocking: bu so'rov tranzaksiyadan tashqarida, xato bo'lsa yarim yozuv qoladi." bad="Bu yer noto'g'ri.">
+
+Muammoni va uning oqibatini yozing. «Noto'g'ri» nima uchunligini aytmaydi.
+
+</Phrase>
+
+<Phrase ok="nit: o'zgaruvchi nomi recipients bo'lsa aniqroq." bad="Nomlar yomon.">
+
+Nit majburiy emas. Muallif uni tuzatmasa ham PR merge qilinadi.
+
+</Phrase>
+
+<Phrase ok="question: nima uchun bu yerda cache ishlatilmagan?" bad="Bu nima?">
+
+Savol aniq joy va aniq narsa haqida bo'ladi.
+
+</Phrase>
+
+<Phrase ok="suggestion: bu uch qatorni bitta helper'ga ajratsa bo'ladi." bad="Men boshqacha yozardim.">
+
+Taklifni aniq yozing. «Boshqacha» qanday ekanini ko'rsatmaydi.
+
+</Phrase>
+
+## Izohga javob berish
+
+Muallif har bir izohga javob beradi. Javob qisqa va tekshirsa bo'ladigan bo'ladi.
+
+<Phrase ok="Done." bad="Ok.">
+
+«Done» — tuzatdim. «Ok» noaniq: rozimi yoki tuzatdimi, bilinmaydi.
+
+</Phrase>
+
+<Phrase ok="Fixed in 4b7c1d3." bad="Tuzatdim, qarang.">
+
+Commit hash'ini yozing. Reviewer aynan shu o'zgarishni ko'radi.
+
+</Phrase>
+
+<Phrase ok="Qo'shilmayman: bu funksiya faqat bir joyda ishlatiladi, ajratish keraksiz. Sizningcha?" bad="Yo'q, shunday qoladi.">
+
+Rozi bo'lmasangiz, sababini yozing va savol bilan tugating. Oxirgi qarorni reviewer bilan birga qilasiz.
+
+</Phrase>
+
+## Conflict va orqada qolgan branch
+
+<Phrase ok="Rebase'da conflict chiqdi, notifications.service.ts'da. Hal qildim, testlar o'tdi." bad="Konflikt berdi, nimadir bo'ldi.">
+
+Qaysi faylda va natija qanday ekanini ayting.
+
+</Phrase>
+
+<Phrase ok="Branch dev'dan 5 commit orqada. Rebase qilib, force-with-lease bilan push qilaman." bad="Branch eskirib qolibdi, yangilab qo'yaman.">
+
+«Orqada» — branch'da yo'q, `dev`da bor commit'lar. Qanday yangilashingizni ham ayting.
+
+</Phrase>
+
+## Promote va release e'loni
+
+<Term t="promote" /> va <Term t="release" /> e'lonini <Term t="release owner" /> yozadi. E'lon jamoaga nima chiqqanini va nima tekshirish kerakligini aytadi.
+
+<Phrase ok="Dev'ni beta'ga promote qildim: #172, #173, #174. Deploy yashil, tekshirib ko'ringlar." bad="Beta'ga ship qildim.">
+
+«Ship» bu kitobda ishlatilmaydi. To'g'ri so'z — promote. Qaysi tiketlar kirganini yozing.
+
+</Phrase>
+
+<Phrase ok="Release boshlandi: PR #190, beta → main. Dev freeze'da, faqat release tuzatishlari." bad="Bugun prodga chiqaramiz, kod qo'shmanglar.">
+
+Release PR havolasini va freeze chegarasini yozing.
+
+</Phrase>
+
+<Phrase ok="Release tugadi: prod'da v1.12, deploy yashil. Freeze yopildi." bad="Hammasi chiqdi.">
+
+Release tugaganini va freeze ochilganini aniq ayting.
+
+</Phrase>
+
+## Muammo haqida xabar
+
+Muammo haqidagi xabar faktdan boshlanadi. Unda nima bo'ldi, qachon, qaysi o'zgarishdan keyin va siz nima qildingiz yoziladi.
+
+<Phrase ok="Incident: prod'da to'lov sahifasi 500 qaytaryapti, 14:20 dan beri, release v1.12'dan keyin. Rollback kerak." bad="Prod ishlamayapti!">
+
+Qaysi qism, qachondan beri va nima kerakligini yozing. Undov belgisi ma'lumot bermaydi.
+
+</Phrase>
+
+<Phrase ok="Yordam kerak: rebase'dan keyin 2 ta commit yo'qoldi. Reflog'da topdim, lekin qaysi biri to'g'ri ekanini bilmayman." bad="Gitda hammasi o'chib ketdi, yordam bering.">
+
+Nima qilganingizni va qayerda to'xtaganingizni yozing. Yordam beruvchi boshidan so'ramaydi.
+
+</Phrase>
+
+## Qabul qilingan qisqartmalar
+
+Bu qisqartmalar inglizcha ish yozishmalarida keng ishlatiladi. Ular bizda ham shu ma'noda ishlatiladi.
+
+| Qisqartma | To'liq shakli | Ma'nosi |
+|---|---|---|
+| <Term t="PTAL" /> | Please take a look | Iltimos, ko'rib chiqing. |
+| <Term t="LGTM" /> | Looks good to me | Menga ma'qul. Approve o'rnini bosmaydi. |
+| WIP | Work in progress | Ish tugamagan. Review qilish erta. |
+| <Term t="nit" /> | Nitpick | Mayda, majburiy bo'lmagan izoh. |
+| Blocker | — | Ishni to'xtatib turgan narsa. |
+| ETA | Estimated time of arrival | Taxminiy tugash vaqti. |
+| FYI | For your information | Ma'lumot uchun, javob shart emas. |
+| TL;DR | Too long; didn't read | Uzun matnning bir-ikki jumlalik xulosasi. |
+| ACK | Acknowledged | Ko'rdim, qabul qildim. |
+
+<Rule level="MUST NOT">
+
+PR'ni faqat «LGTM» izohi bilan tasdiqlamang. Rasmiy qaror — GitHub'dagi <Term t="approve" /> tugmasi.
+
+</Rule>
+
+## Noto'g'ri → To'g'ri
+
+| Noto'g'ri | To'g'ri | Sabab |
+|---|---|---|
+| Pull oldim. | Pull qildim. | Amal «olinmaydi», u «qilinadi». |
+| Rebase oldim. | Branch'ni dev'ga rebase qildim. | Amal va maqsad branch aytiladi. |
+| Kommitladim. | Commit qildim. | Atama o'zgartirilmaydi. |
+| Vetka ochdim. | Branch ochdim. | Atama inglizcha qoladi. |
+| Merj reqvest tashladim. | PR ochdim. | GitHub'da nomi — pull request, PR. |
+| Beta'ga ship qildim. | Dev'ni beta'ga promote qildim. | «Ship» bu kitobda ishlatilmaydi. |
+| Deploy qildim. (promote paytida) | Promote qildim, deploy yashil. | Promote — amal, deploy — uning natijasi. |
+| Yangiladim. | Fetch qildim / rebase qildim / pull qildim. | Aniq amal nomi aytiladi. |
+| Kod tayyor. | PR #181 tayyor, review kerak. | Havolasiz «tayyor» tekshirib bo'lmaydi. |
+
+## Eslab qoling
+
+- Amal — inglizcha so'z va «qilmoq»: «rebase qildim», hech qachon «rebase oldim».
+- Shakl: amal + nima + natija + keyingi qadam.
+- Tiket, PR va commit raqamini ayting. Yozma xabarda havola bering.
+- Review izohi prefiks bilan: `blocking:`, `nit:`, `question:`, `suggestion:`.
+- Izohga javob: «Done» yoki «Fixed in» va hash.
+- «Ship» emas, «promote». LGTM — approve emas.
+- Muammo haqidagi xabar faktdan boshlanadi.

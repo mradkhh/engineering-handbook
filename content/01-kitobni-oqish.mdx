@@ -1,0 +1,129 @@
+# Kitobni qanday o'qish kerak
+
+Bu kitob jamoaning git, ish oqimi va atamalar bo'yicha yagona qoidalarini beradi. U ikki vazifani bajaradi. Birinchidan, u reglament: unda bajarilishi shart bo'lgan qoidalar bor. Ikkinchidan, u qo'llanma: har bir qoida va atama izohlanadi.
+
+## Kitob nima uchun kerak
+
+Jamoada bir xil narsa har xil so'z bilan aytilsa, xato chiqadi. Masalan, «dev'ni yangiladim» degan gap `fetch`, `pull` yoki `rebase` bo'lishi mumkin. Eshituvchi qaysi biri ekanini bilmaydi.
+
+Kitob uch maqsadga xizmat qiladi:
+
+- Hamma bir xil qoida bilan ishlaydi.
+- Hamma bir xil atamani bir xil ma'noda ishlatadi.
+- Har qanday yangi dasturchi bu kitobni o'qib, jamoada ishlashni boshlay oladi.
+
+Kitob darajasi FAANG kompaniyalaridagi muhandislik amaliyotiga mos. Kitobni o'qigan dasturchi boshqa jamoa bilan ham shu atamalarda erkin gaplasha oladi.
+
+## Kim uchun
+
+| O'quvchi | Qaysi boblar muhim |
+|---|---|
+| Yangi dasturchi | 1–7, 13, 15. Keyin qolganlari. |
+| Har kuni ishlaydigan dasturchi | 7, 8, 9, 12 va 15-bob. |
+| Reviewer | 8 va 9-bob. |
+| Release owner | 3, 4, 10, 11 va 12-bob. |
+| Agent | Repo'dagi agent yo'riqnomasi shu kitobga havola qiladi. |
+
+Kitob o'quvchi git'ni umuman bilmaydi deb hisoblamaydi. U `commit` nima ekanini biladi deb hisoblaydi, lekin har bir atamani baribir aniq ta'riflaydi. Asosiy tushunchalar 2-bobda.
+
+## Qoida darajalari
+
+Har bir qoida to'rt darajadan biri bilan boshlanadi. Bu so'zlar RFC 2119 standartidan olingan va butun dunyoda muhandislik hujjatlarida ishlatiladi.
+
+| Daraja | Ma'nosi | Buzilsa nima bo'ladi |
+|---|---|---|
+| **MUST** | Shart. Istisno yo'q. | PR merge qilinmaydi yoki amal to'xtatiladi. |
+| **MUST NOT** | Qilinmaydi. Istisno yo'q. | PR merge qilinmaydi yoki amal to'xtatiladi. |
+| **SHOULD** | Tavsiya. Jiddiy sabab bo'lsa, buzish mumkin. | Sababni PR'da yoki suhbatda ayting. |
+| **MAY** | Ixtiyoriy. O'zingiz tanlaysiz. | Hech narsa. |
+
+Kitobda qoidalar quyidagi qutilarda keladi:
+
+<Rule level="MUST">
+
+Har bir tiket o'z branch'ida qilinadi.
+
+</Rule>
+
+<Rule level="SHOULD">
+
+PR 400 qatordan oshmaydi.
+
+</Rule>
+
+<Note>
+
+Qoida qutisidan tashqaridagi matn — izoh. U qoidani tushuntiradi, lekin yangi qoida qo'shmaydi.
+
+</Note>
+
+## Umumiy kitob va repo profili
+
+Kitob ikki qatlamdan iborat.
+
+- **Umumiy kitob** — shu kitob. Undagi qoidalar jamoaning barcha repo'lariga tegishli.
+- **Repo profili** — har bir repo'ning o'z hujjatlari. Unda faqat shu repo'ga xos narsalar yoziladi: aniq buyruqlar, muhitlar manzili, release window, belgilar nomi.
+
+Kitobda «repo profilida yoziladi» degan gap shu ikkinchi qatlamni bildiradi. Profil qanday yozilishi Ilova A'da.
+
+<Rule level="MUST">
+
+Repo profili kitobni aniqlashtiradi yoki qattiqlashtiradi. U kitobga zid bo'lmaydi.
+
+</Rule>
+
+Profil kitobga zid bo'lishi kerak bo'lsa, avval kitob o'zgartiriladi. Keyin profil.
+
+## Atamalar va til
+
+Kitob o'zbek tilida yozilgan. Git va ish oqimi atamalari esa inglizcha qoladi: ham otlar, ham fe'llar. Sabab oddiy: asboblar, xato matnlari va boshqa jamoalar shu so'zlarda gapiradi.
+
+<Rule level="MUST">
+
+Git amali inglizcha fe'l va «qilmoq» bilan aytiladi: «push qildim», «rebase qildim», «merge qildim».
+
+</Rule>
+
+<Phrase ok="Branch'ni dev'ga rebase qildim." bad="Rebase oldim.">
+
+«Olmoq» fe'li amalni noto'g'ri bildiradi. Rebase «olinmaydi», u «qilinadi».
+
+</Phrase>
+
+Nuqtali chiziq bilan belgilangan so'z — lug'atdagi atama, masalan <Term t="fast-forward" />. Ekranda sichqonchani ustiga olib borsangiz, ta'rifi chiqadi. Barcha atamalar 13-bobda.
+
+Kitob bosqichma-bosqich ingliz tiliga o'tadi. Har bir yangi versiyada inglizcha sarlavha va atamalar ko'payadi. Kitob til o'rgatmaydi: u faqat ish tilini beradi.
+
+## Kitob belgilarini o'qish
+
+| Belgi | Ma'nosi |
+|---|---|
+| Qizil yoki ko'k chiziqli quti | Qoida. Chap tomonda daraja yozilgan. |
+| «Eslatma» qutisi | Foydali ma'lumot. |
+| «Ogohlantirish» qutisi | Xavf. U tegishli qadamdan oldin keladi. |
+| ✓ va ✕ ustunlari | To'g'ri va noto'g'ri amal. |
+| Raqamli doiralar | Qadamlar. Ularni ketma-ket bajaring. |
+| Qora yoki kulrang oyna | Terminal. `$` bilan boshlangan satr — buyruq. Qolgani — natija. |
+| «Rasm N.N» | Diagramma. |
+
+## Kitob qanday yangilanadi
+
+Kitob o'z repo'sida yuritiladi. U kod kabi o'zgaradi: PR orqali.
+
+<Steps>
+
+1. Xato yoki bo'shliq topsangiz, issue oching yoki to'g'ridan-to'g'ri PR yuboring.
+2. Release owner PR'ni review qiladi va merge qiladi.
+3. Har bir versiya `CHANGELOG.md`ga yoziladi.
+4. Har bir release uchun PDF yig'iladi va GitHub Release'ga biriktiriladi.
+
+</Steps>
+
+Versiya semver bo'yicha: `v1.2.0`. Yangi qoida yoki bob — o'rta raqam. Xato tuzatish — oxirgi raqam. Qoidaning ma'nosini o'zgartiradigan tahrir — birinchi raqam.
+
+## Eslab qoling
+
+- Qoida darajalari: MUST, MUST NOT, SHOULD, MAY.
+- Kitob — umumiy qoida. Repo profili — aniq qiymatlar. Profil kitobga zid bo'lmaydi.
+- Git atamalari inglizcha, fe'l «qilmoq» bilan: «rebase qildim».
+- Kitob PR orqali o'zgaradi. Har bir versiyaning PDF'i bor.

@@ -1,0 +1,187 @@
+# Tekshiruvlar: hook'lar va CI
+
+Kod prod'ga yetguncha bir necha avtomatik tekshiruvdan o'tadi. Ularning bir qismi sizning kompyuteringizda ishlaydi, bir qismi serverda. Bu bob har bir tekshiruv qayerda, qachon ishlashini va nimani kafolatlashini tushuntiradi.
+
+Aniq buyruqlar va skriptlar har bir repoda har xil. Ular repo profilida yoziladi. Bu bob umumiy tamoyillarni beradi.
+
+## Tekshiruv qatlamlari
+
+Har bir qatlam oldingisi o'tkazib yuborgan xatoni ushlaydi. Qatlam qanchalik erta bo'lsa, xato shunchalik arzon tuzatiladi.
+
+| Qatlam | Qayerda | Qachon | Nimani tekshiradi |
+|---|---|---|---|
+| `pre-commit` hook | Kompyuteringizda | Har bir commit'da | Format va lint |
+| `commit-msg` hook | Kompyuteringizda | Har bir commit'da | Commit xabari shakli |
+| `pre-push` hook | Kompyuteringizda | Har bir push'da | To'liq tekshiruv: testlar, typecheck, lint |
+| CI | Serverda | Himoyalangan branch'ga push'da | To'liq tekshiruv, build, deploy |
+| Gate | Serverda | Prod deploy'dan oldin | Kod beta'da sinalganmi |
+
+## Hook'lar
+
+<Term t="hook" /> — git amalidan oldin o'zi ishlaydigan skript. U repoda saqlanadi va `pnpm install` yoki shunga o'xshash buyruqdan keyin o'zi yoqiladi.
+
+**`pre-commit`** kodni formatlaydi va lint qiladi. Tuzatib bo'ladigan narsalarni o'zi tuzatadi. Tuzatib bo'lmaydigan xato bo'lsa, commit'ni to'xtatadi.
+
+**`commit-msg`** commit sarlavhasini tekshiradi. Sarlavha `type(scope): sarlavha (#N)` shaklida bo'lmasa, commit to'xtaydi. Shakl 8-bobda.
+
+**`pre-push`** eng og'ir tekshiruvni bajaradi: testlar, typecheck, lint va repo'ga xos boshqa tekshiruvlar. U bir necha daqiqa davom etishi mumkin.
+
+<Note>
+
+`pre-push` uchun ba'zan local servislar kerak bo'ladi, masalan ma'lumotlar bazasi. Qaysi servislar ishlab turishi kerakligi repo profilida yoziladi.
+
+</Note>
+
+<Rule level="MUST NOT">
+
+Hook'larni o'chirmang va ularning skriptlarini local'da o'zgartirmang. Hook'da xato bo'lsa, uni alohida PR bilan tuzating.
+
+</Rule>
+
+## Hook to'xtatsa nima qilinadi
+
+Hook to'xtatsa, u xatoni terminalga chiqaradi. Xatoni o'qing va tuzating. Hook'ni chetlab o'tishga urinmang.
+
+<Steps>
+
+1. Terminaldagi xato matnini oxirigacha o'qing.
+2. Xatoni tuzating.
+3. Tuzatilgan fayllarni `git add` bilan qo'shing.
+4. Amalni qaytaring: `git commit` yoki `git push`.
+
+</Steps>
+
+<Terminal>{`
+$ git push
+pre-push: typecheck...
+src/notify.ts:42:7 - error TS2322: Type 'string' is not assignable to type 'UserId'.
+husky - pre-push script failed (code 1)
+# xatoni tuzating, keyin
+$ git add src/notify.ts
+$ git commit -m "fix(notifications): oluvchi turi (#172)"
+$ git push
+`}</Terminal>
+
+## Tekshiruv sekin bo'lsa
+
+To'liq tekshiruv bir necha daqiqa olishi mumkin. Ish paytida uni har safar ishga tushirish shart emas. Lekin push'dan oldin u albatta ishlaydi.
+
+<Rule level="SHOULD">
+
+Ish paytida faqat o'zgargan qismning testlarini ishga tushiring. To'liq tekshiruvni `pre-push` bajaradi.
+
+</Rule>
+
+Tekshiruv tasodifan yiqilsa, masalan tarmoq xatosi bilan, uni qayta ishga tushiring. Bir xil xato ikki marta takrorlansa, u tasodif emas: sababini toping.
+
+## --no-verify
+
+`--no-verify` bayrog'i hook'larni o'tkazib yuboradi. U xavfli: tekshirilmagan kod remote'ga ketadi.
+
+<Rule level="MUST NOT">
+
+Kod o'zgargan commit yoki push'da `--no-verify` ishlatmang.
+
+</Rule>
+
+<Rule level="MAY">
+
+Faqat hujjat o'zgargan push'da `--no-verify` ishlatish mumkin, agar repo profili bunga ruxsat bersa.
+
+</Rule>
+
+<Warning>
+
+`--no-verify` hamma hook'larni o'tkazib yuboradi, nafaqat sekin tekshiruvlarni. Hook ichida xavfsizlik tekshiruvi bo'lsa, u ham ishlamaydi.
+
+</Warning>
+
+## CI
+
+<Term t="CI" /> — push'dan keyin serverda o'zi ishlaydigan tekshiruv. U toza muhitda ishlaydi. Shuning uchun «mening kompyuterimda ishlaydi» degan xatolarni ushlaydi.
+
+CI qaysi branch'larda ishlashini repo profili belgilaydi. Odatda u `beta` va `main`ga push bo'lganda ishlaydi. U kodni tekshiradi, build qiladi va muhitga <Term t="deploy" /> qiladi.
+
+<Rule level="MUST NOT">
+
+CI run'larini qo'lda bekor qilmang. Yangi push eski run'ni o'zi bekor qiladi. Qo'lda bekor qilingan run'dagi kod sinalmagan hisoblanadi va prod'ga chiqa olmaydi.
+
+</Rule>
+
+## dev'ga PR'da CI yo'q
+
+`dev`ga ochilgan PR'da CI ishlamaydi. Sabab — server daqiqalarini tejash. Demak, `dev`ga kirgan kodni faqat bitta tekshiruv kafolatlaydi: dasturchining kompyuteridagi `pre-push`.
+
+<Warning>
+
+`dev`dagi kodni hech qanday server tekshirmagan. Xato birinchi marta `beta`ga promote qilinganda ko'rinadi va o'sha paytda butun paketni to'xtatadi.
+
+</Warning>
+
+<Rule level="MUST">
+
+PR'ning Evidence bo'limida `pre-push` tekshiruvi o'tganini yozing. Oxirgi push'dan keyin kod o'zgarmagan bo'lishi shart.
+
+</Rule>
+
+<Rule level="MUST">
+
+Reviewer Evidence bo'limida tekshiruv o'tgani yozilmagan PR'ga approve bermaydi.
+
+</Rule>
+
+## Gate va commit status
+
+<Term t="gate" /> — shart bajarilmaguncha keyingi qadamni to'xtatadigan tekshiruv. Masalan, release-gate kodni prod'ga faqat u `beta`da muvaffaqiyatli deploy qilingan bo'lsa chiqaradi.
+
+Gate qaror uchun commit status'larni o'qiydi. Commit status — CI commit'ga yozadigan belgi: muvaffaqiyatli, xato yoki kutilmoqda. Masalan, `deploy/beta` status'i «bu commit beta'da ishlayapti» degan ma'noni beradi.
+
+| Tushuncha | Ma'nosi |
+|---|---|
+| Commit status | Muayyan commit uchun tekshiruv natijasi. GitHub'da commit yonida belgi bo'lib ko'rinadi. |
+| Gate | Status'larni o'qib, keyingi qadamga ruxsat beradigan yoki to'xtatadigan tekshiruv. |
+| <Term t="rehearsal" /> | Release'dan oldin migratsiyalarni prod ma'lumotining nusxasida sinash. Gate uning status'ini ham talab qilishi mumkin. |
+
+Status nomlari va gate shartlari repo profilida yoziladi.
+
+## Qizil beta
+
+`beta`dagi CI yoki deploy muvaffaqiyatsiz bo'lsa, beta «qizil» deyiladi. Qizil beta keyingi release'ni to'xtatadi: gate qizil commit'ni prod'ga o'tkazmaydi.
+
+<Rule level="MUST">
+
+Qizil beta o'sha kuni tuzatiladi yoki xato commit <Term t="revert" /> qilinadi.
+
+</Rule>
+
+<Steps>
+
+1. Qaysi commit beta'ni qizil qilganini CI log'idan toping.
+2. Tez tuzatish mumkin bo'lsa, `dev`dan yangi branch oching va tuzating.
+3. Tez tuzatib bo'lmasa, xato commit'ni revert qiling. Revert ham yangi branch va PR orqali bo'ladi.
+4. Tuzatish `dev`ga kirgach, release owner uni `beta`ga promote qiladi.
+5. CI yashil bo'lganini tekshiring.
+
+</Steps>
+
+<Rule level="MUST NOT">
+
+Beta'ni tuzatish uchun to'g'ridan-to'g'ri `beta`ga commit yoki push qilmang. Tuzatish ham `dev` va promote orqali boradi.
+
+</Rule>
+
+<Phrase ok="Beta qizil, sabab — #182. Revert qilib, promote qilaman." bad="Beta yiqildi, ko'ryapman.">
+
+Qaysi commit sabab ekani va nima qilinayotgani aniq aytiladi.
+
+</Phrase>
+
+## Eslab qoling
+
+- Uch hook: `pre-commit` (format, lint), `commit-msg` (xabar shakli), `pre-push` (to'liq tekshiruv).
+- Hook to'xtatsa — xatoni tuzating, chetlab o'tmang.
+- `--no-verify` — faqat hujjat push'ida va repo profili ruxsat bersa.
+- `dev`ga PR'da CI yo'q. Kafolat — `pre-push`, va u Evidence'da yoziladi.
+- CI run'larini qo'lda bekor qilmang.
+- Gate commit status'larni o'qiydi va prod'ga faqat sinalgan kodni o'tkazadi.
+- Qizil beta o'sha kuni tuzatiladi yoki revert qilinadi — `dev` va promote orqali.

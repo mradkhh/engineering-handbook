@@ -1,0 +1,226 @@
+# Review qoidalari
+
+<Term t="review" /> — kod `dev`ga kirishidan oldingi oxirgi odam tekshiruvi. U ikki narsani ta'minlaydi: kod tiketda so'ralgan ishni qiladi va repo qoidalariga mos keladi.
+
+Bu bob ikki tomonni qamraydi: PR muallifi va <Term t="reviewer" />. Har ikki tomonning qoidalari bor.
+
+## Review so'rashdan oldin
+
+Review so'rashdan oldin o'z PR'ingizni o'zingiz o'qing. Bu self-review deyiladi. U reviewer vaqtini tejaydi: oddiy xatolarni siz o'zingiz topasiz.
+
+<Steps>
+
+1. GitHub'da PR'ning «Files changed» bo'limini oching.
+2. Har bir faylni reviewer ko'zi bilan o'qing.
+3. Debug qatorlari, izohga olingan kod va keraksiz fayllarni olib tashlang.
+4. PR tanasidagi Summary, Evidence va Merge Danger bo'limlarini to'ldiring.
+5. Pre-push tekshiruvi o'tganini Evidence'ga yozing.
+
+</Steps>
+
+<Rule level="MUST">
+
+Review so'rashdan oldin PR'ni o'zingiz to'liq o'qing.
+
+</Rule>
+
+## Review qanday so'raladi
+
+Reviewer'ni GitHub'da PR'ga biriktiring. Keyin unga qisqa xabar yozing. Xabarda uch narsa bo'ladi: <Term t="PTAL" />, PR havolasi va nimaga e'tibor berish kerakligi.
+
+<Phrase ok="PTAL: #182. Asosiy o'zgarish — oluvchilar moduli, testlar shu faylda.">
+
+Reviewer qayerdan boshlashni darhol biladi.
+
+</Phrase>
+
+<Phrase ok="PTAL: #182, ikkinchi raund. Barcha blocking izohlarni tuzatdim." bad="Ko'rib qo'ying.">
+
+Tuzatishdan keyin ham PTAL yoziladi. Shunda reviewer PR yana unga qaytganini biladi.
+
+</Phrase>
+
+## Reviewer nimani tekshiradi
+
+Reviewer PR'ni ikki o'q bo'yicha tekshiradi.
+
+| O'q | Savol | Manba |
+|---|---|---|
+| Spec | Kod tiketda so'ralgan ishni qiladimi? Har bir qabul mezoni bajarilganmi? | Tiket va spec |
+| Standartlar | Kod repo qoidalariga mos keladimi? Testlar bormi? | Repo profili va shu kitob |
+
+<Rule level="MUST">
+
+Reviewer har bir <Term t="acceptance criteria" /> bandini PR'dagi kod yoki test bilan solishtiradi.
+
+</Rule>
+
+Reviewer quyidagilarni ham ko'radi:
+
+- PR hajmi 400 qatordan oshmaydimi.
+- Commit va PR sarlavhasi to'g'ri shakldami.
+- Merge Danger bo'limi haqiqiy xavfni yozganmi.
+- Maxfiy ma'lumot diff'ga kirib qolmaganmi.
+
+## Agent yozgan kod
+
+Kodni agent yozgan bo'lsa ham, review qoidalari o'zgarmaydi. Agent kodi tez yoziladi, lekin u tiketni noto'g'ri tushunishi yoki keraksiz qism qo'shishi mumkin.
+
+<Rule level="MUST">
+
+Agent yozgan PR'ni odam yozgan PR kabi to'liq review qiling. «Agent yozgan, demak to'g'ri» degan taxmin qilinmaydi.
+
+</Rule>
+
+Agent kodida ko'proq uchraydigan narsalarga alohida qarang:
+
+- tiketda so'ralmagan qo'shimcha o'zgarishlar;
+- haqiqiy xulq-atvorni emas, ichki tafsilotni tekshiradigan testlar;
+- bir xil mantiqning ikki joyda takrorlanishi.
+
+## Javob berish muddati
+
+Kutib turgan PR jamoani sekinlashtiradi. Muallif boshqa ishga o'tadi va konteksti yo'qoladi.
+
+<Rule level="SHOULD">
+
+Reviewer review so'rovidan keyin bir ish kuni ichida javob beradi: approve, <Term t="request changes" /> yoki izohlar.
+
+</Rule>
+
+Bir ish kunida ulgurmasangiz, muallifga yozing va qachon qarashingizni ayting.
+
+## Izoh prefikslari
+
+Har bir izoh prefiks bilan boshlanadi. Prefiks izohning og'irligini ko'rsatadi. Muallif nimani albatta tuzatishi va nimani tanlashi mumkinligini darhol biladi.
+
+| Prefiks | Ma'nosi | Merge'ni to'xtatadimi |
+|---|---|---|
+| `blocking:` | Tuzatilishi shart. | Ha |
+| `nit:` | Mayda narsa: nom, uslub, bo'sh joy. | Yo'q |
+| `question:` | Savol, tushuntirish kerak. | Javob kelguncha ha |
+| `suggestion:` | Taklif, muallif tanlaydi. | Yo'q |
+
+<Rule level="MUST">
+
+Har bir review izohi `blocking:`, `nit:`, `question:` yoki `suggestion:` prefiksi bilan boshlanadi.
+
+</Rule>
+
+<DoDont>
+<Do>
+
+`blocking: bu yerda boshqa filialning boshlig'i ham xabar oladi. Filial bo'yicha filtr kerak.`
+
+`nit: o'zgaruvchi nomi recipients bo'lsa aniqroq.`
+
+</Do>
+<Dont>
+
+`Bu noto'g'ri.` — nima noto'g'ri va qanchalik muhimligi noma'lum.
+
+`Menimcha boshqacha qilish kerak.` — qanday qilish kerakligi yozilmagan.
+
+</Dont>
+</DoDont>
+
+<Rule level="SHOULD">
+
+`blocking:` izohida muammo va kutilgan natijani yozing. Iloji bo'lsa, tuzatish yo'lini ham ko'rsating.
+
+</Rule>
+
+## Muallif izohlarga qanday javob beradi
+
+Muallif har bir izohga javob beradi. Javob ikki xil bo'ladi: tuzatdim yoki nima uchun tuzatmasligini tushuntiraman.
+
+<Rule level="MUST">
+
+Muallif har bir izohga javob yozadi. Tuzatgan bo'lsa, tuzatish commit'ini ko'rsatadi.
+
+</Rule>
+
+Review paytida tuzatishlarni yangi commit sifatida qo'shing. Tarixni qayta yozmang. Shunda reviewer faqat yangi commit'ni o'qiydi va oldingi raunddan keyin nima o'zgarganini ko'radi.
+
+<Rule level="SHOULD">
+
+Review boshlangandan keyin tuzatishlarni yangi commit bilan qo'shing. `--amend` va interaktiv rebase ishlatmang.
+
+</Rule>
+
+`dev` bilan <Term t="conflict" /> chiqsa, branch'ni `dev`ga <Term t="rebase" /> qilish mumkin. Bu review paytida ham ruxsat etiladi. Merge'da baribir squash-merge qilinadi, shuning uchun oraliq commit'lar `dev`ga bitta commit bo'lib kiradi.
+
+<Phrase ok="Blocking izohni a1b2c3d commit'ida tuzatdim." bad="Hammasini to'g'irladim.">
+
+Reviewer qaysi commit'ni o'qishni darhol biladi.
+
+</Phrase>
+
+Har bir izoh GitHub'da thread bo'ladi. Thread'ni yopish «masala hal bo'ldi» degan ma'noni beradi.
+
+<Rule level="MUST">
+
+`blocking:` thread'ini faqat reviewer yopadi.
+
+</Rule>
+
+`nit:`, `question:` va `suggestion:` thread'larini muallif javob bergandan keyin o'zi yopishi mumkin.
+
+## Approve va request changes
+
+Review'ning yakuniy qarori GitHub'dagi tugma bilan beriladi. Izoh matni qaror emas.
+
+| Qaror | Ma'nosi |
+|---|---|
+| Approve | PR merge qilinishi mumkin. |
+| Request changes | `blocking:` izohlar bor. Tuzatilmaguncha merge yo'q. |
+| Comment | Faqat savol yoki fikr. Qaror hali berilmagan. |
+
+<Rule level="MUST">
+
+Reviewer qarorni «Approve» yoki «Request changes» tugmasi bilan beradi.
+
+</Rule>
+
+<DoDont>
+<Do>
+
+«Approve» tugmasini bosish. Kerak bo'lsa, izohga «LGTM, bitta nit bor» deb yozish.
+
+</Do>
+<Dont>
+
+Izohga faqat «<Term t="LGTM" />» deb yozish. Bu approve emas, PR merge qilinmaydi.
+
+</Dont>
+</DoDont>
+
+## Kelishmovchilik
+
+Ba'zan muallif va reviewer kelisha olmaydi. Uzun yozishma vaqtni yo'qotadi va ohang keskinlashadi.
+
+<Steps>
+
+1. Ikki tomon o'z fikrini bir marta, dalil bilan yozadi.
+2. Kelishilmasa, qisqa qo'ng'iroq qiling: 10–15 daqiqa.
+3. Qo'ng'iroq natijasini PR'ga izoh qilib yozing.
+4. Hal bo'lmasa, qarorni release owner qabul qiladi.
+
+</Steps>
+
+<Rule level="MUST">
+
+Og'zaki kelishilgan har bir qaror PR'ga yozib qo'yiladi.
+
+</Rule>
+
+## Eslab qoling
+
+- Review so'rashdan oldin self-review qiling va Evidence'ni to'ldiring.
+- Review so'rovi: PTAL, havola va nimaga qarash kerakligi.
+- Reviewer ikki o'qni tekshiradi: spec va standartlar.
+- Javob muddati — bir ish kuni.
+- Har bir izoh prefiks bilan: `blocking:`, `nit:`, `question:`, `suggestion:`.
+- `blocking:` thread'ini faqat reviewer yopadi.
+- Qaror — «Approve» tugmasi. «LGTM» izohi qaror emas.
+- Review paytida tuzatish — yangi commit. Kelishuv — PR'ga yoziladi.

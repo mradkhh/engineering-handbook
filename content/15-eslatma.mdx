@@ -1,0 +1,74 @@
+# Bir sahifalik eslatma
+
+<div className="cheatsheet">
+<div className="cs-col">
+
+## Kundalik buyruqlar
+
+| Amal | Buyruq |
+|---|---|
+| Kunni boshlash | `git fetch origin` |
+| Yangi tiket | `git switch -c <N>-<slug> --no-track origin/dev` |
+| Holat | `git status -sb` |
+| Tanlab qo'shish | `git add -p` |
+| Commit | `git commit` |
+| Dev bilan yangilash | `git fetch origin` va `git rebase origin/dev` |
+| Conflict'dan keyin | `git add <fayl>` va `git rebase --continue` |
+| Rebase'ni bekor qilish | `git rebase --abort` |
+| Birinchi push | `git push` |
+| Rebase'dan keyin push | `git push --force-with-lease --force-if-includes` |
+| PR ochish | `gh pr create --base dev` |
+| Mening commit'larim | `git log origin/dev..HEAD` |
+| Mening diff'im | `git diff origin/dev...HEAD` |
+| Yo'qolgan commit | `git reflog` |
+| Xato commit'ni qaytarish | `git revert <sha>` (yangi branch'da) |
+
+## Formatlar
+
+| Nima | Shakl |
+|---|---|
+| Branch | `<N>-<slug>`: `172-notification-recipients` |
+| Commit va PR sarlavhasi | `type(scope): sarlavha (#N)` |
+| Turlar | `feat` `fix` `refactor` `perf` `test` `docs` `chore` `ci` `revert` |
+| PR tanasi | Summary · Evidence · Merge Danger · `Closes #N` |
+| Review izohi | `blocking:` `nit:` `question:` `suggestion:` |
+
+</div>
+<div className="cs-col">
+
+## Asosiy qoidalar
+
+- **MUST** — har bir tiket `origin/dev`dan ochilgan o'z branch'ida.
+- **MUST NOT** — `dev`, `beta`, `main`da commit yoki push.
+- **MUST** — feature branch'ni faqat `rebase origin/dev` bilan yangilash.
+- **MUST NOT** — `-f` bilan push. Faqat `--force-with-lease`, faqat o'z branch'ingizda.
+- **MUST** — push'dan oldin local tekshiruv o'tadi.
+- **MUST** — PR faqat `dev`ga, faqat squash-merge, kamida bitta approve.
+- **MUST** — xavfli PR'ni release owner merge qiladi va alohida promote qiladi.
+- **MUST** — `dev`dagi har narsa prod'ga yaroqli.
+- **MUST** — qizil beta o'sha kuni tuzatiladi yoki revert qilinadi.
+- **MUST NOT** — sir, parol, `.env` commit qilish.
+- **SHOULD** — PR 400 qatordan kichik; review bir ish kunida.
+
+## Branch'lar
+
+| Branch | Qanday o'zgaradi | Kim |
+|---|---|---|
+| `dev` | PR → squash-merge | Muallif |
+| `beta` | promote: ff + push | Release owner |
+| `main` | release PR → merge commit | Release owner |
+
+## Qanday aytiladi
+
+| ✓ To'g'ri | ✕ Noto'g'ri |
+|---|---|
+| Rebase qildim | Rebase oldim |
+| Pull qildim | Pull oldim |
+| Commit qildim | Kommitladim |
+| Branch | Vetka |
+| PR ochdim | Merj reqvest tashladim |
+| Dev'ni beta'ga promote qildim | Ship qildim |
+| PR #172 dev'ga merge bo'ldi | Kod tayyor |
+
+</div>
+</div>

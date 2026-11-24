@@ -1,0 +1,131 @@
+# Repo profili shabloni
+
+Repo profili — kitobning har bir repo'dagi davomi. Kitob umumiy qoidani beradi, profil esa shu repo'dagi aniq qiymatlarni: buyruqlar, nomlar, vaqtlar. Bu ilova profil qanday yozilishini beradi.
+
+## Profil nima uchun kerak
+
+Kitob «repo profilida yoziladi» desa, o'quvchi aniq javobni profildan topadi. Masalan:
+
+- qaysi buyruq local tekshiruvni ishga tushiradi;
+- release window qaysi kun va soatda;
+- xavfli PR belgisining nomi nima;
+- worktree'lar qaysi papkada turadi.
+
+<Rule level="MUST">
+
+Har bir repo'da profil bor. Repo'ning agent yo'riqnomasi (masalan, `AGENTS.md`) profilga havola qiladi.
+
+</Rule>
+
+<Rule level="MUST NOT">
+
+Profil kitobga zid bo'lmaydi. U kitobni faqat aniqlashtiradi yoki qattiqlashtiradi (1-bob).
+
+</Rule>
+
+## Profil qayerda turadi
+
+Profil bitta faylda yoki bir nechta faylda bo'lishi mumkin. Muhimi — har bir bo'limning joyi aniq bo'lsin.
+
+<Rule level="SHOULD">
+
+Profilning asosiy fayli repo ildizidagi agent yo'riqnomasidan bitta havola bilan topiladi.
+
+</Rule>
+
+## Majburiy bo'limlar
+
+| # | Bo'lim | Nima yoziladi |
+|---|---|---|
+| 1 | Muhitlar | Har bir muhit manzili, branch'i va kim ishlatishi. |
+| 2 | Release owner | Ismi va GitHub login'i. Yo'q bo'lganda kim almashtiradi. |
+| 3 | Buyruqlar | Local tekshiruv, testlar, build, migratsiya buyruqlari. |
+| 4 | Hook'lar | Qaysi hook nima ishga tushiradi va nimani to'xtatadi. |
+| 5 | CI | Qaysi branch'da nima ishlaydi, qaysi status'lar majburiy. |
+| 6 | Belgilar | Xavfli PR belgisi, triage belgilari, boshqa belgilar. |
+| 7 | Release | Release window, freeze tartibi, rehearsal sharti. |
+| 8 | Favqulodda holat | Shoshilinch hotfix va rollback tartibi. |
+| 9 | Worktree | Worktree papkasi va har bir worktree'ning portlari. |
+| 10 | Til | Commit, issue va izohlar qaysi tilda yoziladi. |
+| 11 | So'z to'qnashuvlari | Biznes atamasi git atamasiga o'xshasa, qanday ajratiladi. |
+
+## Shablon
+
+Quyidagi shablonni nusxa qiling va qiymatlarni to'ldiring.
+
+```md
+# Repo profili
+
+Bu fayl Engineering Handbook'ning shu repo uchun aniq qiymatlarini beradi.
+Kitob versiyasi: v1.x
+
+## 1. Muhitlar
+| Muhit | Branch | Manzil | Kim ishlatadi |
+|---|---|---|---|
+| Integratsiya | dev | — | PR'lar |
+| Beta | beta | https://beta.example.uz | dasturchilar |
+| Prod | main | https://example.uz | xodimlar, mijozlar |
+
+## 2. Release owner
+Ism, GitHub login. Yo'q bo'lganda: ...
+
+## 3. Buyruqlar
+- Local tekshiruv: `pnpm check`
+- Testlar: `pnpm test`
+- Migratsiya: `pnpm db:migrate`
+
+## 4. Hook'lar
+- pre-commit: ...
+- commit-msg: sarlavha formatini tekshiradi
+- pre-push: `pnpm check`; dev/beta/main'ga push faqat release owner'ga
+
+## 5. CI
+- dev: CI yo'q
+- beta: to'liq CI + deploy, status `deploy/beta`
+- main: gate + deploy, status `deploy/prod`
+
+## 6. Belgilar
+- Xavfli PR: `<belgi nomi>`
+- Triage: needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix
+
+## 7. Release
+- Oyna: <kunlar>, <soat> dan keyin
+- Freeze: release PR ochilgandan merge'gacha
+- Rehearsal: migratsiya bo'lsa majburiy, amal muddati <N> soat
+
+## 8. Favqulodda holat
+- Rollback: ...
+- Shoshilinch hotfix: ...
+
+## 9. Worktree
+- Papka: `<papka>/<N>-<slug>`
+- Portlar: ...
+
+## 10. Til
+- Commit sarlavhasi, issue, ADR: <til>
+
+## 11. So'z to'qnashuvlari
+- «<biznes so'zi>» — <ma'nosi>; git ma'nosida ishlatilmaydi
+```
+
+## Profilni yangilash
+
+<Rule level="MUST">
+
+Kitobda qoida o'zgarsa, profil shu PR'da yoki darhol keyingi PR'da yangilanadi.
+
+</Rule>
+
+<Rule level="MUST">
+
+Profilning yuqorisida u mos keladigan kitob versiyasi yoziladi.
+
+</Rule>
+
+Profil kitobdan eski bo'lib qolsa, o'quvchi ikki xil qoidani ko'radi. Shuning uchun profilni release owner har bir kitob release'ida tekshiradi.
+
+## Eslab qoling
+
+- Kitob — umumiy qoida, profil — aniq qiymat.
+- Har bir repo'da 11 bo'limli profil bor.
+- Profil kitobga zid bo'lmaydi va kitob versiyasini ko'rsatadi.

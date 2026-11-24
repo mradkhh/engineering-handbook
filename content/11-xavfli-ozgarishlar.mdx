@@ -1,0 +1,233 @@
+# Xavfli o'zgarishlar
+
+Ba'zi o'zgarishlar xato bo'lsa, ularni bir commit bilan qaytarib bo'lmaydi. Masalan, migratsiya ma'lumotni o'chiradi yoki yangi huquq qoidasi xodimni ishdan to'xtatadi. Bu bob bunday o'zgarishlarni qanday tanish va xavfsiz chiqarishni beradi.
+
+Asosiy fikr oddiy: xavf qancha katta bo'lsa, o'zgarish shuncha yolg'iz va shuncha sekin yuradi.
+
+## Dev'dagi har narsa prod'ga yaroqli
+
+<Term t="promote" /> `dev`ni butunligicha `beta`ga olib ketadi. <Term t="release" /> esa `beta`ni butunligicha `main`ga olib ketadi. Bir qismini tanlab olib bo'lmaydi. Shuning uchun `dev`ga kirgan har bir commit ertaga prod'da bo'ladi deb hisoblanadi.
+
+<Rule level="MUST">
+
+`dev`ga faqat prod'ga chiqishga tayyor kodni merge qiling.
+
+</Rule>
+
+Tugallanmagan ish ikki joydan birida turadi:
+
+- o'z <Term t="feature branch" />ida, PR ochilmagan yoki merge qilinmagan holda;
+- `dev`da, lekin <Term t="feature flag" /> orqasida, prod'da o'chiq holda.
+
+<DoDont>
+<Do>
+
+Yarim tayyor hisobot sahifasi `dev`da, lekin uning feature flag'i prod'da o'chiq. Foydalanuvchi uni ko'rmaydi.
+
+</Do>
+<Dont>
+
+«Keyingi PR'da tugataman» deb, ishlamaydigan tugmani `dev`ga merge qilish. Promote va release uni prod'ga olib chiqadi.
+
+</Dont>
+</DoDont>
+
+## Feature flag
+
+<Term t="feature flag" /> funksiyani kodda saqlaydi, lekin uni foydalanuvchiga ko'rsatmaydi. Odatda bu env kaliti yoki tashkilot sozlamasi bo'ladi.
+
+```text
+# example env fayl
+NEW_REPORTS_ENABLED=false
+```
+
+<Rule level="MUST">
+
+Yangi feature flag prod'da sukut bo'yicha o'chiq bo'ladi. Uni yoqish — alohida, ongli qaror.
+
+</Rule>
+
+<Rule level="SHOULD">
+
+Funksiya to'liq ishga tushgandan keyin feature flag'ni va eski yo'lni olib tashlang. Eski flag'lar kodni chalkashtiradi.
+
+</Rule>
+
+## Xavfli o'zgarish turlari
+
+Quyidagi o'zgarishlar xavfli hisoblanadi. Ularning har biri beta yoki prod'ni bir zumda buzishi mumkin.
+
+| Tur | Nima uchun xavfli |
+|---|---|
+| <Term t="migration" /> | Baza tuzilmasini o'zgartiradi. Ma'lumotni qaytarish qiyin yoki imkonsiz. |
+| Pul va moliya logikasi | Xato summa, ikki marta yozilgan to'lov, noto'g'ri ulush. |
+| Rollar va huquqlar | Xodim ishini qila olmaydi yoki ko'rmasligi kerak bo'lgan narsani ko'radi. |
+| <Term t="CI" /> va deploy fayllari | Butun deploy to'xtaydi yoki noto'g'ri kod chiqadi. |
+| Yangi env kaliti | Serverda kalit yo'q bo'lsa, ilova ishga tushmaydi. |
+| <Term t="ADR" /> | Uzoq muddatli qarorni o'zgartiradi. Boshqa ishlar unga tayanadi. |
+
+<Rule level="MUST">
+
+Yuqoridagi turlardan biri bor PR'ga repo'ning xavf belgisi qo'yiladi. Belgi nomi repo profilida yoziladi, masalan `alohida-deploy`.
+
+</Rule>
+
+<Rule level="MUST">
+
+Xavf belgili PR'ni faqat <Term t="release owner" /> merge qiladi va uni yolg'iz promote qiladi.
+
+</Rule>
+
+«Yolg'iz» degani: bitta promote'da faqat shu PR bo'ladi. Beta buzilsa, sababi aniq — bitta o'zgarish.
+
+<Steps>
+
+1. Release owner `dev`da kutib turgan boshqa ishlarni avval promote qiladi.
+2. Beta yashil bo'lishini kutadi.
+3. Xavf belgili PR'ni `dev`ga merge qiladi.
+4. Darhol yolg'iz promote qiladi.
+5. Beta'da o'zgarishni o'zi tekshiradi.
+
+</Steps>
+
+## PR'da xavfni yozish
+
+Reviewer xavfni faqat diff'dan ko'rmaydi. Muallif uni ochiq yozadi.
+
+<Rule level="MUST">
+
+Xavf belgili PR tavsifida ikki narsa bo'ladi: nima buzilishi mumkin va buzilsa qanday qaytariladi.
+
+</Rule>
+
+<DoDont>
+<Do>
+
+«Migratsiya `invoice` jadvaliga ustun qo'shadi. Eski kod uni o'qimaydi. Qaytarish: revert, ustun qoladi, zarari yo'q.»
+
+</Do>
+<Dont>
+
+«Kichik o'zgarish, hech narsa buzilmaydi.»
+
+</Dont>
+</DoDont>
+
+## Migratsiya: expand, backfill, contract
+
+Deploy paytida qisqa vaqt eski kod va yangi baza birga ishlaydi. Rollback'dan keyin ham eski kod yangi bazada ishlaydi. Shuning uchun migratsiya ikkala kodga ham mos bo'lishi kerak.
+
+<Rule level="MUST">
+
+Har bir migratsiya oldingi release kodi bilan ishlaydi.
+
+</Rule>
+
+Buning yo'li — <Term t="expand/contract" /> tartibi. Masalan, ustun nomini o'zgartirish uch release'ga bo'linadi.
+
+<Steps>
+
+1. **Expand.** Yangi ustunni qo'shing. Kod ikkala ustunga yozadi, eskisidan o'qiydi.
+2. **Backfill.** Eski qatorlardagi ma'lumotni yangi ustunga ko'chiring. Endi kod yangisidan o'qiydi.
+3. **Contract.** Keyingi release'da eski ustunni olib tashlang. Bu paytda eski ustunni hech bir kod ishlatmaydi.
+
+</Steps>
+
+<DoDont>
+<Do>
+
+Yangi ustunni bo'sh qiymatga ruxsat bilan qo'shish. Eski kod uni bilmasa ham ishlaydi.
+
+</Do>
+<Dont>
+
+Bitta migratsiyada ustun nomini o'zgartirish. Eski kod eski nomni qidiradi va to'xtaydi.
+
+</Dont>
+</DoDont>
+
+<Rule level="MUST NOT">
+
+Release'ga chiqqan migratsiya faylini o'zgartirmang. Tuzatish uchun yangi migratsiya yozing.
+
+</Rule>
+
+Ba'zi qadamlar ma'lumotni yo'q qiladi: jadval yoki ustunni o'chirish, majburiy shart qo'shish, qatorlarni o'chirish. Ular qaytmaydi.
+
+<Rule level="MUST">
+
+Ma'lumotni o'chiradigan migratsiya release'dan oldin prod ma'lumotining nusxasida sinaladi. Bu sinov — <Term t="rehearsal" />. Uning tartibi repo profilida yoziladi.
+
+</Rule>
+
+## Maxfiy ma'lumot
+
+Sir — bu kalit, parol, token yoki mijozning shaxsiy ma'lumoti. Git'ga tushgan sir push'dan keyin ko'p joyga tarqaladi: boshqa dasturchilarning nusxalari, CI cache'i, fork'lar.
+
+<Rule level="MUST NOT">
+
+Sirni git'ga commit qilmang. Env fayllar `.gitignore`da bo'ladi.
+
+</Rule>
+
+<Rule level="MUST">
+
+Example env faylda faqat kalit nomlari va xavfsiz namuna qiymatlari bo'ladi. Haqiqiy qiymat hech qachon unga yozilmaydi.
+
+</Rule>
+
+Sir baribir commit'ga tushib qolsa, 12-bobdagi tartibni bajaring. Birinchi qadam — kalitni almashtirish.
+
+## Yangi env kaliti
+
+Yangi env kaliti kod bilan birga keladi, lekin uning qiymati serverda turadi. Kalit serverda yo'q bo'lsa, deploy muvaffaqiyatli ko'rinadi, ilova esa ishga tushmaydi.
+
+<Steps>
+
+1. Kalitni example env faylga qo'shing: nomi va xavfsiz namuna qiymati.
+2. Kalitni ilovaning env tekshiruv sxemasiga qo'shing.
+3. Kalitni repo profilidagi env kalitlari ro'yxatiga yozing.
+4. PR tavsifida yozing: kalit nima qiladi va beta hamda prod uchun qanday qiymat kerak.
+5. Release owner qiymatni beta va prod serverlariga deploy'dan oldin qo'yadi.
+
+</Steps>
+
+<Rule level="MUST">
+
+Yangi kalit yo'q bo'lsa, ilova aniq xato bilan to'xtaydi yoki xavfsiz sukut qiymat bilan ishlaydi. Jim ishlab, noto'g'ri natija bermaydi.
+
+</Rule>
+
+## Release window va freeze
+
+Release har vaqt emas, belgilangan vaqtda bo'ladi. Bu vaqt — release window. Kunlar va soat repo profilida yoziladi, masalan «‹kunlar›, ‹soat› dan keyin».
+
+Release boshlangandan keyin `beta` qotadi. Bu holat — freeze. Freeze paytida `dev`ga faqat shu release'ni tuzatadigan commit'lar kiradi.
+
+<Rule level="MUST">
+
+Release boshlangach, `dev`ga faqat joriy release uchun tuzatishlarni merge qiling. Yangi funksiyalar release tugaguncha o'z branch'ida kutadi.
+
+</Rule>
+
+<Rule level="MUST NOT">
+
+Release window'dan tashqarida release qilmang. Istisno — 12-bobdagi hotfix tartibi.
+
+</Rule>
+
+<Phrase ok="Release boshlandi, dev freeze'da. Faqat release tuzatishlari kiradi." bad="Hozircha hech narsa qo'shmanglar.">
+
+Freeze'ning chegarasini aniq ayting: nima kirishi mumkin va qachongacha.
+
+</Phrase>
+
+## Eslab qoling
+
+- `dev`ga faqat prod'ga tayyor kod kiradi. Tugallanmagan ish — branch'da yoki feature flag orqasida.
+- Migratsiya, pul, huquq, CI, env kaliti, ADR — xavfli. PR'ga xavf belgisi qo'yiladi.
+- Xavf belgili PR'ni release owner merge qiladi va yolg'iz promote qiladi.
+- Migratsiya oldingi release kodi bilan ishlaydi: expand, backfill, contract.
+- Ma'lumotni o'chiradigan qadam — faqat rehearsal'dan keyin.
+- Sir git'ga tushmaydi. Tushsa — avval kalitni almashtiring.
+- Freeze paytida `dev`ga faqat release tuzatishlari kiradi.

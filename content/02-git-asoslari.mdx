@@ -1,0 +1,125 @@
+# Git asoslari
+
+Bu bob git qanday ishlashini tushuntiradi. Keyingi boblardagi har bir qoida shu tushunchalarga tayanadi. Bu bobni bilsangiz, git xato matnlarini o'qiy olasiz va nima bo'lganini tushunasiz.
+
+## Git nima
+
+Git — versiyalarni boshqarish tizimi. U fayllarning har bir saqlangan holatini va ularning tartibini eslab qoladi.
+
+Git markazsiz ishlaydi. Har bir <Term t="clone" /> — <Term t="repo" />ning to'liq nusxasi, butun tarixi bilan. Shuning uchun `log`, `diff`, `commit` kabi ko'p amallar internetsiz ishlaydi. Internet faqat <Term t="fetch" /> va <Term t="push" /> uchun kerak.
+
+## Uch joy: working tree, staging area va repo
+
+O'zgarish commit bo'lguncha uch joydan o'tadi.
+
+| Joy | Nima saqlanadi | Qaysi buyruq ko'rsatadi |
+|---|---|---|
+| <Term t="working tree" /> | Diskdagi fayllar, hozirgi holatda. | `git status`, `git diff` |
+| <Term t="staging area" /> | Keyingi commit'ga tayyorlangan o'zgarishlar. | `git diff --staged` |
+| Repo | Saqlangan commit'lar. | `git log` |
+
+<Steps>
+
+1. Faylni o'zgartirasiz. O'zgarish working tree'da.
+2. `git add` bajarasiz. O'zgarish staging area'ga o'tadi.
+3. `git commit` bajarasiz. Staging area'dagi hamma narsa bitta commit bo'ladi.
+
+</Steps>
+
+<Terminal>{`
+$ git status -sb
+## 172-notification-recipients
+M  src/notify.ts
+ M src/recipients.ts
+?? src/recipients.test.ts
+`}</Terminal>
+
+Birinchi ustun — staging area, ikkinchi ustun — working tree. `M ` — fayl commit'ga tayyor. ` M` — fayl o'zgargan, lekin hali `add` qilinmagan. `??` — git bu faylni hali kuzatmaydi.
+
+## Commit va hash
+
+<Term t="commit" /> — repo'ning bitta to'liq holati. Har bir commit'da muallif, vaqt, xabar va ota-ona commit'ga havola bor. Shu havolalar tarixni zanjir qiladi.
+
+Har bir commit'ning <Term t="hash" />i bor, masalan `e3a91c2`. Hash commit'ning butun mazmunidan hisoblanadi: fayllar, xabar, muallif, ota-ona.
+
+<Warning>
+
+Commit'ni o'zgartirib bo'lmaydi. `rebase` yoki `--amend` eski commit'ni o'zgartirmaydi: ular yangi hash bilan yangi commit yaratadi. Shu sababli tarixni qayta yozish boshqalarning nusxasini buzadi.
+
+</Warning>
+
+## Branch va HEAD
+
+<Term t="branch" /> — commit'ga ko'rsatkich, xolos. U bitta commit'ning nomi. Siz yangi commit qilsangiz, branch o'zi yangi commit'ga suriladi.
+
+<Term t="HEAD" /> — siz hozir qaysi branch'dasiz, shuni ko'rsatadi. Odatda HEAD branch'ga, branch esa commit'ga ko'rsatadi.
+
+<Warning>
+
+`git switch --detach` yoki eski commit'ga `checkout` qilsangiz, <Term t="detached HEAD" /> holati chiqadi. Bu holatda qilingan commit'lar hech qaysi branch'ga tegishli bo'lmaydi va yo'qolishi mumkin. Ish qilmoqchi bo'lsangiz, avval branch oching: `git switch -c <nom>`.
+
+</Warning>
+
+## Remote va origin
+
+<Term t="remote" /> — repo'ning boshqa joydagi nusxasi. `git clone` qilganingizda git uni `origin` deb nomlaydi. Bizda `origin` — GitHub.
+
+Remote'dagi har bir branch'ning local'da izi bor: <Term t="remote-tracking branch" />. Masalan, `origin/dev` — GitHub'dagi `dev`ning siz oxirgi ko'rgan holati.
+
+<Note>
+
+`origin/dev` o'zi yangilanmaydi. Uni faqat `git fetch` yangilaydi. Fetch qilmasangiz, `origin/dev` bir hafta oldingi holatda qolishi mumkin.
+
+</Note>
+
+| Nom | Bu nima | Kim o'zgartiradi |
+|---|---|---|
+| `dev` | Local branch'ingiz. | Siz: commit, pull, rebase. |
+| `origin/dev` | GitHub'dagi `dev`ning local izi. | Faqat `fetch` (va `pull` ichidagi fetch). |
+| GitHub'dagi `dev` | Haqiqiy remote branch. | Push yoki PR merge. |
+
+## Upstream: ahead va behind
+
+Har bir local branch bitta remote branch'ni kuzatishi mumkin. Bu remote branch uning <Term t="upstream" />i. `git status` shu upstream'ga nisbatan farqni ko'rsatadi.
+
+<Terminal>{`
+$ git status -sb
+## 172-notification-recipients...origin/172-notification-recipients [ahead 2, behind 1]
+`}</Terminal>
+
+- `ahead 2` — sizda 2 ta commit bor, ular remote'da yo'q. Push qilish kerak.
+- `behind 1` — remote'da 1 ta commit bor, u sizda yo'q.
+- Ikkalasi birga — tarix ajralgan. Oddiy `pull` yoki oddiy `push` ishlamaydi.
+
+## Tarix shakli: fast-forward va ajralgan tarix
+
+Ikki branch o'rtasida ikki holat bo'lishi mumkin.
+
+- **Bir chiziqda.** Bir branch ikkinchisining davomi. Unda orqadagi branch'ni shunchaki oldinga surish mumkin. Bu <Term t="fast-forward" />. Yangi commit yaratilmaydi.
+- **Ajralgan.** Ikkala branch'da ham boshqasida yo'q commit'lar bor. Unda ikki yo'l bor: <Term t="merge" /> (merge commit yaratadi) yoki <Term t="rebase" /> (commit'laringizni qayta yozadi).
+
+Bizning qoidalarimiz shu ikki holatga qurilgan. Himoyalangan branch'lar faqat fast-forward bilan yoki PR orqali o'zgaradi. Feature branch ajralsa, rebase qilinadi. Batafsil — 3 va 7-boblarda.
+
+## Git nimani kuzatmasligi kerak
+
+<Term t=".gitignore" /> fayli git kuzatmaydigan fayllarni sanaydi: `node_modules/`, build natijalari, `.env`.
+
+<Rule level="MUST NOT">
+
+Sir, parol, kalit va `.env` fayllarini commit qilmang. `.gitignore` sizni har doim himoya qilmaydi: `git add -f` uni chetlab o'tadi.
+
+</Rule>
+
+<Rule level="SHOULD">
+
+Kompyuteringizga xos fayllarni (muharrir sozlamalari, shaxsiy skriptlar) repo'dagi `.gitignore`ga emas, `.git/info/exclude`ga yozing.
+
+</Rule>
+
+## Eslab qoling
+
+- O'zgarish yo'li: working tree → `add` → staging area → `commit` → repo.
+- Commit o'zgarmaydi. Rebase va amend yangi hash'li yangi commit yaratadi.
+- Branch — commit'ga ko'rsatkich. HEAD — siz qayerdasiz.
+- `origin/dev` faqat `fetch` bilan yangilanadi.
+- `ahead` — push kerak, `behind` — sizda yo'q commit bor, ikkalasi — tarix ajralgan.

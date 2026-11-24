@@ -1,0 +1,347 @@
+# Kundalik git amallari
+
+Bu bob har kuni bajariladigan git amallarini beradi. Har bir bo'limda uch narsa bor: amal nima qiladi, qachon kerak va qaysi buyruq bilan bajariladi.
+
+Bob tartibi ish kunining tartibiga mos: sozlash, kunni boshlash, branch ochish, commit, yangilash, push. Oxirida yordamchi amallar bor: stash, worktree va holatni o'qish.
+
+<Note>
+
+Misollarda tiket raqami `172`, branch nomi `172-notification-recipients`. O'zingizning tiket raqamingiz va nomingizni yozing.
+
+</Note>
+
+## Majburiy git sozlamalari
+
+Git sukut bo'yicha ba'zi amallarni xavfli tarzda bajaradi. Masalan, `git pull` so'ramasdan merge commit yaratishi mumkin. Quyidagi sozlamalar buni to'xtatadi.
+
+<Rule level="MUST">
+
+Har bir dasturchi quyidagi sozlamalarni bir marta, `--global` bilan o'rnatadi. Ism va email GitHub profilidagi bilan bir xil bo'ladi.
+
+</Rule>
+
+<Terminal title="bir marta bajariladi">{`
+$ git config --global user.name "Ism Familiya"
+$ git config --global user.email "siz@example.com"
+$ git config --global pull.ff only
+$ git config --global fetch.prune true
+$ git config --global push.autoSetupRemote true
+$ git config --global rebase.autoStash true
+$ git config --global rerere.enabled true
+`}</Terminal>
+
+| Sozlama | Nima qiladi | Nima uchun kerak |
+|---|---|---|
+| `pull.ff only` | `pull` faqat <Term t="fast-forward" /> qiladi. | `pull` hech qachon tasodifiy merge commit yaratmaydi. |
+| `fetch.prune true` | O'chirilgan remote branch'larning local izini o'chiradi. | Merge bo'lgan PR branch'lari ro'yxatda qolmaydi. |
+| `push.autoSetupRemote true` | Birinchi `git push` <Term t="upstream" />ni o'zi belgilaydi. | `git push -u origin ...` yozish shart emas. |
+| `rebase.autoStash true` | <Term t="rebase" />dan oldin o'zgarishlarni o'zi chetga olib, keyin qaytaradi. | Commit qilinmagan fayl bo'lsa ham rebase to'xtamaydi. |
+| `rerere.enabled true` | Hal qilingan <Term t="conflict" />ni eslab qoladi. | Bir xil conflict'ni ikkinchi marta qo'lda hal qilmaysiz. |
+
+Sozlamalarni tekshirish uchun `git config --global --list` buyrug'ini bajaring.
+
+## Kunni boshlash: fetch
+
+Ish kuni <Term t="fetch" /> bilan boshlanadi. `fetch` GitHub'dagi yangi commit'larni oladi. U sizning branch'ingizga va fayllaringizga tegmaydi, shuning uchun u har doim xavfsiz.
+
+<Steps>
+
+1. Remote'dagi yangiliklarni oling: `git fetch origin`.
+2. O'z holatingizni ko'ring: `git status -sb`.
+3. `dev`ga nima qo'shilganini ko'ring: `git log --oneline -10 origin/dev`.
+
+</Steps>
+
+<Terminal>{`
+$ git fetch origin
+$ git status -sb
+## 172-notification-recipients...origin/172-notification-recipients
+$ git log --oneline -3 origin/dev
+e3a91c2 docs(auth): sessiya qoidalari (#168)
+7d04b5f chore(git): pre-push tekshiruvi (#167)
+b1c8e60 feat(search): sana filtri (#165)
+`}</Terminal>
+
+<Phrase ok="Fetch qildim, dev'ga 3 ta yangi commit kelibdi." bad="Dev'ni yangiladim.">
+
+«Yangiladim» noaniq: u `fetch`, `pull` yoki `rebase` bo'lishi mumkin. Aniq amal nomini ayting.
+
+</Phrase>
+
+## Yangi tiket uchun branch
+
+Har bir tiket o'z branch'ida qilinadi. Branch `origin/dev`dan boshlanadi, local `dev`dan emas, chunki local `dev` eskirgan bo'lishi mumkin.
+
+<Rule level="MUST">
+
+Har bir tiket uchun `origin/dev`dan yangi branch oching. Nomi `<tiket raqami>-<qisqa-nom>` shaklida bo'ladi.
+
+</Rule>
+
+<Rule level="MUST NOT">
+
+`dev`, `beta` yoki `main` branch'ida commit qilmang.
+
+</Rule>
+
+<Terminal>{`
+$ git fetch origin
+$ git switch -c 172-notification-recipients --no-track origin/dev
+Switched to a new branch '172-notification-recipients'
+`}</Terminal>
+
+<Warning>
+
+`--no-track`ni tushirib qoldirmang. Usiz yangi branch'ning <Term t="upstream" />i `origin/dev` bo'lib qoladi. Shunda `git pull` `dev`ni tortadi, `git push` esa rad etiladi.
+
+</Warning>
+
+## Commit
+
+<Term t="commit" /> bitta mantiqiy o'zgarishni saqlaydi. Commit'dan oldin nima kirayotganini ko'ring: `git add` o'zgarishni <Term t="staging area" />ga qo'shadi, `git commit` uni saqlaydi.
+
+<Steps>
+
+1. O'zgargan fayllarni ko'ring: `git status`.
+2. O'zgarishlarni bo'lak-bo'lak tanlang: `git add -p`.
+3. Commit'ga nima kirishini o'qing: `git diff --staged`.
+4. Commit qiling: `git commit`. Xabar formati 8-bobda.
+
+</Steps>
+
+<Rule level="MUST NOT">
+
+Maxfiy ma'lumotni commit qilmang: `.env`, kalitlar, parollar, mijoz ma'lumotlari. Push qilingan sirni tarixdan to'liq o'chirib bo'lmaydi, uni almashtirish kerak bo'ladi.
+
+</Rule>
+
+<DoDont>
+<Do>
+
+`git add -p` — har bir bo'lakni ko'rib, keraklisini qo'shasiz.
+
+</Do>
+<Dont>
+
+`git add .` — tasodifiy fayllar ham commit'ga kirib ketadi.
+
+</Dont>
+</DoDont>
+
+Oxirgi commit'ni tuzatish uchun `git commit --amend` ishlatiladi. Commit push qilingan bo'lsa, keyingi push `--force-with-lease` bilan bo'ladi.
+
+## Branch'ni dev bilan yangilash: rebase
+
+Siz ishlayotganda boshqalar `dev`ga yangi commit'lar qo'shadi. Branch'ingizni shu commit'lar ustiga ko'chirish kerak. Bu ish <Term t="rebase" /> bilan qilinadi.
+
+`rebase` sizning commit'laringizni `origin/dev`ning oxiriga qayta yozadi. Commit'lar yangi hash oladi: rasmda `X` va `Y` endi `X′` va `Y′`.
+
+<Diagram n="7.1" title="Rebase sizning commit'laringizni origin/dev'ning oxiriga ko'chiradi">
+<RebaseDiagram />
+</Diagram>
+
+<Steps>
+
+1. Yangiliklarni oling: `git fetch origin`.
+2. Branch'ingizni ko'chiring: `git rebase origin/dev`.
+3. Conflict chiqsa, keyingi bo'limdagi qadamlarni bajaring.
+4. Testlarni ishga tushiring.
+5. Branch'ni push qiling: `git push --force-with-lease --force-if-includes`.
+
+</Steps>
+
+<Rule level="MUST">
+
+Feature branch'ni faqat `fetch` va `rebase origin/dev` bilan yangilang.
+
+</Rule>
+
+<Rule level="MUST NOT">
+
+`dev`, `beta`, `main` yoki boshqa odam ishlayotgan branch'ni rebase qilmang. Rebase tarixni qayta yozadi va boshqalarning nusxasi buziladi.
+
+</Rule>
+
+<DoDont>
+<Do>
+
+`git rebase origin/dev` — tarix to'g'ri chiziq bo'ladi, review'da faqat sizning o'zgarishlaringiz ko'rinadi.
+
+</Do>
+<Dont>
+
+`git merge origin/dev` — feature branch'da keraksiz merge commit qoladi.
+
+</Dont>
+</DoDont>
+
+<Phrase ok="Branch'ni dev'ga rebase qildim." bad="Rebase oldim.">
+
+Rebase «olinmaydi», u «qilinadi». Inglizcha suhbatda: «I rebased onto dev».
+
+</Phrase>
+
+## Conflict'ni hal qilish
+
+<Term t="conflict" /> ikki o'zgarish bitta qatorga tegsa chiqadi. Git natijani o'zi tanlamaydi va rebase'ni to'xtatadi. Faylda uch belgi paydo bo'ladi:
+
+```text
+<<<<<<< HEAD
+const recipients = boardHeads(project);
+=======
+const recipients = [project.seller];
+>>>>>>> 1a2b3c4 (feat(notifications): ruxsatnoma xabari (#172))
+```
+
+<Warning>
+
+Rebase paytida `HEAD` — bu `origin/dev` tomoni, pastki qism esa sizning commit'ingiz. Merge'da bu teskari. Shuning uchun rebase paytida `--ours` va `--theirs` bayroqlarini ishlatishdan oldin ikki marta tekshiring.
+
+</Warning>
+
+<Steps>
+
+1. Conflict'li fayllarni toping: `git status`. Ular «both modified» deb ko'rsatiladi.
+2. Faylni oching va to'g'ri natijani yozing.
+3. `<<<<<<<`, `=======` va `>>>>>>>` belgilarini o'chiring.
+4. Faylni belgilang: `git add <fayl>`.
+5. Rebase'ni davom ettiring: `git rebase --continue`.
+6. Keyingi commit'da yana conflict chiqsa, 1-qadamga qayting.
+
+</Steps>
+
+Adashib ketsangiz, `git rebase --abort` buyrug'ini bajaring. Branch rebase'dan oldingi holatiga to'liq qaytadi.
+
+<Rule level="SHOULD">
+
+Conflict'ni hal qilgandan keyin push'dan oldin testlarni qayta ishga tushiring. To'g'ri ko'ringan birlashma ham kodni buzishi mumkin.
+
+</Rule>
+
+## Push
+
+Birinchi push oddiy `git push` bilan bo'ladi. `push.autoSetupRemote` sozlamasi GitHub'da shu nomli branch'ni o'zi yaratadi.
+
+Rebase yoki `--amend`dan keyin oddiy push rad etiladi, chunki commit'lar qayta yozilgan. Bunda <Term t="force-with-lease" /> ishlatiladi.
+
+<Terminal>{`
+# birinchi push
+$ git push
+# rebase yoki --amend'dan keyin
+$ git push --force-with-lease --force-if-includes
+`}</Terminal>
+
+`--force-with-lease` remote branch'ni faqat u siz oxirgi ko'rgan holatda bo'lsa qayta yozadi. Agar boshqa odam shu branch'ga push qilgan bo'lsa, buyruq rad etiladi va uning ishi saqlanib qoladi. `--force-if-includes` yana bir tekshiruv qo'shadi: siz remote'dagi oxirgi commit'ni local'da ko'rgan bo'lishingiz shart.
+
+<Rule level="MUST">
+
+Qayta yozilgan branch'ni faqat `--force-with-lease --force-if-includes` bilan push qiling.
+
+</Rule>
+
+<Rule level="MUST NOT">
+
+`git push -f` va `git push --force` ishlatmang. `dev`, `beta` va `main`ga hech qanday force-push qilmang.
+
+</Rule>
+
+## fetch, pull, rebase va merge farqi
+
+Bu to'rt amal ko'pincha aralashtiriladi. Ular har xil ishni bajaradi.
+
+| Amal | Nima qiladi | Sizning branch'ingiz o'zgaradimi |
+|---|---|---|
+| <Term t="fetch" /> | GitHub'dan yangi commit'larni olib, `origin/*`ni yangilaydi. | Yo'q |
+| <Term t="pull" /> | `fetch` qiladi, keyin joriy branch'ni upstream'ga fast-forward qiladi. | Ha, faqat oldinga |
+| <Term t="rebase" /> | Sizning commit'laringizni boshqa asos ustiga qayta yozadi. | Ha, hash'lar o'zgaradi |
+| <Term t="merge" /> | Ikki tarixni qo'shadi, kerak bo'lsa merge commit yaratadi. | Ha, yangi commit qo'shiladi |
+
+<Diagram n="7.2" title="fetch faqat origin/dev'ni yangilaydi; pull bunga fast-forward qo'shadi">
+<FetchPullDiagram />
+</Diagram>
+
+`pull` faqat local branch'ni remote bilan tenglash uchun kerak, masalan local `dev`ni. Feature branch'da `pull` emas, `fetch` va `rebase` ishlatiladi.
+
+`git pull` «Not possible to fast-forward» deb to'xtasa, sizning branch'ingiz remote'dan ajralgan. Bunda `fetch` va `rebase` qiling.
+
+<Phrase ok="Local dev'ni pull qildim." bad="Pull oldim.">
+
+Inglizcha: «I pulled dev». O'zbekcha gapda inglizcha fe'l va «qilmoq» ishlatiladi.
+
+</Phrase>
+
+## Stash
+
+<Term t="stash" /> commit qilinmagan o'zgarishlarni vaqtincha chetga olib qo'yadi. U qisqa tanaffus uchun kerak, masalan boshqa branch'dagi xatoni tez ko'rish uchun.
+
+<Terminal>{`
+$ git stash push -m "172: oluvchilar moduli, yarim"
+$ git stash list
+stash@{0}: On 172-notification-recipients: 172: oluvchilar moduli, yarim
+$ git stash pop
+`}</Terminal>
+
+<Rule level="SHOULD">
+
+Bir soatdan uzoq turadigan ishni stash'da saqlamang. Uni commit qiling yoki boshqa ishni alohida worktree'da oching.
+
+</Rule>
+
+## Worktree
+
+<Term t="worktree" /> bitta repoga ulangan qo'shimcha ish papkasi. Har bir worktree'da o'z branch'i va o'z fayllari bor. Ikki tiketni parallel qilish mumkin: branch almashtirish va stash kerak emas.
+
+<Diagram n="7.3" title="Bitta .git, uchta ish papkasi, har birida o'z branch'i">
+<WorktreeDiagram />
+</Diagram>
+
+<Terminal>{`
+# yangi tiket uchun worktree
+$ git fetch origin
+$ git worktree add ../worktrees/172-notification-recipients \\
+    -b 172-notification-recipients --no-track origin/dev
+# barcha worktree'lar
+$ git worktree list
+# PR merge bo'lgandan keyin
+$ git worktree remove ../worktrees/172-notification-recipients
+$ git branch -D 172-notification-recipients
+`}</Terminal>
+
+<Note>
+
+Misolda worktree'lar `../worktrees/` papkasida. Aniq joy repo profilida yoziladi.
+
+</Note>
+
+<Warning>
+
+Squash-merge'dan keyin `git branch -d` branch'ni o'chirmaydi. Sabab: commit'laringiz `dev`ga yangi hash bilan, bitta commit bo'lib kirgan. PR merge bo'lganini GitHub'da tekshiring, keyin `-D` bilan o'chiring.
+
+</Warning>
+
+## Holatni o'qish
+
+Biror amaldan oldin holatni o'qing. Quyidagi buyruqlar hech narsani o'zgartirmaydi.
+
+| Buyruq | Nimani ko'rsatadi |
+|---|---|
+| `git status -sb` | Joriy branch, upstream va farq: `ahead 2, behind 1`. |
+| `git log --oneline --graph -20` | Oxirgi commit'lar va branch'lar shakli. |
+| `git log origin/dev..HEAD` | Sizda bor, lekin `dev`da yo'q commit'lar: PR'ga kiradigan commit'lar. |
+| `git diff origin/dev...HEAD` | Branch ochilgandan beri sizning o'zgarishlaringiz. PR diff'i shu. |
+| `git reflog` | HEAD qayerda bo'lgani. Yo'qolgan commit'ni topish uchun (12-bob). |
+
+<Note>
+
+`..` (ikki nuqta) va `...` (uch nuqta) har xil. `log A..B` — B'da bor, A'da yo'q commit'lar. `diff A...B` — A va B ajralgan nuqtadan B'gacha bo'lgan o'zgarishlar.
+
+</Note>
+
+## Eslab qoling
+
+- Kun `git fetch` bilan boshlanadi. `fetch` hech narsani buzmaydi.
+- Yangi branch: `git switch -c <N>-<nom> --no-track origin/dev`.
+- Branch'ni yangilash: `git fetch` va `git rebase origin/dev`. Merge emas.
+- Qayta yozilgan branch'ni push qilish: `--force-with-lease --force-if-includes`. Hech qachon `-f` emas.
+- `pull` faqat local `dev` kabi branch'ni tenglash uchun. Feature branch'da ishlatilmaydi.
+- Gapirganda: «rebase qildim», «pull qildim». «Rebase oldim» emas.

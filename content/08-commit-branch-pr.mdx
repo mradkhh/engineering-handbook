@@ -1,0 +1,271 @@
+# Commit, branch va PR qoidalari
+
+Bu bob uch narsaning shaklini belgilaydi: branch nomi, commit xabari va PR. Shakl bir xil bo'lsa, tarixni o'qish, qidirish va avtomatik tekshirish oson bo'ladi.
+
+Asosiy zanjir shunday: bitta tiket — bitta branch — bitta PR — `dev`da bitta commit. Bobdagi har bir qoida shu zanjirni saqlaydi.
+
+## Branch nomi
+
+<Term t="feature branch" /> nomi ikki qismdan iborat: tiket raqami va qisqa nom. Raqam branch'ni tiketga bog'laydi. Qisqa nom branch nima haqida ekanini aytadi.
+
+<Rule level="MUST">
+
+Push qilinadigan har bir branch nomi `<N>-<slug>` shaklida bo'ladi. `N` — tiket raqami. `slug` — inglizcha, kebab-case, 2–5 so'z.
+
+</Rule>
+
+<DoDont>
+<Do>
+
+`172-notification-recipients`
+
+`175-handoff-recipients`
+
+</Do>
+<Dont>
+
+`feature/notifications` — tiket raqami yo'q.
+
+`172-yangi-xabarlar-logikasi-va-boshqalar` — o'zbekcha va juda uzun.
+
+`41-43-ui-fixes` — bitta branch'da uchta tiket.
+
+</Dont>
+</DoDont>
+
+<Rule level="MUST NOT">
+
+Bitta branch'da bir nechta tiketni bajarmang. Har bir tiket o'z branch'ida, o'z PR'ida bo'ladi.
+
+</Rule>
+
+Tajriba uchun local branch'ga istalgan nom berish mumkin, masalan `wip/try-cache`. Bunday branch faqat sizning kompyuteringizda qoladi.
+
+<Rule level="MUST NOT">
+
+`<N>-<slug>` shaklida bo'lmagan branch'ni push qilmang.
+
+</Rule>
+
+## Commit sarlavhasi
+
+Commit xabarining birinchi qatori — sarlavha. U Conventional Commits shaklida yoziladi:
+
+```text
+type(scope): sarlavha (#N)
+```
+
+<Rule level="MUST">
+
+Har bir commit sarlavhasi `type(scope): sarlavha (#N)` shaklida bo'ladi. `type` quyidagi ro'yxatdan olinadi. `(#N)` — tiket raqami.
+
+</Rule>
+
+| `type` | Qachon ishlatiladi |
+|---|---|
+| `feat` | Foydalanuvchi ko'radigan yangi imkoniyat. |
+| `fix` | Xatoni tuzatish. |
+| `refactor` | Xulq-atvor o'zgarmaydi, faqat kod tuzilmasi o'zgaradi. |
+| `perf` | Tezlik yoki resurs sarfini yaxshilash. |
+| `test` | Faqat testlar qo'shiladi yoki o'zgaradi. |
+| `docs` | Faqat hujjatlar o'zgaradi. |
+| `chore` | Yordamchi ish: bog'liqliklar, sozlamalar, skriptlar. |
+| `ci` | CI va deploy fayllari. |
+| `revert` | Oldingi commit'ni <Term t="revert" /> qilish. |
+
+`scope` ixtiyoriy. U o'zgarish qaysi qismga tegishli ekanini aytadi, masalan `web`, `notifications`, `deploy`. Scope'lar ro'yxati repo profilida yoziladi.
+
+Sarlavha tili ham repo profilida yoziladi. Sarlavha buyruq yoki natija shaklida, nuqtasiz yoziladi.
+
+<DoDont>
+<Do>
+
+`feat(notifications): ruxsatnoma xabari faqat loyiha sotuvchisiga (#172)`
+
+`fix(web): mundarijada apostrof to'g'ri ko'rinadi (#181)`
+
+</Do>
+<Dont>
+
+`fix: tuzatishlar` — nima tuzatilgani noma'lum, tiket yo'q.
+
+`feat: yangi xabarlar va boshqalar (#172)` — «va boshqalar» bir nechta ish borligini bildiradi.
+
+</Dont>
+</DoDont>
+
+## Commit tanasi va trailer'lar
+
+Sarlavhadan keyin bitta bo'sh qator qoldiriladi. Keyin commit tanasi yoziladi.
+
+Tana «nima qilindi»ni emas, «nima uchun»ni tushuntiradi. «Nima»ni diff ko'rsatadi. «Nima uchun»ni faqat siz bilasiz.
+
+<Rule level="SHOULD">
+
+Sababi kodning o'zidan ko'rinmaydigan har bir commit'ga tana yozing: qaysi muammo bor edi, qaysi variant tanlandi, nima uchun.
+
+</Rule>
+
+Tananing oxirida trailer'lar turadi. Trailer — `Kalit: qiymat` shaklidagi qator. Bizda ikkitasi ishlatiladi:
+
+- `Closes #N` — commit `dev`ga kirganda tiket o'zi yopiladi.
+- `Co-Authored-By: ...` — kodni agent yozgan bo'lsa, u hammuallif sifatida ko'rsatiladi.
+
+<Rule level="MUST">
+
+Kodni agent yozgan yoki sezilarli qismini yozgan bo'lsa, commit'ga `Co-Authored-By` trailer'ini qo'shing.
+
+</Rule>
+
+```text
+feat(notifications): ruxsatnoma xabari faqat loyiha sotuvchisiga (#172)
+
+Xabar karta turgan barcha doskalar boshliqlariga borardi va aloqasi
+yo'q odamlarga yetardi. Endi oluvchini bitta modul aniqlaydi.
+
+Closes #172
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+## Formatni hook tekshiradi
+
+Commit xabarini `commit-msg` <Term t="hook" />i tekshiradi. Sarlavha shaklga mos kelmasa, hook commit'ni to'xtatadi va xatoni ko'rsatadi.
+
+<Terminal>{`
+$ git commit -m "tuzatishlar"
+commit-msg: sarlavha "type(scope): sarlavha (#N)" shaklida emas
+# xabarni tuzating va qayta commit qiling
+$ git commit -m "fix(web): mundarija apostrofi (#181)"
+`}</Terminal>
+
+<Note>
+
+Hook'ning aniq qoidalari va istisnolari, masalan `revert` commit'lari uchun, repo profilida yoziladi.
+
+</Note>
+
+## PR sarlavhasi va tanasi
+
+`dev`ga <Term t="PR" /> <Term t="squash-merge" /> bilan qo'shiladi. Squash-merge'da `dev`dagi yakuniy commit sarlavhasi PR sarlavhasidan olinadi. Shuning uchun PR sarlavhasi commit sarlavhasi bilan bir xil qoidaga bo'ysunadi.
+
+<Rule level="MUST">
+
+PR sarlavhasi `type(scope): sarlavha (#N)` shaklida bo'ladi.
+
+</Rule>
+
+PR tanasi shablon bo'yicha yoziladi. Shablonda uch bo'lim va bitta qator bor:
+
+| Bo'lim | Nima yoziladi |
+|---|---|
+| Summary | PR nima qiladi: 2–5 qator, tiket tilida. |
+| Evidence | Ishlashini nima isbotlaydi: o'tgan tekshiruvlar, testlar, skrinshot. |
+| Merge Danger | Merge'dan keyin nima buzilishi mumkin: migratsiya, sozlama, boshqa jamoa. Xavf bo'lmasa — «Yo'q». |
+| `Closes #N` | Tiketni PR'ga bog'laydi va merge'da yopadi. |
+
+<Rule level="MUST">
+
+PR tanasida Summary, Evidence va Merge Danger bo'limlari va `Closes #N` qatori bo'ladi.
+
+</Rule>
+
+<Note>
+
+Evidence bo'limida pre-push tekshiruvi o'tgani yoziladi. Sababi 10-bobda.
+
+</Note>
+
+## PR qayerga va qachon ochiladi
+
+Har bir feature PR faqat `dev`ga ochiladi. `dev` — <Term t="integration branch" />. `beta` va `main`ga feature PR ochilmaydi.
+
+<Rule level="MUST">
+
+Feature PR'ning base branch'i — `dev`.
+
+</Rule>
+
+<Terminal>{`
+$ git push
+$ gh pr create --base dev --title "feat(notifications): ruxsatnoma xabari faqat loyiha sotuvchisiga (#172)"
+`}</Terminal>
+
+Ish tugamasdan fikr olish kerak bo'lsa, draft PR oching. Draft PR merge qilinmaydi. U «yo'nalish to'g'rimi?» degan savol uchun kerak.
+
+<Rule level="SHOULD">
+
+Katta yoki noaniq ishda birinchi kundan draft PR oching. Tayyor bo'lganda uni «Ready for review» holatiga o'tkazing.
+
+</Rule>
+
+## PR hajmi
+
+Kichik PR tez va sifatli review qilinadi. Katta PR'da reviewer muhim xatoni ko'rmay qolishi mumkin.
+
+<Rule level="SHOULD">
+
+PR 400 o'zgargan qatordan oshmasin. Avtomatik yaratilgan fayllar hisobga kirmaydi: lock fayllar, migratsiya snapshot'lari, generatsiya qilingan kod.
+
+</Rule>
+
+PR katta bo'lib ketsa, tiketni bo'lish kerak. Bo'lish tiket darajasida qilinadi: har bir bo'lak o'z tiketi, o'z branch'i va o'z PR'i bilan.
+
+## Kim merge qiladi
+
+PR'ni muallifning o'zi merge qiladi. U buni faqat reviewer <Term t="approve" /> bergandan keyin qiladi.
+
+Xavfli PR'lar alohida belgi bilan belgilanadi. Bunday PR'ni <Term t="release owner" /> merge qiladi va yolg'iz <Term t="promote" /> qiladi. Qaysi PR xavfli ekani va belgining nomi repo profilida yoziladi. Odatda bular: migratsiya, pul mantig'i, rollar va huquqlar, CI fayllari, yangi env kaliti.
+
+<Steps>
+
+1. Reviewer approve berganini tekshiring.
+2. PR'da xavf belgisi yo'qligini tekshiring. Belgi bo'lsa, merge'ni release owner'ga qoldiring.
+3. «Squash and merge» tugmasini bosing.
+4. Commit sarlavhasi PR sarlavhasi bilan bir xil ekanini tekshiring.
+5. Merge qiling. Branch avtomatik o'chiriladi.
+
+</Steps>
+
+<Rule level="MUST NOT">
+
+Approve'siz PR'ni merge qilmang. O'z PR'ingizga o'zingiz approve bermang.
+
+</Rule>
+
+## Merge usullari
+
+GitHub uch usulni taklif qiladi. Bizda har bir usulning o'z joyi bor.
+
+| Usul | Qayerda | Nima uchun |
+|---|---|---|
+| Squash and merge | feature PR → `dev` | Bitta tiket `dev`da bitta commit bo'ladi. |
+| Create a merge commit | release PR → `main` | `main` tarixi `beta`dagi aniq commit'larni saqlaydi. |
+| Rebase and merge | hech qayerda | O'chirilgan: commit'lar boshqa hash bilan qayta yoziladi va tiket bilan bog'liqlik yo'qoladi. |
+
+<Rule level="MUST">
+
+Release PR `main`ga faqat merge commit bilan qo'shiladi.
+
+</Rule>
+
+<Rule level="MUST NOT">
+
+Release PR'ini squash yoki rebase bilan merge qilmang.
+
+</Rule>
+
+<Phrase ok="PR'ni dev'ga squash-merge qildim." bad="PR'ni qo'shib yubordim.">
+
+«Qo'shib yubordim» qaysi usul ishlatilganini aytmaydi. Usulni nomi bilan ayting.
+
+</Phrase>
+
+## Eslab qoling
+
+- Bitta tiket — bitta branch — bitta PR — `dev`da bitta commit.
+- Branch nomi: `<N>-<slug>`, inglizcha, 2–5 so'z.
+- Commit va PR sarlavhasi: `type(scope): sarlavha (#N)`.
+- Commit tanasi «nima uchun»ni yozadi. Agent yozgan kodga `Co-Authored-By` qo'shiladi.
+- PR tanasi: Summary, Evidence, Merge Danger va `Closes #N`.
+- Feature PR faqat `dev`ga, squash-merge bilan. Release PR `main`ga, merge commit bilan.
+- PR 400 qatordan oshmasin. Approve'siz merge yo'q.

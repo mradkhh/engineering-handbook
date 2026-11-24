@@ -1,0 +1,164 @@
+# Ish oqimi: issue'dan release'gacha
+
+Bu bob bitta ish g'oyadan prod'gacha qanday o'tishini beradi. Har bir qadamning egasi, kirishi va natijasi bor. Qadamlar tafsiloti keyingi boblarda.
+
+<Diagram n="5.1" title="Bitta ishning yo'li: o'nta qadam">
+<WorkflowDiagram />
+</Diagram>
+
+## Qadamlar jadvali
+
+| # | Qadam | Kim | Natija | Bob |
+|---|---|---|---|---|
+| 1 | Issue | Har qanday dasturchi | Qabul mezonlari bor issue | 5, 6 |
+| 2 | Spec va tiketlar | Dasturchi + agent | Spec issue va tiketlar | 6 |
+| 3 | Branch | Dasturchi | `<N>-<slug>` branch | 7 |
+| 4 | Ish va commit | Dasturchi / agent | Testlari bor commit'lar | 7, 8 |
+| 5 | PR | Dasturchi | `dev`ga ochilgan PR | 8 |
+| 6 | Review | Reviewer | Approve | 9 |
+| 7 | Merge | Muallif yoki release owner | `dev`da bitta commit | 8, 11 |
+| 8 | Promote | Release owner | Kod beta'da | 3 |
+| 9 | Release | Release owner | Kod prod'da | 3 |
+| 10 | Tozalash | Dasturchi | Branch va worktree o'chirilgan | 7 |
+
+## 1. Issue
+
+Har bir ish GitHub <Term t="issue" />dan boshlanadi. Issue'siz kod yozilmaydi.
+
+<Rule level="MUST">
+
+Kod yozish qabul mezonlari bor issue'dan boshlanadi. <Term t="acceptance criteria">Qabul mezonlari</Term> — tekshirsa bo'ladigan shartlar ro'yxati.
+
+</Rule>
+
+<DoDont>
+<Do>
+
+«Ruxsatnoma xabarini faqat loyiha sotuvchisi oladi. Natijani u o'zi kiritsa, xabar hech kimga bormaydi.»
+
+</Do>
+<Dont>
+
+«Bildirishnomalarni to'g'rilash kerak.»
+
+</Dont>
+</DoDont>
+
+Issue'ni release owner'dan boshqa odam yozgan bo'lsa, kod release owner'ning tasdiq izohidan keyin boshlanadi (4-bob).
+
+## 2. Spec va tiketlar
+
+Kichik ish uchun bitta issue yetarli. Katta yoki noaniq ish uchun avval kelishuv kerak.
+
+<Steps>
+
+1. Dasturchi agent bilan savol-javob qiladi (grilling). Qarorlarni odam qabul qiladi.
+2. Agent natijani <Term t="spec" /> sifatida issue'ga yozadi.
+3. Agent spec'ni <Term t="ticket">tiket</Term>larga bo'ladi. Har bir tiket — bitta PR.
+4. Tiketlar orasidagi bog'liqlik «blocked by» bilan belgilanadi.
+
+</Steps>
+
+Bu jarayon 6-bobda batafsil.
+
+## 3. Branch
+
+Har bir tiket uchun `origin/dev`dan yangi branch ochiladi. Nomi — `<tiket raqami>-<qisqa-nom>`.
+
+<Terminal>{`
+$ git fetch origin
+$ git switch -c 172-notification-recipients --no-track origin/dev
+`}</Terminal>
+
+Parallel ish uchun worktree ishlatiladi (7-bob).
+
+## 4. Ish va commit
+
+Kod testlar bilan birga yoziladi. Agent ishlatsangiz, u ham testdan boshlaydi: avval qizil test, keyin kod, keyin tozalash.
+
+<Rule level="MUST">
+
+Push'dan oldin local tekshiruv o'tadi: lint, typecheck va testlar. Repo'da bu `pre-push` hook'i.
+
+</Rule>
+
+Ish paytida bir nechta commit bo'lishi mumkin. Merge'da ular bitta commit'ga aylanadi: bitta tiket — `dev`da bitta commit.
+
+## 5. PR
+
+Ish tayyor bo'lgach, branch push qilinadi va `dev`ga <Term t="PR" /> ochiladi.
+
+<Rule level="MUST">
+
+PR sarlavhasi commit formatida: `type(scope): sarlavha (#N)`. PR tanasida `Closes #N` bor.
+
+</Rule>
+
+PR tanasi shablon bo'yicha yoziladi: nima o'zgardi, qanday tekshirildi va merge'dagi xavf. Batafsil — 8-bobda.
+
+## 6. Review
+
+Muallif reviewer'dan review so'raydi. Reviewer bir ish kuni ichida javob beradi. Izohlar prefiks bilan yoziladi: `blocking:`, `nit:`, `question:`, `suggestion:`. Natija — approve yoki o'zgarish so'rash (9-bob).
+
+## 7. Merge
+
+Approve'dan keyin muallif PR'ni GitHub'da <Term t="squash-merge" /> qiladi. Natija — `dev`da bitta commit, sarlavhasi PR sarlavhasidan olinadi.
+
+<Rule level="MUST">
+
+Xavfli PR'ni (migratsiya, pul mantig'i, rollar, CI, yangi env kaliti) muallif emas, release owner merge qiladi (11-bob).
+
+</Rule>
+
+`Closes #N` tufayli issue merge bilan o'zi yopiladi.
+
+## 8. Promote
+
+Release owner kuniga odatda bir marta `dev`ni `beta`ga promote qiladi. Shu kungi barcha tiketlar beta'ga birga ketadi. Beta'da CI va deploy ishlaydi. Dasturchi o'z ishini beta'da tekshiradi.
+
+<Rule level="MUST">
+
+Beta qizil bo'lsa, o'sha kuni tuzatiladi yoki revert qilinadi.
+
+</Rule>
+
+## 9. Release
+
+Release window'da release owner `beta`ni release PR orqali `main`ga chiqaradi. Gate kodni tekshiradi, keyin prod deploy bo'ladi.
+
+## 10. Tozalash
+
+<Steps>
+
+1. PR merge bo'lganini GitHub'da tekshiring.
+2. Worktree'ni o'chiring: `git worktree remove <papka>`.
+3. Local branch'ni o'chiring: `git branch -D <N>-<slug>`.
+4. Remote branch GitHub'da merge bilan o'zi o'chadi. `fetch.prune` uning local izini o'chiradi.
+
+</Steps>
+
+## Ish qachon «tayyor»
+
+«Tayyor» so'zi har xil bosqichni bildirishi mumkin. Shuning uchun bosqichni aniq ayting.
+
+| Gap | Ma'nosi |
+|---|---|
+| «PR ochildi» | Kod review'ni kutyapti. |
+| «Approve bo'ldi» | Merge qilish mumkin. |
+| «Dev'ga merge bo'ldi» | Kod keyingi promote'ni kutyapti. |
+| «Beta'da» | Promote bo'ldi, kod sinov muhitida. |
+| «Prod'da» | Release bo'ldi. |
+
+<Phrase ok="PR #172 dev'ga merge bo'ldi, ertangi promote'da beta'ga chiqadi." bad="Kod tayyor.">
+
+«Tayyor» bosqichni aytmaydi. PR raqamini va bosqichni ayting.
+
+</Phrase>
+
+## Eslab qoling
+
+- Har bir ish qabul mezonlari bor issue'dan boshlanadi.
+- Bitta tiket — bitta branch — bitta PR — `dev`da bitta commit.
+- Push'dan oldin local tekshiruv o'tadi.
+- Merge — muallif, xavfli PR — release owner. Promote va release — release owner.
+- «Tayyor» demang: bosqichni ayting.

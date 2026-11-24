@@ -1,0 +1,157 @@
+# Agent bilan ishlash oqimi
+
+Bu bob AI agent bilan ishlash tartibini beradi. Biz Matt Pocock'ning ochiq skill'lar to'plamini ishlatamiz. Har bir <Term t="skill" /> — agent uchun yozilgan tayyor yo'riqnoma. U `/` bilan chaqiriladi, masalan `/to-spec`.
+
+## Asosiy tamoyil
+
+Agent tez yozadi, lekin u nima qilish kerakligini bilmaydi. Shuning uchun oqim ikki qismga bo'lingan:
+
+- **Odam qaror qiladi.** Nima qilinadi, qaysi qoida, qaysi atama — bularni odam tanlaydi.
+- **Agent bajaradi.** Savol beradi, yozadi, test qiladi, tekshiradi.
+
+Har bir qaror yozib qo'yiladi: issue'da, spec'da, <Term t="glossary" />da yoki <Term t="ADR" />da. Keyingi agent yoki odam shu yozuvlarni o'qiydi va qaytadan so'ramaydi.
+
+## Asosiy yo'l
+
+| # | Skill | Kim chaqiradi | Kirish | Natija |
+|---|---|---|---|---|
+| 1 | `/grill-with-docs` yoki `/grill-me` | Dasturchi | G'oya yoki muammo | Kelishilgan qarorlar, glossary va ADR yangilanishi |
+| 2 | `/to-spec` | Dasturchi | Suhbatdagi qarorlar | Spec issue, `ready-for-agent` belgisi bilan |
+| 3 | `/to-tickets` | Dasturchi | Spec | Ichki tiketlar, «blocked by» bog'liqliklari bilan |
+| 4 | `/implement #N` | Dasturchi | Bitta tiket | Testlari bor kod, feature branch'da commit |
+| 5 | `/code-review` | Reviewer | Branch yoki PR | Ikki o'q bo'yicha topilmalar |
+| 6 | `/pr` | Dasturchi | Tayyor branch | PR tanasi shablon bo'yicha |
+
+<Note>
+
+`/implement` ichida `/tdd` ishlaydi: avval qizil test, keyin kod, keyin tozalash. Uni alohida chaqirish shart emas.
+
+</Note>
+
+## 1. Grilling: qarorlarni chiqarib olish
+
+Grilling — agentning savol-javob usuli. Agent qarorlarni daraxt shaklida ko'radi va savollarni bosqichma-bosqich beradi. Har bir savolda u tavsiya javobini aytadi. Siz «ha» desangiz, tavsiya qabul qilinadi.
+
+- `/grill-with-docs` — repo'da glossary va ADR bor bo'lsa. Agent atamalarni glossary bilan solishtiradi va kodni tekshiradi.
+- `/grill-me` — glossary kerak bo'lmagan ish uchun, masalan hujjat yoki jarayon.
+
+<Rule level="MUST">
+
+Qarorlarni odam qabul qiladi. Agent faktni o'zi topadi, lekin qarorni so'raydi.
+
+</Rule>
+
+<Rule level="SHOULD">
+
+Savol-javob mantiq darajasida qoladi: nima va nega. Qanday yozilishi — keyinroq, agentning ishi.
+
+</Rule>
+
+## 2–3. Spec va tiketlar
+
+`/to-spec` suhbatdagi qarorlardan <Term t="spec" /> yozadi va uni issue qilib chiqaradi. Spec'da muammo, yechim, user story'lar, qarorlar, testlar va qamrovdan tashqaridagi narsalar bor.
+
+`/to-tickets` spec'ni <Term t="ticket">tiket</Term>larga bo'ladi. Har bir tiket:
+
+- bitta PR'da bajariladi;
+- o'zining qabul mezonlariga ega;
+- boshqa tiketga bog'liq bo'lsa, «blocked by» bilan belgilanadi.
+
+Tiketlar spec issue'ning ichki issue'lari (sub-issue) bo'ladi.
+
+## Triage belgilari
+
+Issue'dagi belgi uni kim va qachon olishini aytadi. Bu ish <Term t="triage" /> deyiladi.
+
+| Belgi | Ma'nosi |
+|---|---|
+| `needs-triage` | Release owner hali baholamagan. |
+| `needs-info` | Muallifdan ma'lumot kutilyapti. |
+| `ready-for-agent` | To'liq yozilgan. <Term t="AFK agent" /> mustaqil bajara oladi. |
+| `ready-for-human` | Odam bajarishi kerak: masalan, dizayn qarori yoki tashqi kirish. |
+| `wontfix` | Qilinmaydi. Sababi izohda. |
+
+## 4. Implement
+
+`/implement #N` tiketni oladi va uni feature branch'da bajaradi.
+
+<Steps>
+
+1. Branch oching: `git switch -c <N>-<slug> --no-track origin/dev`.
+2. Agentga `/implement #N` bering.
+3. Agent testdan boshlaydi, kodni yozadi va commit qiladi.
+4. Natijani o'zingiz o'qing: `git diff origin/dev...HEAD`.
+5. Local tekshiruvni ishga tushiring, keyin push qiling.
+
+</Steps>
+
+<Rule level="MUST">
+
+Agent har doim feature branch'da ishlaydi. `dev`, `beta` yoki `main`da hech qachon commit qilmaydi.
+
+</Rule>
+
+<Rule level="MUST NOT">
+
+Agent odamning shu safargi aniq buyrug'isiz push, merge, promote yoki release qilmaydi.
+
+</Rule>
+
+## 5. Code review
+
+`/code-review` o'zgarishni ikki o'q bo'yicha tekshiradi:
+
+- **Spec o'qi** — kod tiketda so'ralganni qiladimi, hammasini qiladimi, ortiqcha narsa yo'qmi.
+- **Standartlar o'qi** — kod repo'ning yozilgan qoidalariga mosmi.
+
+Agent review'i odam review'ining o'rnini bosmaydi. U reviewer'ga yordam beradi: reviewer topilmalarni o'qiydi va qarorni o'zi beradi.
+
+## 6. PR
+
+`/pr` PR tanasini shablon bo'yicha yozadi: Summary, Evidence va Merge Danger. Siz uni o'qiysiz, tuzatasiz va PR'ni ochasiz.
+
+<Note>
+
+`/ship` skill'i ham ishlatilishi mumkin: u commit qiladi, push qiladi, `dev`ga PR ochadi va PR'ni kuzatadi. U PR'ni merge qilmaydi. Bu skill nomi bizdagi «promote» bilan bog'liq emas.
+
+</Note>
+
+## Yordamchi skill'lar
+
+| Skill | Qachon ishlatiladi |
+|---|---|
+| `/diagnosing-bugs` | Qiyin xato yoki sekinlik: agent gipoteza qo'yadi, tekshiradi, sababni topadi. |
+| `/prototype` | Mantiq yoki UI to'g'riligini tez sinab ko'rish. Prototip tashlab yuboriladi. |
+| `/research` | Hujjat va manbalardan fakt yig'ish. Natija Markdown fayl. |
+| `/wayfinder` | Katta va noaniq ish: xarita issue va tadqiqot tiketlari. |
+| `/handoff` | Ishni boshqa sessiya yoki odamga topshirish uchun qisqa hujjat. |
+| `/triage` | Yangi issue'larni baholash va belgi qo'yish. |
+| `/domain-modeling` | Glossary va ADR'ni yangilash. |
+
+## Agent bilan ishlash qoidalari
+
+<Rule level="MUST">
+
+Agent yozgan kod uchun dasturchi javob beradi. Push'dan oldin diff'ni o'zingiz o'qing.
+
+</Rule>
+
+<Rule level="MUST">
+
+Agent kodning sezilarli qismini yozgan bo'lsa, commit'ga `Co-Authored-By` trailer'i qo'shiladi (8-bob).
+
+</Rule>
+
+<Rule level="SHOULD">
+
+Agentga bitta tiket bering. Bir nechta tiketni bitta topshiriqda bermang: natija bitta PR'ga sig'maydi.
+
+</Rule>
+
+## Eslab qoling
+
+- Odam qaror qiladi, agent bajaradi. Qarorlar yozib qo'yiladi.
+- Yo'l: grill → spec → tiketlar → implement → code-review → PR.
+- `ready-for-agent` — agent mustaqil bajara oladi. `ready-for-human` — odam kerak.
+- Agent faqat feature branch'da ishlaydi. Push, merge va promote — odamning buyrug'i bilan.
+- Agent review'i yordam beradi, odam review'ining o'rnini bosmaydi.

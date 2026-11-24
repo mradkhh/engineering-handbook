@@ -1,0 +1,137 @@
+# Branch modeli va muhitlar
+
+Bu bob kod qaysi yo'l bilan dasturchining kompyuteridan prod'gacha yetib borishini beradi. Model barcha repo'larimiz uchun bir xil: `dev → beta → main`.
+
+## To'rt muhit
+
+Har bir branch bitta muhitga mos keladi. <Term t="environment" /> — kod ishlaydigan joy.
+
+| Branch | Muhit | Kim ishlatadi | CI va deploy |
+|---|---|---|---|
+| `<N>-<slug>` | Local | Dasturchi | Yo'q. Faqat local hook'lar. |
+| `dev` | Integratsiya | PR'lar shu yerga merge bo'ladi | Yo'q |
+| `beta` | Sinov muhiti | Faqat dasturchilar | Har push'da to'liq CI va deploy |
+| `main` | Prod | Xodimlar va mijozlar | Gate, keyin deploy |
+
+<Diagram n="3.1" title="Kod feature branch'dan prod'gacha uch qadamda yetadi">
+<EnvironmentsDiagram />
+</Diagram>
+
+## Har bir branch qanday o'zgaradi
+
+Har bir himoyalangan branch faqat bitta yo'l bilan o'zgaradi. Boshqa yo'l yo'q.
+
+| Branch | Yagona yo'l | Kim |
+|---|---|---|
+| `dev` | PR'ni squash-merge qilish | PR muallifi, approve'dan keyin |
+| `beta` | `dev`ga fast-forward va push: promote | Release owner |
+| `main` | Release PR'ini merge commit bilan qo'shish: release | Release owner |
+
+<Rule level="MUST NOT">
+
+`dev`, `beta` yoki `main`ga to'g'ridan-to'g'ri commit qilmang va push qilmang. Bu branch'larga faqat release owner push qiladi.
+
+</Rule>
+
+<Rule level="MUST NOT">
+
+Himoyalangan branch'larni rebase qilmang va force-push qilmang.
+
+</Rule>
+
+<Note>
+
+Release owner o'z ishini ham `dev`ga PR orqali yoki fast-forward bilan qo'shadi. U ham `dev`da to'g'ridan-to'g'ri commit qilmaydi.
+
+</Note>
+
+## dev: integratsiya branch'i
+
+`dev` — <Term t="integration branch" />. Tayyor bo'lgan har bir tiket shu yerga keladi. `dev` repo'ning sukut bo'yicha (default) branch'i: yangi PR o'zi `dev`ga ochiladi.
+
+`dev`da CI ishlamaydi. Sabab — narx: har bir CI yurishi pul va vaqt oladi. Shuning uchun `dev`ga keladigan kodni faqat dasturchining local tekshiruvi kafolatlaydi (10-bob).
+
+<Rule level="MUST">
+
+`dev`dagi hamma narsa prod'ga chiqishga yaroqli bo'ladi. Tugallanmagan ish o'z branch'ida qoladi yoki <Term t="feature flag" /> ortida o'chiq turadi.
+
+</Rule>
+
+## Promote: dev'dan beta'ga
+
+<Term t="promote" /> — `beta`ni `dev`ga fast-forward qilib, push qilish. Push'dan keyin CI ishga tushadi va kod beta serverga deploy bo'ladi.
+
+Promote kuniga odatda bir marta bo'ladi. Shu vaqtgacha `dev`da yig'ilgan hamma tiket bitta paket bo'lib ketadi: bitta push, bitta CI, bitta deploy.
+
+<Terminal title="faqat release owner">{`
+$ git fetch origin
+$ git switch beta
+$ git merge --ff-only origin/dev
+$ git push origin beta
+`}</Terminal>
+
+`--ff-only` muhim. `beta` hech qachon `dev`dan ajralmaydi. Agar ajralgan bo'lsa, buyruq to'xtaydi va kimdir qoidani buzganini ko'rsatadi.
+
+<Phrase ok="Dev'ni beta'ga promote qildim." bad="Beta'ga ship qildim.">
+
+«Promote» uch narsani bildiradi: fast-forward, push va deploy boshlandi. «Fast-forward qildim» faqat birinchisini bildiradi. «Ship» so'zi bizning oqimda ishlatilmaydi.
+
+</Phrase>
+
+Ba'zi PR'lar boshqalar bilan birga emas, alohida promote qilinadi: migratsiya, pul mantig'i, rollar va CI o'zgarishlari. Sabab — beta'da biror narsa buzilsa, sababi bitta bo'lishi kerak. Batafsil — 11-bobda.
+
+## Release: beta'dan main'ga
+
+<Term t="release" /> — `beta`dagi sinalgan kodni prod'ga chiqarish. U release window'da bo'ladi: hafta kunlari va soati repo profilida yoziladi.
+
+<Steps>
+
+1. Release owner `beta`ning CI va deploy'i yashil ekanini tekshiradi.
+2. `beta`dan `main`ga release PR ochiladi.
+3. Migratsiya bo'lsa, <Term t="rehearsal" /> bajariladi: migratsiya prod nusxasida sinaladi.
+4. Release window'da PR **merge commit** bilan qo'shiladi.
+5. `main`ga push'dan keyin <Term t="gate" /> tekshiradi: bu kod beta'da sinalganmi. Keyin prod deploy.
+
+</Steps>
+
+<Rule level="MUST">
+
+Release PR faqat merge commit bilan qo'shiladi. Squash va rebase qilinmaydi.
+
+</Rule>
+
+Release boshlangandan keyin `dev`ga faqat shu release'ga tegishli tuzatishlar keladi. Bu «release freeze» deyiladi.
+
+## Nega release merge'lari dev'ga qaytarilmaydi
+
+Har bir release `main`da merge commit qoldiradi. Bu commit'lar `dev`ga qaytarib merge qilinmaydi. Bu xavfsiz, chunki gate commit tarixini emas, fayllar holatini solishtiradi: `main`dagi kod beta'da sinalgan commit bilan bir xilmi.
+
+Istisno — shoshilinch <Term t="hotfix" />. Agar tuzatish to'g'ridan-to'g'ri `main`ga tushgan bo'lsa, keyin `main` darhol `dev`ga merge qilinadi va promote qilinadi. Aks holda keyingi release bu tuzatishni o'chirib yuboradi. Tartibi 12-bobda.
+
+## Nega aynan shu model
+
+| Talab | Model qanday javob beradi |
+|---|---|
+| Prod'ga faqat sinalgan kod chiqsin. | Kod avval `beta`da ishlaydi. Gate buni tekshiradi. |
+| CI narxi past bo'lsin. | CI faqat `beta` va `main`da. `dev`da yig'iladi, paket bo'lib ketadi. |
+| Beta'da xato bo'lsa, sababi aniq bo'lsin. | Xavfli PR'lar alohida promote qilinadi. |
+| Tarix o'qiladigan bo'lsin. | Har bir tiket `dev`da bitta commit. |
+
+## Boshqa modellar bilan taqqoslash
+
+Boshqa jamoalar bilan gaplashganda bu modellar nomini bilish kerak.
+
+| Model | Asosiy g'oya | Qachon mos | Kamchiligi |
+|---|---|---|---|
+| <Term t="trunk-based" /> | Hamma kuniga bir necha marta bitta branch'ga qo'shadi. Feature flag'lar ko'p. | Kuchli CI va avtomatik testlar bor katta jamoa. | Har bir commit'da CI kerak. Flag'lar intizom talab qiladi. |
+| <Term t="GitHub Flow" /> | `main` va qisqa feature branch'lar. Merge — deploy. | Bitta muhit, tez deploy. | Alohida sinov muhiti yo'q. |
+| <Term t="GitFlow" /> | `develop`, `release/*`, `hotfix/*`, uzoq branch'lar. | Versiyali, kam chiqadigan mahsulot. | Murakkab. Merge'lar ko'p. Bugungi web uchun og'ir. |
+| `dev → beta → main` | GitHub Flow va alohida sinov muhiti. Promote paketlarda. | CI'ni tejash kerak, lekin sinov muhiti majburiy. | `dev`da CI yo'q, shuning uchun local tekshiruv intizomi kerak. |
+
+## Eslab qoling
+
+- `dev` — PR orqali, `beta` — promote orqali, `main` — release PR orqali.
+- Himoyalangan branch'larga faqat release owner push qiladi. Rebase va force-push yo'q.
+- Promote = fast-forward + push + deploy. «Ship» emas.
+- Release PR — faqat merge commit.
+- `dev`dagi har narsa prod'ga yaroqli.

@@ -1,0 +1,113 @@
+# Rollar
+
+Bu bob kim nima qilishini beradi. Rol — lavozim emas, vazifa. Bitta odam bir PR'da muallif, boshqasida reviewer bo'ladi.
+
+## To'rt rol
+
+| Rol | Qisqa ta'rif |
+|---|---|
+| Dasturchi (muallif) | Tiketni bajaradi, PR ochadi, uni merge'gacha olib boradi. |
+| <Term t="reviewer" /> | PR'ni o'qiydi va qaror beradi: approve yoki o'zgarish so'rash. |
+| <Term t="release owner">Release owner</Term> | Himoyalangan branch'lar, promote va release uchun javob beradi. |
+| Agent | Dasturchining topshirig'i bilan kod yozadi, test va commit qiladi. |
+
+## Dasturchi
+
+Dasturchi tiketning egasi. U ishni issue'dan merge'gacha olib boradi.
+
+<Rule level="MUST">
+
+Dasturchi har bir tiketni `origin/dev`dan ochilgan o'z branch'ida qiladi va PR orqali `dev`ga yuboradi.
+
+</Rule>
+
+Dasturchining vazifalari:
+
+- Tiketni o'qiydi va qabul mezonlarini tushunadi.
+- Kod va testlarni yozadi yoki agentga yozdiradi. Agent yozgan kod uchun ham dasturchi javob beradi.
+- Push'dan oldin local tekshiruv o'tganini ko'radi.
+- PR ochadi, review so'raydi va har bir izohga javob beradi.
+- Approve'dan keyin PR'ni squash-merge qiladi. Xavfli PR'ni release owner merge qiladi (11-bob).
+- Merge'dan keyin branch va worktree'ni o'chiradi.
+
+## Reviewer
+
+Reviewer — PR'ni muallifdan boshqa odam sifatida o'qiydigan dasturchi.
+
+<Rule level="MUST">
+
+Har bir PR merge'dan oldin kamida bitta approve oladi. Muallif o'z PR'iga approve bermaydi.
+
+</Rule>
+
+Reviewer ikki narsani tekshiradi: kod tiketda so'ralganni qiladimi va repo qoidalariga mosmi. Batafsil — 9-bobda.
+
+## Release owner
+
+Release owner — repo'ning himoyalangan qismi uchun javob beradigan yagona odam. Repo profilida uning ismi yoziladi.
+
+Faqat release owner:
+
+- `dev`, `beta` va `main`ga push qiladi;
+- promote qiladi va release qiladi;
+- xavfli PR'larni merge qiladi va ularni alohida promote qiladi;
+- boshqa odam yozgan issue'ni tasdiqlaydi, ya'ni kod yozish boshlanishiga ruxsat beradi;
+- kitob va repo profiliga o'zgarishlarni merge qiladi.
+
+<Note>
+
+Himoyalangan branch'larga push'ni local `pre-push` hook'i ham tekshiradi: u release owner'dan boshqa odamning push'ini to'xtatadi. Bu hook — qo'shimcha himoya. Asosiy himoya — qoida.
+
+</Note>
+
+## Agent
+
+Agent — dasturchi ishga tushiradigan AI yordamchi. U kod yozadi, test ishga tushiradi va commit qiladi. Agent qaror qabul qilmaydi: qarorlar odamga tegishli.
+
+<Rule level="MUST NOT">
+
+Agent odamning shu safargi aniq buyrug'isiz push, merge, promote yoki release qilmaydi. Oldingi ruxsat keyingi safarga o'tmaydi.
+
+</Rule>
+
+<Rule level="MUST NOT">
+
+Agent himoyalangan branch'da commit qilmaydi va hech qaysi branch'ni `--force-with-lease`siz force-push qilmaydi.
+
+</Rule>
+
+Repo'da agent uchun himoya hook'i bor: u xavfli git buyruqlarini to'xtatadi. Agent bilan ishlash tartibi — 6-bobda.
+
+## Kim nimani qila oladi
+
+| Amal | Dasturchi | Reviewer | Release owner | Agent |
+|---|---|---|---|---|
+| Feature branch ochish va commit | ✓ | — | ✓ | ✓ |
+| Feature branch'ni push qilish | ✓ | — | ✓ | buyruq bilan |
+| PR ochish | ✓ | — | ✓ | buyruq bilan |
+| Approve berish | boshqaning PR'iga | ✓ | ✓ | ✕ |
+| PR'ni `dev`ga squash-merge qilish | approve'dan keyin | — | ✓ | ✕ |
+| Xavfli PR'ni merge qilish | ✕ | ✕ | ✓ | ✕ |
+| `dev`/`beta`/`main`ga push | ✕ | ✕ | ✓ | ✕ |
+| Promote va release | ✕ | ✕ | ✓ | ✕ |
+| Issue'ni tasdiqlash | ✕ | ✕ | ✓ | ✕ |
+
+## Issue'ni kim tasdiqlaydi
+
+Kod yozish issue'dan boshlanadi. Issue'da qabul mezonlari bo'ladi. Issue'ni istalgan dasturchi yozishi mumkin.
+
+<Rule level="MUST">
+
+Release owner'dan boshqa odam yozgan issue bo'yicha kod yozish release owner'ning tasdiq izohidan keyin boshlanadi.
+
+</Rule>
+
+Tasdiq — issue'dagi biznes mantiq to'g'ri ekanini bildiradi. U kod sifatini emas, nima qilinishini tasdiqlaydi.
+
+## Eslab qoling
+
+- Rol — vazifa, lavozim emas.
+- Har bir PR'ga kamida bitta boshqa odamning approve'i kerak.
+- Himoyalangan branch'lar, promote, release va xavfli PR'lar — faqat release owner.
+- Agent push, merge va promote'ni faqat odamning shu safargi buyrug'i bilan qiladi.
+- Boshqa odam yozgan issue release owner'ning tasdig'idan keyin boshlanadi.
