@@ -2,13 +2,14 @@
 export const book = {
    title: "Engineering Handbook",
    subtitle: "Git, ish oqimi va atamalar reglamenti",
-   version: "v1.0.0",
-   edition: "Birinchi nashr",
-   date: "2026-11-24",
+   version: "v2.0.0",
+   edition: "Ikkinchi nashr",
+   date: "2026-11-26",
    author: "mradkhh",
    license: "CC BY 4.0",
-   // Protocol (ikkinchi kitob) v2.0.0 da chiqadi; ungacha qoralama.
-   protocolVersion: "v2.0.0 (qoralama)",
+   // Protocol (ikkinchi kitob) kitob bilan bitta versiyani oladi.
+   protocolVersion: "v2.0.0",
+   protocolEdition: "Birinchi nashr",
 };
 
 export const chapters = [

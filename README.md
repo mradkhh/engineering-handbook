@@ -1,8 +1,8 @@
-# Engineering Handbook
+# Engineering Handbook va Engineering Protocol
 
-Git, ish oqimi va atamalar reglamenti. Jamoaning barcha repo'lari uchun umumiy qoidalar; har bir repo o'z aniq qiymatlarini «repo profili»da yozadi (Ilova A).
+Ikki kitob, bitta versiya. **Protocol** — jamoaning barcha repo'lari uchun yagona qoida manbai: har vaziyat uchun karta (qachon, kim, qadamlar, qaror nuqtalari, tugash mezoni). **Handbook** — qoidalarning sababi, atamalar va misollar. Har repo o'z aniq qiymatlari va lokal bandlarini «repo profili»da yozadi (Ilova A).
 
-**PDF:** [Releases](../../releases) sahifasida har bir versiyaning PDF'i bor.
+**PDF va Markdown:** [Releases](../../releases) sahifasida har versiyaning ikkala PDF'i va protocol'ning Markdown to'plami bor.
 
 ## Tuzilma
 
@@ -22,6 +22,7 @@ pnpm build   # dist/handbook.html va dist/protocol.html — o'qish rejimi; ?prin
 pnpm pdf     # dist/handbook.pdf va dist/protocol.pdf — Chrome kerak (CHROME o'zgaruvchisi bilan yo'lini berish mumkin)
 pnpm protocol  # dist/protocol/*.md — har protocol alohida fayl, README.md'da saralash jadvali
 pnpm check   # testlar va protocol tekshiruvi
+pnpm release:assets  # dist/release/: ikkala PDF va HTML, protocol Markdown to'plami, Release matni (NOTES.md)
 ```
 
 Brauzerda PDF: `dist/handbook.html` → «Chop etish ko'rinishi» → «Chop etish / PDF» («Background graphics» yoqilgan bo'lsin).
