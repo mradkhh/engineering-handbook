@@ -83,5 +83,33 @@ export default {
          matn: "Himoyalangan branch yoki biror muhitga tegadigan muammoni ko'rgan odam release owner'ga darhol yozadi: nima bo'ldi, qaysi branch, commit yoki release. Avval xabar, keyin tuzatish; faqat oshkor bo'lgan kalitni bekor qilish xabardan oldin bo'lishi mumkin (SIR-01).",
          manba: ["12#1"],
       },
+      {
+         id: "UM-12",
+         daraja: "majburiy",
+         tekshiruvchi: "reviewer",
+         matn: "Til: matn o'zbekcha, git va ish oqimi atamalari inglizcha; amal inglizcha so'z va «qilmoq» bilan aytiladi («rebase qildim», «push qildim»). Atama lug'atdagi ma'nosida; lug'atda yo'q atama avval kitobga PR bilan qo'shiladi.",
+         manba: ["01#4", "14#1", "13#1"],
+      },
+      {
+         id: "UM-13",
+         daraja: "majburiy",
+         tekshiruvchi: "reviewer",
+         matn: "Ish haqida yozganda raqam va nom birga: «#N <Spec nomi>: …», spec uchun qisqa nomi; PR va commit uchun raqam yoki havola.",
+         manba: ["14#3"],
+      },
+      {
+         id: "UM-14",
+         daraja: "tavsiya",
+         tekshiruvchi: "reviewer",
+         matn: "Amalning aniq nomi aytiladi: «yangiladim» emas, «fetch qildim» yoki «rebase qildim».",
+         manba: ["14#2"],
+      },
+      {
+         id: "UM-15",
+         daraja: "majburiy",
+         tekshiruvchi: "muallif",
+         matn: "Har dasturchi git'ni bir marta `--global` bilan sozlaydi (ro'yxati kitobning 7-bobida); ism va email GitHub profilidagi bilan bir xil.",
+         manba: ["07#1"],
+      },
    ],
 };
