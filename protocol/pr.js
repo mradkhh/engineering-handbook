@@ -1,0 +1,106 @@
+// PR ochish: tiket kodi feature branch'da tayyor, endi u `dev`ga ko'rik uchun beriladi.
+export default {
+   kod: "PR",
+   belgilar: [
+      "Tiket kodi feature branch'da commit va push qilingan, PR hali yo'q",
+      "Draft PR tayyor, uni «Ready for review»ga o'tkazish kerak",
+   ],
+   ijrochi: "Muallif: tiketni bajargan dasturchi yoki uning agenti",
+   shart: [
+      "Qabul mezonlari bor tiket bor (YANGI)",
+      "Branch push qilingan va pre-push tekshiruvi o'tgan (PUSH)",
+   ],
+   bandlar: [
+      {
+         id: "PR-01",
+         daraja: "majburiy",
+         tekshiruvchi: "reviewer",
+         matn: "Har ish integration branch'ga (`dev`) PR orqali boradi, release owner'ning o'z ishi ham. Bitta PR — bitta tiket.",
+         manba: ["04#1", "08#2"],
+      },
+      {
+         id: "PR-02",
+         daraja: "majburiy",
+         tekshiruvchi: "reviewer",
+         matn: "PR'ning base branch'i — integration branch (`dev`).",
+         manba: ["08#9"],
+      },
+      {
+         id: "PR-03",
+         daraja: "majburiy",
+         tekshiruvchi: "reviewer",
+         matn: "PR sarlavhasi commit shaklida: `type(scope): sarlavha (#N)`, `N` — tiket raqami. Squash merge sarlavha oxiriga `(#PR)` qo'shadi; u o'chirilmaydi.",
+         manba: ["05#3", "08#7"],
+      },
+      {
+         id: "PR-04",
+         daraja: "majburiy",
+         tekshiruvchi: "reviewer",
+         matn: "PR matni `Tiket: #N — <tiket sarlavhasi>` qatori bilan boshlanadi. Tiket spec ostida bo'lsa, keyingi qator `Spec: #P — <spec qisqa nomi>`. Boshqa repo'dagi issue `owner/repo#N` shaklida yoziladi.",
+         manba: ["05#3", "08#8"],
+      },
+      {
+         id: "PR-05",
+         daraja: "majburiy",
+         tekshiruvchi: "reviewer",
+         matn: "PR matnida Summary, Evidence va Merge Danger bo'limlari bor. Merge Danger'da nima buzilishi mumkinligi va qanday qaytarilishi yoziladi; xavf bo'lmasa «yo'q».",
+         manba: ["08#8", "11#6"],
+      },
+      {
+         id: "PR-06",
+         daraja: "majburiy",
+         tekshiruvchi: "reviewer",
+         matn: "Evidence'da pre-push tekshiruvi o'tgani yoziladi. Oxirgi push'dan keyin kod o'zgarmagan.",
+         manba: ["10#6"],
+      },
+      {
+         id: "PR-07",
+         daraja: "majburiy",
+         tekshiruvchi: "muallif",
+         matn: "Review so'rashdan oldin muallif PR'ni o'zi to'liq o'qiydi: diff, sarlavha va matn. Agent yozgan kodning diff'ini ham dasturchi o'qiydi.",
+         manba: ["09#1"],
+      },
+      {
+         id: "PR-08",
+         daraja: "tavsiya",
+         tekshiruvchi: "reviewer",
+         matn: "PR 400 o'zgargan qatordan oshmaydi. Avtomatik yaratilgan fayllar hisobga kirmaydi: lock fayllar, migratsiya snapshot'lari, generatsiya qilingan kod.",
+         manba: ["01#2", "08#11"],
+      },
+      {
+         id: "PR-09",
+         daraja: "tavsiya",
+         tekshiruvchi: "muallif",
+         matn: "Katta yoki noaniq ishda PR birinchi kundan draft bo'lib ochiladi va tayyor bo'lganda «Ready for review»ga o'tkaziladi.",
+         manba: ["08#10"],
+      },
+      {
+         id: "PR-T1",
+         daraja: "taqiq",
+         tekshiruvchi: "reviewer",
+         matn: "PR matnida issue'ni yopadigan kalit so'z (`Closes`, `Fixes`, `Resolves` va ularning shakllari) yozilmaydi: integration branch'ga merge issue'ni prodga chiqmasdan yopadi. Issue kod prodga chiqqanda yopiladi.",
+         manba: ["05#3", "08#8"],
+      },
+   ],
+   qarorlar: [
+      {
+         keyin: "PR-05",
+         savol: "O'zgarishda migratsiya, pul mantig'i, rol yoki huquq, CI yoki deploy, yangi env kaliti bormi?",
+         ha: "XAVF",
+         yoq: null,
+      },
+      {
+         keyin: "PR-06",
+         savol: "Pre-push tekshiruvi o'tmaganmi yoki oxirgi push'dan keyin kod o'zgarganmi?",
+         ha: "PUSH",
+         yoq: null,
+      },
+   ],
+   tugash: [
+      "PR ochiq, draft emas, base — integration branch",
+      "PR-01 … PR-07 bajarilgan yoki ularning chetlanishi yozilgan",
+      "Ko'rikchi belgilangan, review so'ralgan (REVIEW)",
+   ],
+   murojaat: "Release owner",
+   handbook: ["5", "8", "9", "10"],
+};
