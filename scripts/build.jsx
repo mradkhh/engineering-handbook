@@ -1,4 +1,4 @@
-// MDX boblarni bitta HTML faylga yig'adi: dist/handbook.html
+// Ikki kitobni yig'adi: dist/handbook.html (MDX boblar) va dist/protocol.html (protocol kartalari).
 // Ekranda o'qish rejimi; "?print" bilan Paged.js A4 sahifalarga bo'ladi.
 import { existsSync, readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -11,6 +11,8 @@ import remarkGfm from "remark-gfm";
 import { book, chapters } from "../src/book.config.js";
 import * as components from "../src/components/index.jsx";
 import * as diagrams from "../src/components/diagrams.jsx";
+import { cardAnchor, guruhNomi, ProtocolCard, ProtocolFront } from "../src/components/protocol.jsx";
+import { GURUHLAR, loadProtocol } from "../src/protocol.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PAGED_JS = "https://unpkg.com/pagedjs@0.4.3/dist/paged.polyfill.js";
@@ -80,15 +82,15 @@ ${[262, 322, 384].map((x) => `<circle class="ca-dot ca-dot--accent" cx="${x}" cy
 </svg>`;
 }
 
-function cover() {
+function cover(meta) {
    return `<header class="cover">
 ${coverArt()}
-<div class="cover__kicker">Reglament · qo'llanma</div>
-<div class="cover__badge">${esc(book.edition)}</div>
-<h1 class="cover__title">${esc(book.title)}</h1>
-<p class="cover__subtitle">${esc(book.subtitle)}</p>
+<div class="cover__kicker">${esc(meta.kicker)}</div>
+<div class="cover__badge">${esc(meta.edition)}</div>
+<h1 class="cover__title">${esc(meta.title)}</h1>
+<p class="cover__subtitle">${esc(meta.subtitle)}</p>
 <dl class="cover__meta">
-<dt>Versiya</dt><dd>${esc(book.version)}</dd>
+<dt>Versiya</dt><dd>${esc(meta.version)}</dd>
 <dt>Sana</dt><dd>${esc(book.date)}</dd>
 <dt>Muallif</dt><dd>${esc(book.author)}</dd>
 <dt>Litsenziya</dt><dd>${esc(book.license)}</dd>
@@ -96,23 +98,23 @@ ${coverArt()}
 </header>`;
 }
 
-function toc(rendered) {
-   const items = chapters.map((ch) => {
-      const r = rendered.get(ch.n);
-      if (!r) {
-         return `<li class="toc__item toc__item--pending"><span class="toc__n">${ch.n}</span><span class="toc__name">${esc(ch.title)}</span><span class="toc__status">yoziladi</span></li>`;
+// items: { n, title, href | null (yoziladi), subs: [{ n, title, href }] }
+function toc(items) {
+   const lis = items.map((it) => {
+      if (!it.href) {
+         return `<li class="toc__item toc__item--pending"><span class="toc__n">${esc(it.n)}</span><span class="toc__name">${esc(it.title)}</span><span class="toc__status">yoziladi</span></li>`;
       }
-      const subs = r.sections
+      const subs = it.subs
          .map(
             (s) =>
-               `<li><a class="toc__link" href="#${s.id}"><span class="toc__subn">${s.n}</span>${esc(s.title)}</a></li>`,
+               `<li><a class="toc__link" href="${s.href}"><span class="toc__subn">${esc(s.n)}</span>${esc(s.title)}</a></li>`,
          )
          .join("");
-      return `<li class="toc__item"><span class="toc__n">${ch.n}</span><span class="toc__name"><a class="toc__link" href="#ch-${ch.n}">${esc(ch.title)}</a></span><span></span><ul class="toc__sub">${subs}</ul></li>`;
+      return `<li class="toc__item"><span class="toc__n">${esc(it.n)}</span><span class="toc__name"><a class="toc__link" href="${it.href}">${esc(it.title)}</a></span><span></span><ul class="toc__sub">${subs}</ul></li>`;
    });
    return `<nav class="toc" aria-label="Mundarija">
 <h2 class="toc__title">Mundarija</h2>
-<ol class="toc__list">${items.join("\n")}</ol>
+<ol class="toc__list">${lis.join("\n")}</ol>
 </nav>`;
 }
 
@@ -150,21 +152,15 @@ const modeScript = `
 })();
 `;
 
-async function main() {
-   const rendered = new Map();
-   for (const ch of chapters.filter((c) => c.file && existsSync(join(ROOT, "content", c.file)))) {
-      rendered.set(ch.n, await renderChapter(ch));
-   }
+function page(meta, body) {
    const css = readFileSync(join(ROOT, "src/styles/book.css"), "utf8");
-   const body = [cover(), toc(rendered), ...[...rendered.values()].map((r) => r.html)].join("\n");
-
-   const html = `<!doctype html>
+   return `<!doctype html>
 <html lang="uz">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(book.title)}</title>
-<meta name="description" content="${esc(book.subtitle)}">
+<title>${esc(meta.title)}</title>
+<meta name="description" content="${esc(meta.subtitle)}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="${FONTS}">
@@ -175,21 +171,104 @@ ${css}
 </head>
 <body>
 <div class="toolbar">
-<span class="toolbar__title">${esc(book.title)}</span>
-<span class="toolbar__version">${esc(book.version)}</span>
+<span class="toolbar__title">${esc(meta.title)}</span>
+<span class="toolbar__version">${esc(meta.version)}</span>
+${meta.other ? `<a class="btn btn--ghost" href="${meta.other.href}">${esc(meta.other.label)}</a>` : ""}
 <button class="btn" type="button" data-print-mode>Chop etish ko'rinishi</button>
 </div>
-<main class="book">
+<main class="book book--${meta.id}">
 <p class="print-tip">PDF uchun sahifaning yuqorisidagi «Chop etish ko'rinishi» tugmasini bosing: unda sahifa raqamlari va mundarija sahifalari to'g'ri chiqadi.</p>
+${cover(meta)}
 ${body}
 </main>
 </body>
 </html>
 `;
-   mkdirSync(join(ROOT, "dist"), { recursive: true });
-   writeFileSync(join(ROOT, "dist/handbook.html"), html);
+}
+
+const handbookMeta = {
+   id: "handbook",
+   kicker: "Reglament · qo'llanma",
+   title: book.title,
+   subtitle: book.subtitle,
+   edition: book.edition,
+   version: book.version,
+   other: { href: "protocol.html", label: "Protocol" },
+};
+
+const protocolMeta = {
+   id: "protocol",
+   kicker: "Protocol · vaziyat bo'yicha qoidalar",
+   title: "Engineering Protocol",
+   subtitle: "Nimani, qachon, qanday qilish va kim tekshiradi",
+   edition: "Qoralama",
+   version: book.protocolVersion,
+   other: { href: "handbook.html", label: "Handbook" },
+};
+
+async function buildHandbook() {
+   const rendered = new Map();
+   for (const ch of chapters.filter((c) => c.file && existsSync(join(ROOT, "content", c.file)))) {
+      rendered.set(ch.n, await renderChapter(ch));
+   }
+   const items = chapters.map((ch) => {
+      const r = rendered.get(ch.n);
+      return r
+         ? { n: ch.n, title: ch.title, href: `#ch-${ch.n}`, subs: r.sections.map((s) => ({ ...s, href: `#${s.id}` })) }
+         : { n: ch.n, title: ch.title, href: null, subs: [] };
+   });
+   const body = [toc(items), ...[...rendered.values()].map((r) => r.html)].join("\n");
+   writeFileSync(join(ROOT, "dist/handbook.html"), page(handbookMeta, body));
    const sectionCount = [...rendered.values()].reduce((n, r) => n + r.sections.length, 0);
    console.log(`dist/handbook.html: ${rendered.size} bob, ${sectionCount} bo'lim`);
+}
+
+async function buildProtocol() {
+   const { protocol, errors } = await loadProtocol(join(ROOT, "protocol"));
+   if (errors.length) throw new Error(`Protocol tekshiruvi o'tmadi (pnpm check):\n${errors.join("\n")}`);
+   const section = (id, kicker, inner) =>
+      `<section class="chapter protocol" id="${id}">
+<div class="chapter__kicker">${esc(kicker)}</div>
+${renderToStaticMarkup(inner)}
+</section>`;
+   const sections = [section("p-saralash", "Kirish", <ProtocolFront protocol={protocol} />)];
+   const items = [
+      {
+         n: "—",
+         title: "Saralash jadvali",
+         href: "#p-saralash",
+         subs: [
+            { n: "", title: "Darajalar", href: "#p-darajalar" },
+            { n: "", title: "Tekshiruvchilar", href: "#p-tekshiruvchilar" },
+            { n: "", title: "Protocol'lar", href: "#p-royxat" },
+         ],
+      },
+   ];
+   for (const g of GURUHLAR) {
+      for (const p of protocol.royxat.filter((x) => x.guruh === g.id)) {
+         const card = protocol.cards.find((c) => c.kod === p.kod);
+         if (!card) {
+            items.push({ n: p.kod, title: p.nom, href: null, subs: [] });
+            continue;
+         }
+         sections.push(
+            section(
+               cardAnchor(p.kod),
+               guruhNomi(g.id),
+               <ProtocolCard protocol={protocol} card={card} handbookHref="handbook.html" />,
+            ),
+         );
+         items.push({ n: p.kod, title: p.nom, href: `#${cardAnchor(p.kod)}`, subs: [] });
+      }
+   }
+   writeFileSync(join(ROOT, "dist/protocol.html"), page(protocolMeta, [toc(items), ...sections].join("\n")));
+   console.log(`dist/protocol.html: ${protocol.cards.length}/${protocol.royxat.length} protocol`);
+}
+
+async function main() {
+   mkdirSync(join(ROOT, "dist"), { recursive: true });
+   await buildHandbook();
+   await buildProtocol();
 }
 
 main().catch((err) => {

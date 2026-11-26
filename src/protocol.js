@@ -130,16 +130,21 @@ export async function loadProtocol(dir, { chapters = bookChapters } = {}) {
          }
       }
 
-      const own = new Set((Array.isArray(c.bandlar) ? c.bandlar : []).map((b) => b?.id));
+      const bandOf = new Map((Array.isArray(c.bandlar) ? c.bandlar : []).map((b) => [b?.id, b]));
       for (const [i, q] of (Array.isArray(c.qarorlar) ? c.qarorlar : []).entries()) {
          const where = `${at}: ${i + 1}-qaror nuqtasi (${q.keyin ?? "?"} dan keyin)`;
          if (!nonEmptyText(q.savol)) errors.push(`${where} — savol yo'q`);
-         if (!own.has(q.keyin)) errors.push(`${where} — «keyin» ${q.keyin ?? "?"} bu protocol'ning bandi emas`);
+         const after = bandOf.get(q.keyin);
+         if (!after) errors.push(`${where} — «keyin» ${q.keyin ?? "?"} bu protocol'ning bandi emas`);
+         else if (after.daraja === "taqiq") errors.push(`${where} — taqiq bandi qadam emas, qaror nuqtasi undan keyin turmaydi`);
          for (const side of ["ha", "yoq"]) {
             const t = q[side];
             if (t != null && !registry.has(t)) errors.push(`${where} — ${t} protocol ro'yxatda yo'q`);
          }
          if (q.ha == null && q.yoq == null) errors.push(`${where} — hech qaysi javob boshqa protocol'ga olib bormaydi`);
+         if (q.ha != null && q.yoq != null) {
+            errors.push(`${where} — ikkala javob ham boshqa protocol'ga olib boradi: keyingi bandlarga yetib bo'lmaydi`);
+         }
       }
    }
 
@@ -183,16 +188,41 @@ export async function loadProtocol(dir, { chapters = bookChapters } = {}) {
    };
 }
 
+// ---------- Sxema tavsifi ----------
+
+/** Qaror nuqtasi olib boradigan protocol: kodi, nomi va kartasi yozilganmi. */
+export function protocolRef(protocol, kod) {
+   if (kod == null) return null;
+   const reg = protocol.royxat.find((p) => p.kod === kod);
+   return { kod, nom: reg?.nom ?? "?", yozilgan: protocol.cards.some((c) => c.kod === kod) };
+}
+
+/**
+ * Kartaning sxemasi uchun qadamlar ketma-ketligi: boshlash sharti, bandlar (taqiqsiz) kartadagi tartibda,
+ * har qaror nuqtasi o'z `keyin` bandidan so'ng, oxirida tugash mezoni. Sxema faqat shundan chiziladi.
+ */
+export function cardFlow(protocol, card) {
+   const flow = [{ tur: "boshlash", matnlar: card.shart ?? [] }];
+   for (const b of card.bandlar) {
+      if (b.daraja === "taqiq") continue;
+      flow.push({ tur: "band", id: b.id, daraja: b.daraja, tekshiruvchi: b.tekshiruvchi, matn: b.matn });
+      for (const q of (card.qarorlar ?? []).filter((x) => x.keyin === b.id)) {
+         flow.push({ tur: "qaror", keyin: b.id, savol: q.savol, ha: protocolRef(protocol, q.ha), yoq: protocolRef(protocol, q.yoq) });
+      }
+   }
+   flow.push({ tur: "tugash", matnlar: card.tugash ?? [] });
+   return flow;
+}
+
 // ---------- Markdown nusxa ----------
 
 const cell = (s) => String(s).replace(/\|/g, "\\|").replace(/\n+/g, " ");
 const tekshiruvchi = (t) => `${t} (${TEKSHIRUVCHILAR[t]})`;
 
 function protocolLink(protocol, kod) {
-   const reg = protocol.royxat.find((p) => p.kod === kod);
-   const written = protocol.cards.some((c) => c.kod === kod);
-   const label = `${kod} — ${reg?.nom ?? "?"}`;
-   return written ? `[${label}](${kod}.md)` : `${label} (yoziladi)`;
+   const ref = protocolRef(protocol, kod);
+   const label = `${ref.kod} — ${ref.nom}`;
+   return ref.yozilgan ? `[${label}](${kod}.md)` : `${label} (yoziladi)`;
 }
 
 function bandTable(bandlar) {

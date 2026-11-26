@@ -777,6 +777,151 @@ pre:not(.terminal__body) {
    fill: var(--muted);
 }
 
+/* Protocol: kartadan chiziladigan sxema */
+.p-diagram .diagram__art svg {
+   max-width: 640px;
+   margin: 0 auto;
+}
+.pg-arrow line {
+   stroke: var(--faint);
+   stroke-width: 2;
+}
+.pg-arrow path {
+   fill: var(--faint);
+}
+.pg-arrow text {
+   font: 600 12px var(--sans);
+   fill: var(--muted);
+}
+.pg-edge rect {
+   fill: var(--surface-2);
+   stroke: var(--border);
+   stroke-width: 1.5;
+}
+.pg-edge--tugash rect {
+   fill: var(--ok-tint);
+   stroke: color-mix(in srgb, var(--ok) 40%, transparent);
+}
+.pg-edge__title {
+   font: 600 11.5px var(--sans);
+   letter-spacing: 0.06em;
+   text-transform: uppercase;
+   fill: var(--muted);
+}
+.pg-edge__line,
+.pg-band__line,
+.pg-decision__line,
+.pg-target__nom {
+   font: 13px var(--sans);
+   fill: var(--text);
+}
+.pg-band rect {
+   fill: var(--surface);
+   stroke: var(--border);
+   stroke-width: 1.5;
+}
+.pg-band--majburiy rect {
+   stroke: color-mix(in srgb, var(--must) 45%, transparent);
+   stroke-width: 2;
+}
+.pg-band--tavsiya rect {
+   stroke: color-mix(in srgb, var(--should) 40%, transparent);
+   stroke-dasharray: 5 4;
+}
+.pg-band__id,
+.pg-target__kod {
+   font: 600 13px var(--mono);
+   fill: var(--text);
+}
+.pg-band__meta,
+.pg-target__status {
+   font: 11.5px var(--mono);
+   fill: var(--muted);
+}
+.pg-decision polygon {
+   fill: var(--warn-tint);
+   stroke: color-mix(in srgb, var(--warn) 50%, transparent);
+   stroke-width: 1.5;
+}
+.pg-target rect {
+   fill: var(--accent-tint);
+   stroke: color-mix(in srgb, var(--accent) 45%, transparent);
+   stroke-width: 1.5;
+}
+.pg-target--pending rect {
+   fill: var(--surface-2);
+   stroke: var(--border);
+   stroke-dasharray: 4 4;
+}
+.p-diagram a:hover rect {
+   stroke: var(--accent);
+}
+
+/* Protocol: karta sahifasi */
+.p-lead {
+   color: var(--muted);
+}
+.p-meta {
+   display: grid;
+   grid-template-columns: max-content 1fr;
+   gap: 4px 16px;
+   margin: 0 0 1.2em;
+   padding: 12px 16px;
+   border: 1px solid var(--border);
+   border-radius: 10px;
+   background: var(--surface);
+}
+.p-meta dt {
+   font-weight: 600;
+   color: var(--muted);
+}
+.p-meta dd {
+   margin: 0;
+}
+.p-band__id {
+   font: 600 13px var(--mono);
+   white-space: nowrap;
+}
+.p-band:target {
+   background: var(--accent-tint);
+}
+.p-level {
+   display: inline-block;
+   padding: 1px 8px;
+   border-radius: 999px;
+   font: 600 11.5px var(--mono);
+   white-space: nowrap;
+}
+.p-level--taqiq {
+   background: var(--must);
+   color: var(--surface);
+}
+.p-level--majburiy {
+   background: var(--must-tint);
+   color: var(--must);
+}
+.p-level--tavsiya {
+   background: var(--should-tint);
+   color: var(--should);
+}
+.p-muted,
+.p-pending {
+   color: var(--muted);
+}
+.protocol .p-diagram,
+.protocol .p-meta {
+   break-inside: avoid;
+}
+.book--protocol .toc__item {
+   grid-template-columns: 5.6em 1fr auto;
+}
+/* Sxema bitta A4 sahifaga sig'adi: balandlik cheklanadi, eni nisbat bo'yicha kichrayadi. */
+html.print .p-diagram .diagram__art svg {
+   width: auto;
+   max-width: 100%;
+   max-height: 225mm;
+}
+
 /* Term */
 .term {
    text-decoration: underline dotted;
@@ -987,7 +1132,7 @@ html.print .cheatsheet li {
       color: #5f6368;
    }
    @top-right {
-      content: "Engineering Handbook";
+      content: string(booktitle);
       font: 8pt var(--mono);
       color: #9aa0a6;
    }
@@ -1032,6 +1177,9 @@ html.print .cheatsheet li {
 }
 .chapter h1 {
    string-set: chaptitle content(text);
+}
+.cover__title {
+   string-set: booktitle content(text);
 }
 .chapter h2,
 .chapter h3 {
@@ -1226,4 +1374,7 @@ html.print .dodont__head {
    padding: 8px 12px;
    border-radius: 8px;
    box-shadow: 0 2px 10px rgb(0 0 0 / 0.15);
+}
+html.print .book--protocol .toc__item {
+   grid-template-columns: 5.6em 1fr;
 }
