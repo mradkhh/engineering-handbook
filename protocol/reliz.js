@@ -1,0 +1,116 @@
+// Release: `beta`da sinalgan kod `main`ga (prod) chiqariladi.
+export default {
+   kod: "RELIZ",
+   belgilar: [
+      "Release window keldi va `beta`da `main`da yo'q sinalgan kod bor",
+      "Tuzatish beta'da sinalgan va prod'ga chiqishi kerak (odatiy hotfix)",
+   ],
+   ijrochi: "Release owner",
+   shart: ["`beta` HEAD commit'ida beta deploy statusi yashil (PROMOTE)"],
+   bandlar: [
+      {
+         id: "RELIZ-01",
+         daraja: "majburiy",
+         tekshiruvchi: "release owner",
+         matn: "`beta`dan `main`ga release PR ochiladi. Matni spec nomlari bo'yicha guruhlangan: spec → tiketlar, keyin migratsiyalar, env kalitlari, ADR va huquq o'zgarishlari.",
+      },
+      {
+         id: "RELIZ-02",
+         daraja: "majburiy",
+         tekshiruvchi: "release owner",
+         matn: "Release PR ochilgach freeze: `dev`ga faqat shu release'ning tuzatishi merge qilinadi; yangi funksiya release tugaguncha o'z branch'ida kutadi.",
+         manba: ["11#13"],
+      },
+      {
+         id: "RELIZ-03",
+         daraja: "majburiy",
+         tekshiruvchi: "release owner",
+         matn: "Release PR'dagi yangi env kalitlari merge'dan oldin prod serverga qo'shiladi; rol yoki huquq o'zgargan bo'lsa, xodimlar merge'dan oldin ogohlantiriladi.",
+      },
+      {
+         id: "RELIZ-04",
+         daraja: "majburiy",
+         tekshiruvchi: "release owner",
+         matn: "`beta-ok`'siz tiketlar ro'yxati release PR'ga yoziladi. Release to'xtamaydi.",
+      },
+      {
+         id: "RELIZ-05",
+         daraja: "majburiy",
+         tekshiruvchi: "ci",
+         matn: "Release'da yangi migratsiya bo'lsa, rehearsal o'tadi: migratsiyalar prod ma'lumotining nusxasida yuradi va yashil bo'ladi (tartibi va muddati repo profilida).",
+         manba: ["11#9"],
+      },
+      {
+         id: "RELIZ-06",
+         daraja: "majburiy",
+         tekshiruvchi: "release owner",
+         matn: "Oldingi release'dan beri yozilgan chetlanishlar ro'yxati release PR'ga yoziladi (UM-09 shu ro'yxatdan tekshiriladi).",
+      },
+      {
+         id: "RELIZ-07",
+         daraja: "majburiy",
+         tekshiruvchi: "release owner",
+         matn: "Release PR merge commit bilan qo'shiladi, release window'da. Window'ni kutmaydigan yagona holat — hotfix (belgisi yuqorida yoki PROD).",
+         manba: ["03#4", "08#13", "11#14"],
+      },
+      {
+         id: "RELIZ-08",
+         daraja: "majburiy",
+         tekshiruvchi: "ci",
+         matn: "Prod deploy'dan oldin gate `main`dagi kod beta'da sinalgan commit bilan bir xil ekanini tekshiradi; deploy oxirida prod deploy statusi yashil bo'ladi.",
+      },
+      {
+         id: "RELIZ-09",
+         daraja: "majburiy",
+         tekshiruvchi: "release owner",
+         matn: "Deploy'dan keyin release owner smoke tekshiruv qiladi va xato jurnalini kuzatadi (ro'yxati va davomiyligi repo profilida).",
+      },
+      {
+         id: "RELIZ-10",
+         daraja: "majburiy",
+         tekshiruvchi: "release owner",
+         matn: "Prod deploy statusi yashil bo'lgach release yoziladi: milestone «Reliz YYYY-MM-DD» (release'ga kirgan tiketlar bilan, keyin yopiladi), merge commit'iga `vYYYY.MM.DD` tag (o'sha kuni ikkinchisi `-2`) va GitHub Release, matni spec nomlari bo'yicha. Favqulodda hotfix ham tag oladi.",
+      },
+      {
+         id: "RELIZ-11",
+         daraja: "majburiy",
+         tekshiruvchi: "skript",
+         matn: "Prod'ga chiqqan tiketlar izoh bilan yopiladi («Prodga chiqdi: Reliz YYYY-MM-DD»); hamma tiketi prod'da bo'lgan spec ham yopiladi. Issue undan oldin yopilmaydi (PR-T1).",
+      },
+      {
+         id: "RELIZ-12",
+         daraja: "majburiy",
+         tekshiruvchi: "release owner",
+         matn: "Release jamoaga spec nomlari va tiket raqamlari bilan e'lon qilinadi.",
+      },
+      {
+         id: "RELIZ-T1",
+         daraja: "taqiq",
+         tekshiruvchi: "release owner",
+         matn: "Release PR squash yoki rebase bilan qo'shilmaydi.",
+         manba: ["08#14"],
+      },
+   ],
+   qarorlar: [
+      {
+         keyin: "RELIZ-05",
+         savol: "Rehearsal qizilmi: migratsiya prod ma'lumotida yiqildimi?",
+         ha: "XAVF",
+         yoq: null,
+      },
+      {
+         keyin: "RELIZ-09",
+         savol: "Deploy yiqildimi yoki smoke va xato jurnalida prod buzilganmi?",
+         ha: "PROD",
+         yoq: null,
+      },
+   ],
+   tugash: [
+      "Prod deploy statusi yashil, smoke o'tgan",
+      "Milestone yopiq, tag va GitHub Release bor",
+      "Prod'ga chiqqan tiketlar va to'liq chiqqan spec'lar izoh bilan yopilgan",
+      "Release e'lon qilingan",
+   ],
+   murojaat: "Release owner",
+   handbook: ["3", "11", "12"],
+};

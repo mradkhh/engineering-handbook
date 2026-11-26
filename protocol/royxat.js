@@ -20,7 +20,7 @@ export const protokollar = [
 
    { kod: "XAVF", nom: "Xavfli o'zgarish", guruh: "chiqarish" },
    { kod: "PROMOTE", nom: "Promote", guruh: "chiqarish" },
-   { kod: "RELIZ", nom: "Reliz", guruh: "chiqarish" },
+   { kod: "RELIZ", nom: "Release", guruh: "chiqarish" },
 
    { kod: "BETA", nom: "Beta qizil", guruh: "favqulodda" },
    { kod: "PROD", nom: "Prod buzildi", guruh: "favqulodda" },

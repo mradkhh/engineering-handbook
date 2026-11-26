@@ -44,7 +44,7 @@ export default {
          daraja: "majburiy",
          tekshiruvchi: "reviewer",
          matn: "PR matnida Summary, Evidence va Merge Danger bo'limlari bor. Merge Danger'da nima buzilishi mumkinligi va qanday qaytarilishi yoziladi; xavf bo'lmasa «yo'q».",
-         manba: ["08#8", "11#6"],
+         manba: ["08#8"],
       },
       {
          id: "PR-06",
@@ -85,7 +85,7 @@ export default {
    qarorlar: [
       {
          keyin: "PR-05",
-         savol: "O'zgarishda migratsiya, pul mantig'i, rol yoki huquq, CI yoki deploy, yangi env kaliti bormi?",
+         savol: "O'zgarishda XAVF-01 dagi xavfli turlardan biri bormi?",
          ha: "XAVF",
          yoq: null,
       },

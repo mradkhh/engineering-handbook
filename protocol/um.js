@@ -39,6 +39,13 @@ export default {
          matn: "Taqiq bandidan chetlanish yo'q: release owner uchun ham, favqulodda holatda ham. Taqiqni faqat protocol'ni o'zgartiradigan PR olib tashlaydi.",
       },
       {
+         id: "UM-T2",
+         daraja: "taqiq",
+         tekshiruvchi: "hook",
+         matn: "Himoyalangan branch'lar (`dev`, `beta`, `main`; ro'yxati repo profilida) rebase yoki force-push qilinmaydi va ulardagi commit `git reset` bilan o'chirilmaydi. Ularga faqat release owner push qiladi.",
+         manba: ["03#1", "03#2"],
+      },
+      {
          id: "UM-06",
          daraja: "majburiy",
          tekshiruvchi: "muallif",

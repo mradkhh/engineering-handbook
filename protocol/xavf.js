@@ -1,0 +1,82 @@
+// Xavfli o'zgarish: beta yoki prod'ni bir zumda buzishi mumkin bo'lgan o'zgarish PR'ga kirdi.
+export default {
+   kod: "XAVF",
+   belgilar: [
+      "O'zgarishda migratsiya, pul mantig'i, rol yoki huquq, CI yoki deploy fayli, yangi env kaliti yoki ADR bor",
+      "Tugallanmagan funksiya `dev`ga kirishi kerak (feature flag)",
+   ],
+   ijrochi: "Muallif; merge va promote — release owner",
+   shart: ["Tiket bor va ish feature branch'da (BOSH)"],
+   bandlar: [
+      {
+         id: "XAVF-01",
+         daraja: "majburiy",
+         tekshiruvchi: "reviewer",
+         matn: "PR'da xavfli tur bo'lsa, unga risk label qo'yiladi (nomi repo profilida). Xavfli turlar: migratsiya; pul va moliya mantig'i; rol va huquq; CI, deploy va hook fayllari; yangi env kaliti; ADR. Repo profili ro'yxatni faqat kengaytiradi.",
+         manba: ["05#4", "11#4"],
+      },
+      {
+         id: "XAVF-02",
+         daraja: "majburiy",
+         tekshiruvchi: "reviewer",
+         matn: "Risk label'li PR'ning Merge Danger bo'limida (PR-05) «yo'q» emas, ikki narsa yoziladi: nima buzilishi mumkin va buzilsa qanday qaytariladi (revert, oldingi release'ni ko'tarish yoki backup'dan tiklash).",
+         manba: ["11#6"],
+      },
+      {
+         id: "XAVF-03",
+         daraja: "majburiy",
+         tekshiruvchi: "release owner",
+         matn: "Risk label'li PR'ni faqat release owner merge qiladi.",
+         manba: ["11#5"],
+      },
+      {
+         id: "XAVF-04",
+         daraja: "majburiy",
+         tekshiruvchi: "reviewer",
+         matn: "`dev`ga faqat prod'ga chiqishga yaroqli kod kiradi. Tugallanmagan ish o'z branch'ida qoladi yoki feature flag ortida turadi; yangi flag prod'da sukut bo'yicha o'chiq, uni yoqish — alohida qaror.",
+         manba: ["03#3", "11#1", "11#2"],
+      },
+      {
+         id: "XAVF-05",
+         daraja: "tavsiya",
+         tekshiruvchi: "muallif",
+         matn: "Funksiya to'liq ishga tushgach, flag va eski yo'l alohida tiket bilan olib tashlanadi.",
+         manba: ["11#3"],
+      },
+      {
+         id: "XAVF-06",
+         daraja: "majburiy",
+         tekshiruvchi: "reviewer",
+         matn: "Migratsiya oldingi release kodi bilan ishlaydi (expand → backfill → contract). Ustun yoki jadvalni o'chirish keyingi release'da, kod undan foydalanmay qo'ygach.",
+         manba: ["11#7"],
+      },
+      {
+         id: "XAVF-07",
+         daraja: "majburiy",
+         tekshiruvchi: "reviewer",
+         matn: "Ma'lumotni o'chiradigan migratsiya PR'da shunday deb belgilanadi va release'dan oldin prod nusxasida rehearsal qilinadi (RELIZ-05).",
+         manba: ["11#9"],
+      },
+      {
+         id: "XAVF-08",
+         daraja: "majburiy",
+         tekshiruvchi: "reviewer",
+         matn: "Yangi env kaliti: example env faylda faqat nomi va xavfsiz namuna qiymati; kalit yo'q bo'lsa ilova aniq xato bilan to'xtaydi yoki xavfsiz sukut qiymat bilan ishlaydi, jim noto'g'ri ishlamaydi. Kalit prod'ga release'dan oldin qo'shiladi (RELIZ-03).",
+         manba: ["11#11", "11#12"],
+      },
+      {
+         id: "XAVF-T1",
+         daraja: "taqiq",
+         tekshiruvchi: "ci",
+         matn: "Release'ga chiqqan migratsiya fayli o'zgartirilmaydi. Tuzatish — yangi migratsiya.",
+         manba: ["11#8"],
+      },
+   ],
+   qarorlar: [],
+   tugash: [
+      "PR'da risk label va to'ldirilgan Merge Danger bor",
+      "PR'ni release owner merge qilgan va promote qilinmoqda (PROMOTE)",
+   ],
+   murojaat: "Release owner",
+   handbook: ["11"],
+};
