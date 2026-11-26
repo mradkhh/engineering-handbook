@@ -37,4 +37,4 @@ export const olibTashlandi = {
 };
 
 // true bo'lganda v1.0.0 dagi har qoida bandga ko'chgan yoki shu yerda sababi bilan yozilgan bo'lishi shart.
-export const kochishToliq = false;
+export const kochishToliq = true;

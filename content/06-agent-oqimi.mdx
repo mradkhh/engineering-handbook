@@ -35,17 +35,9 @@ Grilling — agentning savol-javob usuli. Agent qarorlarni daraxt shaklida ko'ra
 - `/grill-with-docs` — repo'da glossary va ADR bor bo'lsa. Agent atamalarni glossary bilan solishtiradi va kodni tekshiradi.
 - `/grill-me` — glossary kerak bo'lmagan ish uchun, masalan hujjat yoki jarayon.
 
-<Rule level="MUST">
+<Band id="YANGI-04" />
 
-Qarorlarni odam qabul qiladi. Agent faktni o'zi topadi, lekin qarorni so'raydi.
-
-</Rule>
-
-<Rule level="SHOULD">
-
-Savol-javob mantiq darajasida qoladi: nima va nega. Qanday yozilishi — keyinroq, agentning ishi.
-
-</Rule>
+<Band id="YANGI-05" />
 
 ## 2–3. Spec va tiketlar
 
@@ -85,17 +77,7 @@ Issue'dagi belgi uni kim va qachon olishini aytadi. Bu ish <Term t="triage" /> d
 
 </Steps>
 
-<Rule level="MUST">
-
-Agent har doim feature branch'da ishlaydi. `dev`, `beta` yoki `main`da hech qachon commit qilmaydi.
-
-</Rule>
-
-<Rule level="MUST NOT">
-
-Agent odamning shu safargi aniq buyrug'isiz push, merge, promote yoki release qilmaydi.
-
-</Rule>
+<Band id="AGENT-T1" />
 
 ## 5. Code review
 
@@ -104,7 +86,7 @@ Agent odamning shu safargi aniq buyrug'isiz push, merge, promote yoki release qi
 - **Spec o'qi** — kod tiketda so'ralganni qiladimi, hammasini qiladimi, ortiqcha narsa yo'qmi.
 - **Standartlar o'qi** — kod repo'ning yozilgan qoidalariga mosmi.
 
-Agent review'i odam review'ining o'rnini bosmaydi. U reviewer'ga yordam beradi: reviewer topilmalarni o'qiydi va qarorni o'zi beradi.
+Jamoada reviewer bo'lsa, agent review'i uning o'rnini bosmaydi: reviewer topilmalarni o'qiydi va qarorni o'zi beradi. Muallifdan boshqa odam bo'lmasa, PR'ga yozilgan agent review'i qaror o'rnida turadi (MERGE-01).
 
 ## 6. PR
 
@@ -130,23 +112,11 @@ Agent review'i odam review'ining o'rnini bosmaydi. U reviewer'ga yordam beradi: 
 
 ## Agent bilan ishlash qoidalari
 
-<Rule level="MUST">
+<Band id="PR-07" />
 
-Agent yozgan kod uchun dasturchi javob beradi. Push'dan oldin diff'ni o'zingiz o'qing.
+<Band id="COMMIT-03" />
 
-</Rule>
-
-<Rule level="MUST">
-
-Agent kodning sezilarli qismini yozgan bo'lsa, commit'ga `Co-Authored-By` trailer'i qo'shiladi (8-bob).
-
-</Rule>
-
-<Rule level="SHOULD">
-
-Agentga bitta tiket bering. Bir nechta tiketni bitta topshiriqda bermang: natija bitta PR'ga sig'maydi.
-
-</Rule>
+<Band id="AGENT-01" />
 
 ## Eslab qoling
 
@@ -154,4 +124,4 @@ Agentga bitta tiket bering. Bir nechta tiketni bitta topshiriqda bermang: natija
 - Yo'l: grill → spec → tiketlar → implement → code-review → PR.
 - `ready-for-agent` — agent mustaqil bajara oladi. `ready-for-human` — odam kerak.
 - Agent faqat feature branch'da ishlaydi. Push, merge va promote — odamning buyrug'i bilan.
-- Agent review'i yordam beradi, odam review'ining o'rnini bosmaydi.
+- Agent review'i reviewer'ga yordam beradi; boshqa odam bo'lmasa, PR'ga yoziladi va qaror o'rnida turadi (MERGE-01).

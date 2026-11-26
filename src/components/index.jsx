@@ -1,32 +1,6 @@
 import { categories, termDef, terms } from "../terms.js";
 
-// Kitobning 8 ta komponenti. MDX ichida ishlatiladi; sayt ham shularni oladi.
-
-const RULE_LABEL = {
-   MUST: "MUST",
-   "MUST NOT": "MUST NOT",
-   SHOULD: "SHOULD",
-   MAY: "MAY",
-};
-const RULE_MEANING = {
-   MUST: "shart",
-   "MUST NOT": "qilinmaydi",
-   SHOULD: "tavsiya",
-   MAY: "ixtiyoriy",
-};
-
-export function Rule({ level = "MUST", children }) {
-   const cls = level.toLowerCase().replace(" ", "-");
-   return (
-      <div className={`rule rule--${cls}`}>
-         <div className="rule__badge">
-            <span className="rule__level">{RULE_LABEL[level]}</span>
-            <span className="rule__meaning">{RULE_MEANING[level]}</span>
-         </div>
-         <div className="rule__body">{children}</div>
-      </div>
-   );
-}
+// Kitob komponentlari. MDX ichida ishlatiladi; qoida qutisi `Band`ni build.jsx protocol'dan beradi.
 
 function Callout({ kind, label, children }) {
    return (

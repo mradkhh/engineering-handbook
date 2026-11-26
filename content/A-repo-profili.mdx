@@ -1,6 +1,6 @@
 # Repo profili shabloni
 
-Repo profili — kitobning har bir repo'dagi davomi. Kitob umumiy qoidani beradi, profil esa shu repo'dagi aniq qiymatlarni: buyruqlar, nomlar, vaqtlar. Bu ilova profil qanday yozilishini beradi.
+Repo profili — kitob va protocol'ning har bir repo'dagi davomi. Protocol umumiy qoidani beradi, profil esa shu repo'dagi aniq qiymatlarni (buyruqlar, nomlar, vaqtlar) va shu repo'ga xos lokal bandlarni. Bu ilova profil qanday yozilishini beradi.
 
 ## Profil nima uchun kerak
 
@@ -11,27 +11,13 @@ Kitob «repo profilida yoziladi» desa, o'quvchi aniq javobni profildan topadi. 
 - xavfli PR belgisining nomi nima;
 - worktree'lar qaysi papkada turadi.
 
-<Rule level="MUST">
-
-Har bir repo'da profil bor. Repo'ning agent yo'riqnomasi (masalan, `AGENTS.md`) profilga havola qiladi.
-
-</Rule>
-
-<Rule level="MUST NOT">
-
-Profil kitobga zid bo'lmaydi. U kitobni faqat aniqlashtiradi yoki qattiqlashtiradi (1-bob).
-
-</Rule>
+<Band id="UM-07" />
 
 ## Profil qayerda turadi
 
 Profil bitta faylda yoki bir nechta faylda bo'lishi mumkin. Muhimi — har bir bo'limning joyi aniq bo'lsin.
 
-<Rule level="SHOULD">
-
-Profilning asosiy fayli repo ildizidagi agent yo'riqnomasidan bitta havola bilan topiladi.
-
-</Rule>
+<Band id="QOIDA-05" />
 
 ## Majburiy bo'limlar
 
@@ -48,6 +34,8 @@ Profilning asosiy fayli repo ildizidagi agent yo'riqnomasidan bitta havola bilan
 | 9 | Worktree | Worktree papkasi va har bir worktree'ning portlari. |
 | 10 | Til | Commit, issue va izohlar qaysi tilda yoziladi. |
 | 11 | So'z to'qnashuvlari | Biznes atamasi git atamasiga o'xshasa, qanday ajratiladi. |
+| 12 | Protocol | Protocol versiyasi, repo'dagi nusxa joyi va uni yangilash buyrug'i, lokal bandlar. |
+| 13 | Kuzatish | Kanban manzili, bosqichlar, ish kuzatuvi label'lari va ularni yangilash buyrug'i. |
 
 ## Shablon
 
@@ -56,8 +44,8 @@ Quyidagi shablonni nusxa qiling va qiymatlarni to'ldiring.
 ```md
 # Repo profili
 
-Bu fayl Engineering Handbook'ning shu repo uchun aniq qiymatlarini beradi.
-Kitob versiyasi: v1.x
+Bu fayl Engineering Handbook va Protocol'ning shu repo uchun aniq qiymatlarini beradi.
+Kitob va protocol versiyasi: v2.x
 
 ## 1. Muhitlar
 | Muhit | Branch | Manzil | Kim ishlatadi |
@@ -85,8 +73,9 @@ Ism, GitHub login. Yo'q bo'lganda: ...
 - main: gate + deploy, status `deploy/prod`
 
 ## 6. Belgilar
-- Xavfli PR: `<belgi nomi>`
-- Triage: needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix
+- Xavfli PR (risk label): `<belgi nomi>`
+- Triage va tasdiq: needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix (`ready-for-*` ni faqat release owner qo'yadi)
+- Spec: `spec`; beta'da tekshirildi: `beta-ok`; chetlanish: `chetlanish`
 
 ## 7. Release
 - Oyna: <kunlar>, <soat> dan keyin
@@ -106,26 +95,31 @@ Ism, GitHub login. Yo'q bo'lganda: ...
 
 ## 11. So'z to'qnashuvlari
 - «<biznes so'zi>» — <ma'nosi>; git ma'nosida ishlatilmaydi
+
+## 12. Protocol
+- Versiya: v2.x; nusxa: `<papka>/` (qo'lda tahrirlanmaydi)
+- Yangilash: `<buyruq> <versiya>`; nusxa o'zgarsa tekshiruv qizil: `<buyruq>`
+- Lokal bandlar:
+  | Band | Qaysi protocol'ga | Nima qilinadi |
+  |---|---|---|
+  | <REPO>-<KOD>-01 | <KOD> | ... |
+
+## 13. Kuzatish
+- Kanban: <manzil>
+- Bosqichlar: Triage → Tayyor → Ishda → Ko'rikda → Dev → Beta → Prod (+ Bekor)
+- Bosqich label'lari: `stage:dev`, `stage:beta`
+- Yangilash: `<buyruq>` (release owner, promote va release'dan keyin)
 ```
 
 ## Profilni yangilash
 
-<Rule level="MUST">
+<Band id="QOIDA-04" />
 
-Kitobda qoida o'zgarsa, profil shu PR'da yoki darhol keyingi PR'da yangilanadi.
-
-</Rule>
-
-<Rule level="MUST">
-
-Profilning yuqorisida u mos keladigan kitob versiyasi yoziladi.
-
-</Rule>
-
-Profil kitobdan eski bo'lib qolsa, o'quvchi ikki xil qoidani ko'radi. Shuning uchun profilni release owner har bir kitob release'ida tekshiradi.
+Profil kitobdan eski bo'lib qolsa, o'quvchi ikki xil qoidani ko'radi. Shuning uchun QOIDA-04 profilni kitob bilan birga yangilashni talab qiladi.
 
 ## Eslab qoling
 
-- Kitob — umumiy qoida, profil — aniq qiymat.
-- Har bir repo'da 11 bo'limli profil bor.
-- Profil kitobga zid bo'lmaydi va kitob versiyasini ko'rsatadi.
+- Protocol — umumiy qoida, profil — aniq qiymat va lokal bandlar.
+- Har bir repo'da 13 bo'limli profil bor.
+- Profil protocol bandiga qiymat beradi yoki uni qattiqlashtiradi, bo'shashtirmaydi; kitob versiyasini ko'rsatadi.
+- Repo'ga xos qoida — lokal band: `<REPO>-<KOD>-NN`.

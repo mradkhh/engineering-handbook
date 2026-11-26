@@ -23,13 +23,9 @@ Bu bob bitta ish g'oyadan prod'gacha qanday o'tishini beradi. Har bir qadamning 
 
 ## 1. Issue
 
-Har bir ish GitHub <Term t="issue" />dan boshlanadi. Issue'siz kod yozilmaydi.
+Har bir ish GitHub <Term t="issue" />dan boshlanadi.
 
-<Rule level="MUST">
-
-Kod yozish qabul mezonlari bor issue'dan boshlanadi. <Term t="acceptance criteria">Qabul mezonlari</Term> — tekshirsa bo'ladigan shartlar ro'yxati.
-
-</Rule>
+<Band id="YANGI-01" />
 
 <DoDont>
 <Do>
@@ -76,11 +72,7 @@ Parallel ish uchun worktree ishlatiladi (7-bob).
 
 Kod testlar bilan birga yoziladi. Agent ishlatsangiz, u ham testdan boshlaydi: avval qizil test, keyin kod, keyin tozalash.
 
-<Rule level="MUST">
-
-Push'dan oldin local tekshiruv o'tadi: lint, typecheck va testlar. Repo'da bu `pre-push` hook'i.
-
-</Rule>
+<Band id="PUSH-02" />
 
 Ish paytida bir nechta commit bo'lishi mumkin. Merge'da ular bitta commit'ga aylanadi: bitta tiket — `dev`da bitta commit.
 
@@ -88,11 +80,11 @@ Ish paytida bir nechta commit bo'lishi mumkin. Merge'da ular bitta commit'ga ayl
 
 Ish tayyor bo'lgach, branch push qilinadi va `dev`ga <Term t="PR" /> ochiladi.
 
-<Rule level="MUST">
+<Band id="PR-03" />
 
-PR sarlavhasi commit formatida: `type(scope): sarlavha (#N)`. PR tanasida `Closes #N` bor.
+<Band id="PR-04" />
 
-</Rule>
+<Band id="PR-T1" />
 
 PR tanasi shablon bo'yicha yoziladi: nima o'zgardi, qanday tekshirildi va merge'dagi xavf. Batafsil — 8-bobda.
 
@@ -102,25 +94,17 @@ Muallif reviewer'dan review so'raydi. Reviewer bir ish kuni ichida javob beradi.
 
 ## 7. Merge
 
-Approve'dan keyin muallif PR'ni GitHub'da <Term t="squash-merge" /> qiladi. Natija — `dev`da bitta commit, sarlavhasi PR sarlavhasidan olinadi.
+Review qaroridan keyin (MERGE-01) muallif PR'ni GitHub'da <Term t="squash-merge" /> qiladi. Natija — `dev`da bitta commit, sarlavhasi PR sarlavhasidan olinadi.
 
-<Rule level="MUST">
+<Band id="XAVF-01" />
 
-Xavfli PR'ni (migratsiya, pul mantig'i, rollar, CI, yangi env kaliti) muallif emas, release owner merge qiladi (11-bob).
-
-</Rule>
-
-`Closes #N` tufayli issue merge bilan o'zi yopiladi.
+Issue merge bilan yopilmaydi: u kod prodga chiqqanda yopiladi (RELIZ-11). `Closes #N` issue'ni merge paytida, prodga chiqmasdan yopardi — shuning uchun PR matnida `Tiket:` qatori ishlatiladi (PR-T1).
 
 ## 8. Promote
 
-Release owner kuniga odatda bir marta `dev`ni `beta`ga promote qiladi. Shu kungi barcha tiketlar beta'ga birga ketadi. Beta'da CI va deploy ishlaydi. Dasturchi o'z ishini beta'da tekshiradi.
+Release owner odatda kuniga bir marta `dev`ni `beta`ga promote qiladi. Navbat qadamlarga bo'linadi: risksiz tiketlar birga, riskli spec guruhi alohida (PROMOTE-02). Beta'da CI va deploy ishlaydi. Dasturchi o'z ishini beta'da tekshiradi.
 
-<Rule level="MUST">
-
-Beta qizil bo'lsa, o'sha kuni tuzatiladi yoki revert qilinadi.
-
-</Rule>
+<Band id="BETA-01" />
 
 ## 9. Release
 
@@ -130,9 +114,9 @@ Release window'da release owner `beta`ni release PR orqali `main`ga chiqaradi. G
 
 <Steps>
 
-1. PR merge bo'lganini GitHub'da tekshiring.
+1. PR merge bo'lganini va uning oxirgi commit'i local branch uchi bilan bir xil ekanini tekshiring: `gh pr view <PR> --json state,headRefOid` va `git rev-parse <branch>`.
 2. Worktree'ni o'chiring: `git worktree remove <papka>`.
-3. Local branch'ni o'chiring: `git branch -D <N>-<slug>`.
+3. Local branch'ni o'chiring: `git branch -d <N>-<slug>`. Squash-merge'dan keyin git uni «not fully merged» deb rad etishi mumkin: commit'lar `dev`da boshqa hash bilan turadi. 1-qadam o'tgan bo'lsa, `-D` bilan o'chirishni odam qiladi, agent emas.
 4. Remote branch GitHub'da merge bilan o'zi o'chadi. `fetch.prune` uning local izini o'chiradi.
 
 </Steps>
@@ -147,11 +131,11 @@ Release window'da release owner `beta`ni release PR orqali `main`ga chiqaradi. G
 | «Approve bo'ldi» | Merge qilish mumkin. |
 | «Dev'ga merge bo'ldi» | Kod keyingi promote'ni kutyapti. |
 | «Beta'da» | Promote bo'ldi, kod sinov muhitida. |
-| «Prod'da» | Release bo'ldi. |
+| «Prod'da» | Release bo'ldi. Issue shundan keyin yopiladi. |
 
-<Phrase ok="PR #172 dev'ga merge bo'ldi, ertangi promote'da beta'ga chiqadi." bad="Kod tayyor.">
+<Phrase ok="#172 Bildirishnomalar: oluvchi moduli dev'ga merge bo'ldi, ertangi promote'da beta'ga chiqadi." bad="Kod tayyor.">
 
-«Tayyor» bosqichni aytmaydi. PR raqamini va bosqichni ayting.
+«Tayyor» bosqichni aytmaydi. Tiket raqami va nomini, bosqichni ayting (UM-13).
 
 </Phrase>
 

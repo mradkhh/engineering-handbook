@@ -15,11 +15,7 @@ Bu bob kim nima qilishini beradi. Rol — lavozim emas, vazifa. Bitta odam bir P
 
 Dasturchi tiketning egasi. U ishni issue'dan merge'gacha olib boradi.
 
-<Rule level="MUST">
-
-Dasturchi har bir tiketni `origin/dev`dan ochilgan o'z branch'ida qiladi va PR orqali `dev`ga yuboradi.
-
-</Rule>
+<Band id="PR-01" />
 
 Dasturchining vazifalari:
 
@@ -34,11 +30,7 @@ Dasturchining vazifalari:
 
 Reviewer — PR'ni muallifdan boshqa odam sifatida o'qiydigan dasturchi.
 
-<Rule level="MUST">
-
-Har bir PR merge'dan oldin kamida bitta approve oladi. Muallif o'z PR'iga approve bermaydi.
-
-</Rule>
+<Band id="MERGE-01" />
 
 Reviewer ikki narsani tekshiradi: kod tiketda so'ralganni qiladimi va repo qoidalariga mosmi. Batafsil — 9-bobda.
 
@@ -64,17 +56,7 @@ Himoyalangan branch'larga push'ni local `pre-push` hook'i ham tekshiradi: u rele
 
 Agent — dasturchi ishga tushiradigan AI yordamchi. U kod yozadi, test ishga tushiradi va commit qiladi. Agent qaror qabul qilmaydi: qarorlar odamga tegishli.
 
-<Rule level="MUST NOT">
-
-Agent odamning shu safargi aniq buyrug'isiz push, merge, promote yoki release qilmaydi. Oldingi ruxsat keyingi safarga o'tmaydi.
-
-</Rule>
-
-<Rule level="MUST NOT">
-
-Agent himoyalangan branch'da commit qilmaydi va hech qaysi branch'ni `--force-with-lease`siz force-push qilmaydi.
-
-</Rule>
+<Band id="AGENT-T1" />
 
 Repo'da agent uchun himoya hook'i bor: u xavfli git buyruqlarini to'xtatadi. Agent bilan ishlash tartibi — 6-bobda.
 
@@ -86,7 +68,7 @@ Repo'da agent uchun himoya hook'i bor: u xavfli git buyruqlarini to'xtatadi. Age
 | Feature branch'ni push qilish | ✓ | — | ✓ | buyruq bilan |
 | PR ochish | ✓ | — | ✓ | buyruq bilan |
 | Approve berish | boshqaning PR'iga | ✓ | ✓ | ✕ |
-| PR'ni `dev`ga squash-merge qilish | approve'dan keyin | — | ✓ | ✕ |
+| PR'ni `dev`ga squash-merge qilish | review qaroridan keyin | — | ✓ | ✕ |
 | Xavfli PR'ni merge qilish | ✕ | ✕ | ✓ | ✕ |
 | `dev`/`beta`/`main`ga push | ✕ | ✕ | ✓ | ✕ |
 | Promote va release | ✕ | ✕ | ✓ | ✕ |
@@ -96,18 +78,14 @@ Repo'da agent uchun himoya hook'i bor: u xavfli git buyruqlarini to'xtatadi. Age
 
 Kod yozish issue'dan boshlanadi. Issue'da qabul mezonlari bo'ladi. Issue'ni istalgan dasturchi yozishi mumkin.
 
-<Rule level="MUST">
-
-Release owner'dan boshqa odam yozgan issue bo'yicha kod yozish release owner'ning tasdiq izohidan keyin boshlanadi.
-
-</Rule>
+<Band id="YANGI-03" />
 
 Tasdiq — issue'dagi biznes mantiq to'g'ri ekanini bildiradi. U kod sifatini emas, nima qilinishini tasdiqlaydi.
 
 ## Eslab qoling
 
 - Rol — vazifa, lavozim emas.
-- Har bir PR'ga kamida bitta boshqa odamning approve'i kerak.
+- Har PR'ga review qarori kerak: boshqa odamning approve'i; jamoada boshqa odam bo'lmasa — PR'ga yozilgan mustaqil agent review'i (MERGE-01).
 - Himoyalangan branch'lar, promote, release va xavfli PR'lar — faqat release owner.
 - Agent push, merge va promote'ni faqat odamning shu safargi buyrug'i bilan qiladi.
 - Boshqa odam yozgan issue release owner'ning tasdig'idan keyin boshlanadi.

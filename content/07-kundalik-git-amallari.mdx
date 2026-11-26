@@ -14,11 +14,7 @@ Misollarda tiket raqami `172`, branch nomi `172-notification-recipients`. O'zing
 
 Git sukut bo'yicha ba'zi amallarni xavfli tarzda bajaradi. Masalan, `git pull` so'ramasdan merge commit yaratishi mumkin. Quyidagi sozlamalar buni to'xtatadi.
 
-<Rule level="MUST">
-
-Har bir dasturchi quyidagi sozlamalarni bir marta, `--global` bilan o'rnatadi. Ism va email GitHub profilidagi bilan bir xil bo'ladi.
-
-</Rule>
+<Band id="UM-15" />
 
 <Terminal title="bir marta bajariladi">{`
 $ git config --global user.name "Ism Familiya"
@@ -72,17 +68,9 @@ b1c8e60 feat(search): sana filtri (#165)
 
 Har bir tiket o'z branch'ida qilinadi. Branch `origin/dev`dan boshlanadi, local `dev`dan emas, chunki local `dev` eskirgan bo'lishi mumkin.
 
-<Rule level="MUST">
+<Band id="BOSH-02" />
 
-Har bir tiket uchun `origin/dev`dan yangi branch oching. Nomi `<tiket raqami>-<qisqa-nom>` shaklida bo'ladi.
-
-</Rule>
-
-<Rule level="MUST NOT">
-
-`dev`, `beta` yoki `main` branch'ida commit qilmang.
-
-</Rule>
+<Band id="COMMIT-T1" />
 
 <Terminal>{`
 $ git fetch origin
@@ -109,11 +97,9 @@ Switched to a new branch '172-notification-recipients'
 
 </Steps>
 
-<Rule level="MUST NOT">
+<Band id="COMMIT-T2" />
 
-Maxfiy ma'lumotni commit qilmang: `.env`, kalitlar, parollar, mijoz ma'lumotlari. Push qilingan sirni tarixdan to'liq o'chirib bo'lmaydi, uni almashtirish kerak bo'ladi.
-
-</Rule>
+<Band id="SIR-01" />
 
 <DoDont>
 <Do>
@@ -128,7 +114,7 @@ Maxfiy ma'lumotni commit qilmang: `.env`, kalitlar, parollar, mijoz ma'lumotlari
 </Dont>
 </DoDont>
 
-Oxirgi commit'ni tuzatish uchun `git commit --amend` ishlatiladi. Commit push qilingan bo'lsa, keyingi push `--force-with-lease` bilan bo'ladi.
+Oxirgi commit'ni tuzatish uchun `git commit --amend` ishlatiladi. Commit push qilingan bo'lsa, keyingi push `--force-with-lease --force-if-includes` bilan bo'ladi.
 
 ## Branch'ni dev bilan yangilash: rebase
 
@@ -150,17 +136,11 @@ Siz ishlayotganda boshqalar `dev`ga yangi commit'lar qo'shadi. Branch'ingizni sh
 
 </Steps>
 
-<Rule level="MUST">
+<Band id="MOS-01" />
 
-Feature branch'ni faqat `fetch` va `rebase origin/dev` bilan yangilang.
+<Band id="MOS-T1" />
 
-</Rule>
-
-<Rule level="MUST NOT">
-
-`dev`, `beta`, `main` yoki boshqa odam ishlayotgan branch'ni rebase qilmang. Rebase tarixni qayta yozadi va boshqalarning nusxasi buziladi.
-
-</Rule>
+<Band id="UM-T2" />
 
 <DoDont>
 <Do>
@@ -212,11 +192,7 @@ Rebase paytida `HEAD` — bu `origin/dev` tomoni, pastki qism esa sizning commit
 
 Adashib ketsangiz, `git rebase --abort` buyrug'ini bajaring. Branch rebase'dan oldingi holatiga to'liq qaytadi.
 
-<Rule level="SHOULD">
-
-Conflict'ni hal qilgandan keyin push'dan oldin testlarni qayta ishga tushiring. To'g'ri ko'ringan birlashma ham kodni buzishi mumkin.
-
-</Rule>
+<Band id="MOS-02" />
 
 ## Push
 
@@ -233,17 +209,7 @@ $ git push --force-with-lease --force-if-includes
 
 `--force-with-lease` remote branch'ni faqat u siz oxirgi ko'rgan holatda bo'lsa qayta yozadi. Agar boshqa odam shu branch'ga push qilgan bo'lsa, buyruq rad etiladi va uning ishi saqlanib qoladi. `--force-if-includes` yana bir tekshiruv qo'shadi: siz remote'dagi oxirgi commit'ni local'da ko'rgan bo'lishingiz shart.
 
-<Rule level="MUST">
-
-Qayta yozilgan branch'ni faqat `--force-with-lease --force-if-includes` bilan push qiling.
-
-</Rule>
-
-<Rule level="MUST NOT">
-
-`git push -f` va `git push --force` ishlatmang. `dev`, `beta` va `main`ga hech qanday force-push qilmang.
-
-</Rule>
+<Band id="GIT-06" />
 
 ## fetch, pull, rebase va merge farqi
 
@@ -281,11 +247,7 @@ stash@{0}: On 172-notification-recipients: 172: oluvchilar moduli, yarim
 $ git stash pop
 `}</Terminal>
 
-<Rule level="SHOULD">
-
-Bir soatdan uzoq turadigan ishni stash'da saqlamang. Uni commit qiling yoki boshqa ishni alohida worktree'da oching.
-
-</Rule>
+<Band id="MOS-03" />
 
 ## Worktree
 
@@ -304,7 +266,8 @@ $ git worktree add ../worktrees/172-notification-recipients \\
 $ git worktree list
 # PR merge bo'lgandan keyin
 $ git worktree remove ../worktrees/172-notification-recipients
-$ git branch -D 172-notification-recipients
+$ git branch -d 172-notification-recipients
+# squash-merge'dan keyin rad etsa: TOZA-01, keyin -D (odam)
 `}</Terminal>
 
 <Note>

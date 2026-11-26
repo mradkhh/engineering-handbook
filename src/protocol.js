@@ -212,6 +212,46 @@ export async function loadProtocol(dir, { chapters = bookChapters } = {}) {
    };
 }
 
+// ---------- Handbook bilan bog'lanish ----------
+
+/** Band raqami bo'yicha band, kartasi bilan. */
+export function findBand(protocol, id) {
+   for (const card of protocol.cards) {
+      const band = card.bandlar.find((b) => b.id === id);
+      if (band) return { card, band };
+   }
+   return null;
+}
+
+/**
+ * Handbook boblari protocol'ga faqat havola qiladi: o'z matnli qoida qutisi (`<Rule>`) qolmagan,
+ * har `<Band id="…" />` mavjud bandga ishora qiladi.
+ * @param {{ file: string, text: string }[]} sources
+ */
+export function checkHandbook(sources, protocol) {
+   const errors = [];
+   const written = new Set(protocol.cards.map((c) => c.kod));
+   for (const { file, text: raw } of sources) {
+      // Kod bloklari misol: ular tekshirilmaydi (qator raqamlari saqlanishi uchun bo'sh qatorga almashtiriladi).
+      const text = raw.replace(/```[\s\S]*?```/g, (block) => block.replace(/[^\n]/g, ""));
+      const line = (i) => text.slice(0, i).split("\n").length;
+      // `<Band id="…" />` pastda alohida tekshiriladi; oddiy havolalar qidiruvida u bo'sh joyga almashtiriladi.
+      const prose = text.replace(/<Band\b[^>]*>/g, (tag) => " ".repeat(tag.length));
+      for (const m of prose.matchAll(BAND_REF)) {
+         if (written.has(m[1]) && !findBand(protocol, m[0])) {
+            errors.push(`${file}:${line(m.index)} — havola ${m[0]}: protocol'da bunday band yo'q`);
+         }
+      }
+      for (const m of text.matchAll(/<Rule\b/g)) {
+         errors.push(`${file}:${line(m.index)} — o'z matnli <Rule> qutisi: qoida protocol'da, bu yerda <Band id="…" /> bo'ladi`);
+      }
+      for (const m of text.matchAll(/<Band\s+id="([^"]*)"/g)) {
+         if (!findBand(protocol, m[1])) errors.push(`${file}:${line(m.index)} — <Band id="${m[1]}">: protocol'da bunday band yo'q`);
+      }
+   }
+   return errors;
+}
+
 // ---------- Sxema tavsifi ----------
 
 /** Qaror nuqtasi olib boradigan protocol: kodi, nomi va kartasi yozilganmi. */

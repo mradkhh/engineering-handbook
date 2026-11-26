@@ -32,11 +32,7 @@ Har bir qatlam oldingisi o'tkazib yuborgan xatoni ushlaydi. Qatlam qanchalik ert
 
 </Note>
 
-<Rule level="MUST NOT">
-
-Hook'larni o'chirmang va ularning skriptlarini local'da o'zgartirmang. Hook'da xato bo'lsa, uni alohida PR bilan tuzating.
-
-</Rule>
+<Band id="PUSH-T1" />
 
 ## Hook to'xtatsa nima qilinadi
 
@@ -66,11 +62,7 @@ $ git push
 
 To'liq tekshiruv bir necha daqiqa olishi mumkin. Ish paytida uni har safar ishga tushirish shart emas. Lekin push'dan oldin u albatta ishlaydi.
 
-<Rule level="SHOULD">
-
-Ish paytida faqat o'zgargan qismning testlarini ishga tushiring. To'liq tekshiruvni `pre-push` bajaradi.
-
-</Rule>
+<Band id="PUSH-01" />
 
 Tekshiruv tasodifan yiqilsa, masalan tarmoq xatosi bilan, uni qayta ishga tushiring. Bir xil xato ikki marta takrorlansa, u tasodif emas: sababini toping.
 
@@ -78,17 +70,13 @@ Tekshiruv tasodifan yiqilsa, masalan tarmoq xatosi bilan, uni qayta ishga tushir
 
 `--no-verify` bayrog'i hook'larni o'tkazib yuboradi. U xavfli: tekshirilmagan kod remote'ga ketadi.
 
-<Rule level="MUST NOT">
+<Band id="PUSH-T2" />
 
-Kod o'zgargan commit yoki push'da `--no-verify` ishlatmang.
+<Note>
 
-</Rule>
+PUSH-T2 kod o'zgargan push'ga tegishli. Faqat hujjat o'zgargan push'da hook'ni o'tkazish mumkinmi — buni repo profili yozadi.
 
-<Rule level="MAY">
-
-Faqat hujjat o'zgargan push'da `--no-verify` ishlatish mumkin, agar repo profili bunga ruxsat bersa.
-
-</Rule>
+</Note>
 
 <Warning>
 
@@ -102,11 +90,7 @@ Faqat hujjat o'zgargan push'da `--no-verify` ishlatish mumkin, agar repo profili
 
 CI qaysi branch'larda ishlashini repo profili belgilaydi. Odatda u `beta` va `main`ga push bo'lganda ishlaydi. U kodni tekshiradi, build qiladi va muhitga <Term t="deploy" /> qiladi.
 
-<Rule level="MUST NOT">
-
-CI run'larini qo'lda bekor qilmang. Yangi push eski run'ni o'zi bekor qiladi. Qo'lda bekor qilingan run'dagi kod sinalmagan hisoblanadi va prod'ga chiqa olmaydi.
-
-</Rule>
+<Band id="PROMOTE-T2" />
 
 ## dev'ga PR'da CI yo'q
 
@@ -118,17 +102,9 @@ CI run'larini qo'lda bekor qilmang. Yangi push eski run'ni o'zi bekor qiladi. Qo
 
 </Warning>
 
-<Rule level="MUST">
+<Band id="PR-06" />
 
-PR'ning Evidence bo'limida `pre-push` tekshiruvi o'tganini yozing. Oxirgi push'dan keyin kod o'zgarmagan bo'lishi shart.
-
-</Rule>
-
-<Rule level="MUST">
-
-Reviewer Evidence bo'limida tekshiruv o'tgani yozilmagan PR'ga approve bermaydi.
-
-</Rule>
+<Band id="REVIEW-03" />
 
 ## Gate va commit status
 
@@ -148,11 +124,7 @@ Status nomlari va gate shartlari repo profilida yoziladi.
 
 `beta`dagi CI yoki deploy muvaffaqiyatsiz bo'lsa, beta «qizil» deyiladi. Qizil beta keyingi release'ni to'xtatadi: gate qizil commit'ni prod'ga o'tkazmaydi.
 
-<Rule level="MUST">
-
-Qizil beta o'sha kuni tuzatiladi yoki xato commit <Term t="revert" /> qilinadi.
-
-</Rule>
+<Band id="BETA-01" />
 
 <Steps>
 
@@ -164,13 +136,9 @@ Qizil beta o'sha kuni tuzatiladi yoki xato commit <Term t="revert" /> qilinadi.
 
 </Steps>
 
-<Rule level="MUST NOT">
+<Band id="PROMOTE-T1" />
 
-Beta'ni tuzatish uchun to'g'ridan-to'g'ri `beta`ga commit yoki push qilmang. Tuzatish ham `dev` va promote orqali boradi.
-
-</Rule>
-
-<Phrase ok="Beta qizil, sabab — #182. Revert qilib, promote qilaman." bad="Beta yiqildi, ko'ryapman.">
+<Phrase ok="Beta qizil, sabab — PR #182 (#172 Bildirishnomalar). Revert qilib, promote qilaman." bad="Beta yiqildi, ko'ryapman.">
 
 Qaysi commit sabab ekani va nima qilinayotgani aniq aytiladi.
 
@@ -180,7 +148,7 @@ Qaysi commit sabab ekani va nima qilinayotgani aniq aytiladi.
 
 - Uch hook: `pre-commit` (format, lint), `commit-msg` (xabar shakli), `pre-push` (to'liq tekshiruv).
 - Hook to'xtatsa — xatoni tuzating, chetlab o'tmang.
-- `--no-verify` — faqat hujjat push'ida va repo profili ruxsat bersa.
+- `--no-verify` — kod o'zgargan push'da hech qachon (PUSH-T2); hujjat push'i — repo profilida.
 - `dev`ga PR'da CI yo'q. Kafolat — `pre-push`, va u Evidence'da yoziladi.
 - CI run'larini qo'lda bekor qilmang.
 - Gate commit status'larni o'qiydi va prod'ga faqat sinalgan kodni o'tkazadi.

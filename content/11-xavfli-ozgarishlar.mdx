@@ -2,17 +2,13 @@
 
 Ba'zi o'zgarishlar xato bo'lsa, ularni bir commit bilan qaytarib bo'lmaydi. Masalan, migratsiya ma'lumotni o'chiradi yoki yangi huquq qoidasi xodimni ishdan to'xtatadi. Bu bob bunday o'zgarishlarni qanday tanish va xavfsiz chiqarishni beradi.
 
-Asosiy fikr oddiy: xavf qancha katta bo'lsa, o'zgarish shuncha yolg'iz va shuncha sekin yuradi.
+Asosiy fikr oddiy: xavf qancha katta bo'lsa, o'zgarish shuncha alohida va shuncha sekin yuradi.
 
 ## Dev'dagi har narsa prod'ga yaroqli
 
 <Term t="promote" /> `dev`ni butunligicha `beta`ga olib ketadi. <Term t="release" /> esa `beta`ni butunligicha `main`ga olib ketadi. Bir qismini tanlab olib bo'lmaydi. Shuning uchun `dev`ga kirgan har bir commit ertaga prod'da bo'ladi deb hisoblanadi.
 
-<Rule level="MUST">
-
-`dev`ga faqat prod'ga chiqishga tayyor kodni merge qiling.
-
-</Rule>
+<Band id="XAVF-04" />
 
 Tugallanmagan ish ikki joydan birida turadi:
 
@@ -41,17 +37,9 @@ Yarim tayyor hisobot sahifasi `dev`da, lekin uning feature flag'i prod'da o'chiq
 NEW_REPORTS_ENABLED=false
 ```
 
-<Rule level="MUST">
+<Band id="XAVF-04" />
 
-Yangi feature flag prod'da sukut bo'yicha o'chiq bo'ladi. Uni yoqish — alohida, ongli qaror.
-
-</Rule>
-
-<Rule level="SHOULD">
-
-Funksiya to'liq ishga tushgandan keyin feature flag'ni va eski yo'lni olib tashlang. Eski flag'lar kodni chalkashtiradi.
-
-</Rule>
+<Band id="XAVF-05" />
 
 ## Xavfli o'zgarish turlari
 
@@ -66,26 +54,20 @@ Quyidagi o'zgarishlar xavfli hisoblanadi. Ularning har biri beta yoki prod'ni bi
 | Yangi env kaliti | Serverda kalit yo'q bo'lsa, ilova ishga tushmaydi. |
 | <Term t="ADR" /> | Uzoq muddatli qarorni o'zgartiradi. Boshqa ishlar unga tayanadi. |
 
-<Rule level="MUST">
+<Band id="XAVF-01" />
 
-Yuqoridagi turlardan biri bor PR'ga repo'ning xavf belgisi qo'yiladi. Belgi nomi repo profilida yoziladi, masalan `alohida-deploy`.
+<Band id="PROMOTE-02" />
 
-</Rule>
+<Band id="XAVF-03" />
 
-<Rule level="MUST">
-
-Xavf belgili PR'ni faqat <Term t="release owner" /> merge qiladi va uni yolg'iz promote qiladi.
-
-</Rule>
-
-«Yolg'iz» degani: bitta promote'da faqat shu PR bo'ladi. Beta buzilsa, sababi aniq — bitta o'zgarish.
+«Alohida» degani: bitta promote'da faqat shu PR bo'ladi yoki shu spec'ning riskli PR'lari bo'ladi. Beta buzilsa, sababi aniq — bitta o'zgarish yoki bitta spec.
 
 <Steps>
 
 1. Release owner `dev`da kutib turgan boshqa ishlarni avval promote qiladi.
 2. Beta yashil bo'lishini kutadi.
 3. Xavf belgili PR'ni `dev`ga merge qiladi.
-4. Darhol yolg'iz promote qiladi.
+4. Darhol alohida promote qiladi (PROMOTE-03).
 5. Beta'da o'zgarishni o'zi tekshiradi.
 
 </Steps>
@@ -94,11 +76,7 @@ Xavf belgili PR'ni faqat <Term t="release owner" /> merge qiladi va uni yolg'iz 
 
 Reviewer xavfni faqat diff'dan ko'rmaydi. Muallif uni ochiq yozadi.
 
-<Rule level="MUST">
-
-Xavf belgili PR tavsifida ikki narsa bo'ladi: nima buzilishi mumkin va buzilsa qanday qaytariladi.
-
-</Rule>
+<Band id="XAVF-02" />
 
 <DoDont>
 <Do>
@@ -117,11 +95,7 @@ Xavf belgili PR tavsifida ikki narsa bo'ladi: nima buzilishi mumkin va buzilsa q
 
 Deploy paytida qisqa vaqt eski kod va yangi baza birga ishlaydi. Rollback'dan keyin ham eski kod yangi bazada ishlaydi. Shuning uchun migratsiya ikkala kodga ham mos bo'lishi kerak.
 
-<Rule level="MUST">
-
-Har bir migratsiya oldingi release kodi bilan ishlaydi.
-
-</Rule>
+<Band id="XAVF-06" />
 
 Buning yo'li — <Term t="expand/contract" /> tartibi. Masalan, ustun nomini o'zgartirish uch release'ga bo'linadi.
 
@@ -146,35 +120,21 @@ Bitta migratsiyada ustun nomini o'zgartirish. Eski kod eski nomni qidiradi va to
 </Dont>
 </DoDont>
 
-<Rule level="MUST NOT">
-
-Release'ga chiqqan migratsiya faylini o'zgartirmang. Tuzatish uchun yangi migratsiya yozing.
-
-</Rule>
+<Band id="XAVF-T1" />
 
 Ba'zi qadamlar ma'lumotni yo'q qiladi: jadval yoki ustunni o'chirish, majburiy shart qo'shish, qatorlarni o'chirish. Ular qaytmaydi.
 
-<Rule level="MUST">
+<Band id="RELIZ-05" />
 
-Ma'lumotni o'chiradigan migratsiya release'dan oldin prod ma'lumotining nusxasida sinaladi. Bu sinov — <Term t="rehearsal" />. Uning tartibi repo profilida yoziladi.
-
-</Rule>
+<Band id="XAVF-07" />
 
 ## Maxfiy ma'lumot
 
 Sir — bu kalit, parol, token yoki mijozning shaxsiy ma'lumoti. Git'ga tushgan sir push'dan keyin ko'p joyga tarqaladi: boshqa dasturchilarning nusxalari, CI cache'i, fork'lar.
 
-<Rule level="MUST NOT">
+<Band id="COMMIT-T2" />
 
-Sirni git'ga commit qilmang. Env fayllar `.gitignore`da bo'ladi.
-
-</Rule>
-
-<Rule level="MUST">
-
-Example env faylda faqat kalit nomlari va xavfsiz namuna qiymatlari bo'ladi. Haqiqiy qiymat hech qachon unga yozilmaydi.
-
-</Rule>
+<Band id="XAVF-08" />
 
 Sir baribir commit'ga tushib qolsa, 12-bobdagi tartibni bajaring. Birinchi qadam — kalitni almashtirish.
 
@@ -192,29 +152,17 @@ Yangi env kaliti kod bilan birga keladi, lekin uning qiymati serverda turadi. Ka
 
 </Steps>
 
-<Rule level="MUST">
-
-Yangi kalit yo'q bo'lsa, ilova aniq xato bilan to'xtaydi yoki xavfsiz sukut qiymat bilan ishlaydi. Jim ishlab, noto'g'ri natija bermaydi.
-
-</Rule>
+<Band id="XAVF-08" />
 
 ## Release window va freeze
 
 Release har vaqt emas, belgilangan vaqtda bo'ladi. Bu vaqt — release window. Kunlar va soat repo profilida yoziladi, masalan «‹kunlar›, ‹soat› dan keyin».
 
-Release boshlangandan keyin `beta` qotadi. Bu holat — freeze. Freeze paytida `dev`ga faqat shu release'ni tuzatadigan commit'lar kiradi.
+Release PR ochilgandan keyin freeze boshlanadi: `dev`ga faqat shu release'ni tuzatadigan commit'lar kiradi.
 
-<Rule level="MUST">
+<Band id="RELIZ-02" />
 
-Release boshlangach, `dev`ga faqat joriy release uchun tuzatishlarni merge qiling. Yangi funksiyalar release tugaguncha o'z branch'ida kutadi.
-
-</Rule>
-
-<Rule level="MUST NOT">
-
-Release window'dan tashqarida release qilmang. Istisno — 12-bobdagi hotfix tartibi.
-
-</Rule>
+<Band id="RELIZ-07" />
 
 <Phrase ok="Release boshlandi, dev freeze'da. Faqat release tuzatishlari kiradi." bad="Hozircha hech narsa qo'shmanglar.">
 
@@ -226,7 +174,7 @@ Freeze'ning chegarasini aniq ayting: nima kirishi mumkin va qachongacha.
 
 - `dev`ga faqat prod'ga tayyor kod kiradi. Tugallanmagan ish — branch'da yoki feature flag orqasida.
 - Migratsiya, pul, huquq, CI, env kaliti, ADR — xavfli. PR'ga xavf belgisi qo'yiladi.
-- Xavf belgili PR'ni release owner merge qiladi va yolg'iz promote qiladi.
+- Xavf belgili PR'ni release owner merge qiladi va alohida promote qiladi: o'zi yoki spec'ining riskli PR'lari bilan.
 - Migratsiya oldingi release kodi bilan ishlaydi: expand, backfill, contract.
 - Ma'lumotni o'chiradigan qadam — faqat rehearsal'dan keyin.
 - Sir git'ga tushmaydi. Tushsa — avval kalitni almashtiring.
