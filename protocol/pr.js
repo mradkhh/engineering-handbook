@@ -58,7 +58,7 @@ export default {
          daraja: "majburiy",
          tekshiruvchi: "muallif",
          matn: "Review so'rashdan oldin muallif PR'ni o'zi to'liq o'qiydi: diff, sarlavha va matn. Agent yozgan kodning diff'ini ham dasturchi o'qiydi.",
-         manba: ["09#1"],
+         manba: ["06#5", "09#1"],
       },
       {
          id: "PR-08",
