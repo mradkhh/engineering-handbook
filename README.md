@@ -7,7 +7,8 @@ Git, ish oqimi va atamalar reglamenti. Jamoaning barcha repo'lari uchun umumiy q
 ## Tuzilma
 
 - `protocol/` — Engineering Protocol: vaziyat bo'yicha qoida kartalari (`royxat.js` — kodlar va guruhlar, `<kod>.js` — karta, `v1-qoidalar.json` — v1.0.0 qoidalari, ko'chish xaritasi uchun). Hamma majburiy qoida shu yerda; boblar sababini tushuntiradi.
-- `src/protocol.js` — protocol fayllarini o'qiydigan yagona modul: tekshiradi va Markdown nusxa yasaydi.
+- `src/protocol.js` — protocol fayllarini o'qiydigan yagona modul: tekshiradi, Markdown nusxa va sxema tavsifini yasaydi.
+- `src/components/protocol.jsx` — Protocol kitobi: karta sahifasi va kartadan chiziladigan sxema.
 - `content/*.mdx` — boblar (o'zbekcha, git atamalari inglizcha).
 - `src/terms.js` — lug'at: 13-bob va matndagi atamalar shu yerdan olinadi.
 - `src/components/` — kitob komponentlari: Rule, Note, Warning, DoDont, Steps, Terminal, Diagram, Term, Phrase, Glossary.
@@ -17,8 +18,8 @@ Git, ish oqimi va atamalar reglamenti. Jamoaning barcha repo'lari uchun umumiy q
 
 ```bash
 pnpm install
-pnpm build   # dist/handbook.html — o'qish rejimi; ?print bilan A4 sahifalar
-pnpm pdf     # dist/handbook.pdf — Chrome kerak (CHROME o'zgaruvchisi bilan yo'lini berish mumkin)
+pnpm build   # dist/handbook.html va dist/protocol.html — o'qish rejimi; ?print bilan A4 sahifalar
+pnpm pdf     # dist/handbook.pdf va dist/protocol.pdf — Chrome kerak (CHROME o'zgaruvchisi bilan yo'lini berish mumkin)
 pnpm protocol  # dist/protocol/*.md — har protocol alohida fayl, README.md'da saralash jadvali
 pnpm check   # testlar va protocol tekshiruvi
 ```

@@ -168,7 +168,7 @@ export function Phrase({ ok, bad, children }) {
 }
 
 const slug = (t) => `term-${t.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
-const inlineCode = (text) =>
+export const inlineCode = (text) =>
    text.split(/(`[^`]+`)/g).map((part, i) =>
       part.startsWith("`") ? <code key={i}>{part.slice(1, -1)}</code> : part,
    );

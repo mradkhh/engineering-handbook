@@ -7,6 +7,7 @@ Versiyalar semver bo'yicha: birinchi raqam — qoidaning ma'nosi o'zgardi, o'rta
 Engineering Protocol — ikkinchi kitob, yagona qoida manbai (blago-vsem/crm#208). Hali chiqmagan; v1.0.0 amalda.
 
 - `protocol/`: vaziyat bo'yicha kartalar, `pnpm check` va `pnpm protocol`. Yozilgan: Umumiy qoidalar, PR ochish.
+- Protocol kitobi (`dist/protocol.html`, PDF): saralash jadvali, darajalar, har karta va uning kartadan chizilgan sxemasi.
 - Ma'nosi o'zgaradigan qoidalar (chiqishda major sababi):
   - Darajalar uchta: taqiq, majburiy, tavsiya. MAY yo'q; tavsiya sababsiz o'tkazib yuborilishi mumkin (v1.0.0 SHOULD: «jiddiy sabab bo'lsa»).
   - PR matnida `Closes #N` o'rniga `Tiket:` va `Spec:` qatorlari; issue'ni yopadigan kalit so'z taqiq (05#3, 08#8).

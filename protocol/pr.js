@@ -1,4 +1,4 @@
-// PR ochish: tiket kodi feature branch'da tayyor, endi u `dev`ga ko'rik uchun beriladi.
+// PR ochish: tiket kodi feature branch'da tayyor, endi u `dev`ga review uchun beriladi.
 export default {
    kod: "PR",
    belgilar: [
@@ -99,7 +99,7 @@ export default {
    tugash: [
       "PR ochiq, draft emas, base — integration branch",
       "PR-01 … PR-07 bajarilgan yoki ularning chetlanishi yozilgan",
-      "Ko'rikchi belgilangan, review so'ralgan (REVIEW)",
+      "Reviewer belgilangan, review so'ralgan (REVIEW)",
    ],
    murojaat: "Release owner",
    handbook: ["5", "8", "9", "10"],

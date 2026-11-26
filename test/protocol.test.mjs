@@ -4,7 +4,7 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
-import { loadProtocol, toMarkdown } from "../src/protocol.js";
+import { cardFlow, loadProtocol, toMarkdown } from "../src/protocol.js";
 
 const chapters = [{ n: "5" }, { n: "8" }];
 
@@ -189,6 +189,62 @@ test("Markdown: har band, daraja, tekshiruvchi va qaror nuqtasi chiqadi; README'
    assert.ok(readme.includes("v9.9.9"));
    assert.ok(readme.includes("| Tiket kodi push qilingan | [PR — PR ochish](PR.md) |"), readme);
    assert.ok(readme.includes("XAVF") && readme.includes("yoziladi"), "rejalashtirilgan protocol ko'rinmaydi");
+});
+
+test("sxema tavsifi: boshlash → bandlar tartibida → qaror nuqtasi o'z bandidan keyin → tugash; taqiq sxemada yo'q", async () => {
+   const { protocol } = await load();
+   const card = protocol.cards.find((c) => c.kod === "PR");
+   const flow = cardFlow(protocol, card);
+   assert.deepEqual(
+      flow.map((s) => (s.tur === "band" ? s.id : s.tur)),
+      ["boshlash", "PR-01", "qaror", "PR-02", "tugash"],
+   );
+   assert.deepEqual(flow[0].matnlar, card.shart);
+   assert.deepEqual(flow.at(-1).matnlar, card.tugash);
+   const q = flow[2];
+   assert.equal(q.savol, "Xavfli o'zgarish bormi?");
+   assert.deepEqual(q.ha, { kod: "XAVF", nom: "Xavfli o'zgarish", yozilgan: false });
+   assert.equal(q.yoq, null);
+   assert.equal(flow[1].daraja, "majburiy");
+});
+
+test("sxema kartadan yasaladi: band yoki qaror nuqtasi qo'shilsa, sxema o'zi o'zgaradi", async () => {
+   const c = pr();
+   c.bandlar.splice(1, 0, { id: "PR-03", daraja: "majburiy", tekshiruvchi: "muallif", matn: "Yangi qadam." });
+   c.qarorlar.push({ keyin: "PR-03", savol: "Umumiyga?", ha: null, yoq: "PR" });
+   const { protocol, errors } = await load({ cards: [umumiy(), c] });
+   assert.deepEqual(errors, []);
+   const flow = cardFlow(protocol, protocol.cards.find((x) => x.kod === "PR"));
+   assert.deepEqual(
+      flow.map((s) => (s.tur === "band" ? s.id : s.tur)),
+      ["boshlash", "PR-01", "qaror", "PR-03", "qaror", "PR-02", "tugash"],
+   );
+   assert.deepEqual(flow[4].yoq, { kod: "PR", nom: "PR ochish", yozilgan: true });
+});
+
+test("qaror nuqtasi taqiq bandidan keyin yoki ikkala javobi boshqa protocol'ga olib borsa xato", async () => {
+   const c = pr();
+   c.qarorlar.push({ keyin: "PR-T1", savol: "?", ha: "XAVF", yoq: null });
+   c.qarorlar.push({ keyin: "PR-02", savol: "??", ha: "XAVF", yoq: "UM" });
+   const { errors } = await load({ cards: [umumiy(), c] });
+   hasError(errors, "PR-T1", "taqiq");
+   hasError(errors, "PR-02", "ikkala");
+});
+
+test("haqiqiy «PR ochish» sxemasida kartaning har bandi (taqiqsiz) va har qaror nuqtasi bor", async () => {
+   const { protocol } = await loadProtocol(new URL("../protocol/", import.meta.url).pathname);
+   const card = protocol.cards.find((c) => c.kod === "PR");
+   const flow = cardFlow(protocol, card);
+   assert.deepEqual(
+      flow.filter((s) => s.tur === "band").map((s) => s.id),
+      card.bandlar.filter((b) => b.daraja !== "taqiq").map((b) => b.id),
+   );
+   assert.deepEqual(
+      flow.filter((s) => s.tur === "qaror").map((s) => s.savol),
+      card.qarorlar.map((q) => q.savol),
+   );
+   assert.equal(flow[0].tur, "boshlash");
+   assert.equal(flow.at(-1).tur, "tugash");
 });
 
 test("haqiqiy protocol tekshiruvdan o'tadi", async () => {
