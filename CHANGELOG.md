@@ -8,6 +8,9 @@ Engineering Protocol — ikkinchi kitob, yagona qoida manbai (blago-vsem/crm#208
 
 - `protocol/`: vaziyat bo'yicha kartalar, `pnpm check` va `pnpm protocol`. Yozilgan: Umumiy qoidalar, PR ochish, Xavfli o'zgarish, Promote, Release, Beta qizil, Prod buzildi, Revert, Sir oshkor bo'ldi, Lokal git xatosi, Yangi ish, Spec va tiketlar, Tiketni boshlash, Kod va commit, Agent bilan ishlash, Dev bilan moslash, Push, Review, Review'ga javob, Dev'ga merge, Tozalash, Protocol yoki profilni o'zgartirish; «Umumiy»da doimiy qoidalar (til, atama, raqam + nom, git sozlamasi; hajm — PR-08).
 - Tekshiruv matndagi havolalarni ham tekshiradi: band (`XAVF-08`) va qavsdagi protocol kodi (`(BETA)`); lokal band (`CRM-PR-01`) o'tkaziladi.
+- Handbook darslikka aylandi: v1.0.0 dagi 101 qoida qutisining o'rnida `<Band id="…" />` — matn, daraja va tekshiruvchi protocol'dan olinadi; `<Rule>` komponenti olib tashlandi. `pnpm check` o'z matnli quti qolsa yoki havola yo'q bandga ishora qilsa qizil; ko'chish xaritasi to'liq bo'lishi majburiy.
+- 1-bob: «Kitob va protocol» bo'limi, darajalar — taqiq, majburiy, tavsiya. 15-bob (eslatma) saralash jadvaliga va asosiy bandlarga ishora qiladi. Ilova A: protocol (§12) va kuzatish (§13) bo'limlari.
+- Boblardagi misollar yangi qoidalarga moslandi: `Closes` o'rniga `Tiket:`/`Spec:`, tozalashda `branch -d`, `reset --hard` o'rniga `branch -f` va zaxira branch, xavfli PR spec guruhi bilan.
 - Protocol kitobi (`dist/protocol.html`, PDF): saralash jadvali, darajalar, har karta va uning kartadan chizilgan sxemasi.
 - Ma'nosi o'zgaradigan qoidalar (chiqishda major sababi):
   - Darajalar uchta: taqiq, majburiy, tavsiya. MAY yo'q; tavsiya sababsiz o'tkazib yuborilishi mumkin (v1.0.0 SHOULD: «jiddiy sabab bo'lsa»).

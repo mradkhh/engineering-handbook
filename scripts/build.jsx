@@ -11,7 +11,7 @@ import remarkGfm from "remark-gfm";
 import { book, chapters } from "../src/book.config.js";
 import * as components from "../src/components/index.jsx";
 import * as diagrams from "../src/components/diagrams.jsx";
-import { cardAnchor, guruhNomi, ProtocolCard, ProtocolFront } from "../src/components/protocol.jsx";
+import { BandRef, cardAnchor, guruhNomi, ProtocolCard, ProtocolFront } from "../src/components/protocol.jsx";
 import { GURUHLAR, loadProtocol } from "../src/protocol.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -19,7 +19,7 @@ const PAGED_JS = "https://unpkg.com/pagedjs@0.4.3/dist/paged.polyfill.js";
 const FONTS =
    "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap";
 
-const mdxComponents = {
+const baseComponents = {
    ...components,
    ...diagrams,
    table: (props) => (
@@ -40,14 +40,20 @@ const decode = (s) =>
       .replace(/&amp;/g, "&");
 const stripTags = (s) => decode(s.replace(/<[^>]+>/g, ""));
 
-async function renderChapter(ch) {
+// Boblar `<Band id="…" />` bilan protocol bandiga havola qiladi; matn protocol'dan olinadi.
+const mdxComponents = (protocol) => ({
+   ...baseComponents,
+   Band: ({ id }) => <BandRef protocol={protocol} id={id} protocolHref="protocol.html" />,
+});
+
+async function renderChapter(ch, protocol) {
    const source = readFileSync(join(ROOT, "content", ch.file), "utf8");
    const { default: Content } = await evaluate(source, {
       ...runtime,
       remarkPlugins: [remarkGfm],
       rehypePlugins: [rehypeSlug],
    });
-   let html = renderToStaticMarkup(<Content components={mdxComponents} />);
+   let html = renderToStaticMarkup(<Content components={mdxComponents(protocol)} />);
 
    // Boblararo id to'qnashmasligi uchun har bir id bob prefiksini oladi.
    const prefix = `ch${ch.n}-`;
@@ -206,10 +212,10 @@ const protocolMeta = {
    other: { href: "handbook.html", label: "Handbook" },
 };
 
-async function buildHandbook() {
+async function buildHandbook(protocol) {
    const rendered = new Map();
    for (const ch of chapters.filter((c) => c.file && existsSync(join(ROOT, "content", c.file)))) {
-      rendered.set(ch.n, await renderChapter(ch));
+      rendered.set(ch.n, await renderChapter(ch, protocol));
    }
    const items = chapters.map((ch) => {
       const r = rendered.get(ch.n);
@@ -223,9 +229,7 @@ async function buildHandbook() {
    console.log(`dist/handbook.html: ${rendered.size} bob, ${sectionCount} bo'lim`);
 }
 
-async function buildProtocol() {
-   const { protocol, errors } = await loadProtocol(join(ROOT, "protocol"));
-   if (errors.length) throw new Error(`Protocol tekshiruvi o'tmadi (pnpm check):\n${errors.join("\n")}`);
+async function buildProtocol(protocol) {
    const section = (id, kicker, inner) =>
       `<section class="chapter protocol" id="${id}">
 <div class="chapter__kicker">${esc(kicker)}</div>
@@ -267,8 +271,10 @@ ${renderToStaticMarkup(inner)}
 
 async function main() {
    mkdirSync(join(ROOT, "dist"), { recursive: true });
-   await buildHandbook();
-   await buildProtocol();
+   const { protocol, errors } = await loadProtocol(join(ROOT, "protocol"));
+   if (errors.length) throw new Error(`Protocol tekshiruvi o'tmadi (pnpm check):\n${errors.join("\n")}`);
+   await buildHandbook(protocol);
+   await buildProtocol(protocol);
 }
 
 main().catch((err) => {

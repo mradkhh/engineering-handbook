@@ -8,11 +8,7 @@ Uchta umumiy qoida bor: vahima qilmang, himoyalangan branch tarixini qayta yozma
 
 Ba'zi muammolar faqat sizning branch'ingizga tegadi. Ularni o'zingiz hal qilasiz. Boshqalari `dev`, `beta`, `main` yoki muhitlarga tegadi. Ular haqida jamoa bilishi shart.
 
-<Rule level="MUST">
-
-`dev`, `beta`, `main` yoki biror muhitga tegadigan muammo haqida <Term t="release owner" />ga darhol yozing. Avval xabar bering, keyin tuzating.
-
-</Rule>
+<Band id="UM-11" />
 
 Xabarda to'rt narsa bo'ladi:
 
@@ -21,7 +17,7 @@ Xabarda to'rt narsa bo'ladi:
 3. Siz nima qildingiz.
 4. Hozir nima kerak.
 
-<Phrase ok="Beta qizil: #172 merge'dan keyin test yiqildi. Revert PR ochdim, review kerak." bad="Beta'da nimadir buzildi shekilli.">
+<Phrase ok="Beta qizil: #172 Bildirishnomalar merge'dan keyin test yiqildi. Revert PR ochdim, review kerak." bad="Beta'da nimadir buzildi shekilli.">
 
 Aniq xabar tuzatishni tezlashtiradi. Taxmin emas, fakt yozing.
 
@@ -31,11 +27,7 @@ Aniq xabar tuzatishni tezlashtiradi. Taxmin emas, fakt yozing.
 
 `dev` yoki `beta`ga xato commit kirdi. Uni tarixdan o'chirib bo'lmaydi: boshqalar allaqachon shu tarixni fetch qilgan. To'g'ri yo'l — <Term t="revert" />. U xato commit'ning teskarisini yangi commit qilib qo'shadi.
 
-<Rule level="MUST NOT">
-
-`dev`, `beta` yoki `main`da `git reset` qilmang va force-push qilmang. Xatoni faqat revert bilan qaytaring.
-
-</Rule>
+<Band id="UM-T2" />
 
 <Steps>
 
@@ -66,27 +58,19 @@ Squash-merge bo'lgan PR `dev`da bitta commit bo'ladi. Shuning uchun butun PR'ni 
 
 Beta qizil — bu oxirgi promote'dan keyin CI yoki deploy muvaffaqiyatsiz tugagani. Qizil beta keyingi release'ni to'sadi.
 
-<Rule level="MUST">
-
-Qizil beta o'sha kuni tuzatiladi yoki revert qilinadi.
-
-</Rule>
+<Band id="BETA-01" />
 
 <Steps>
 
 1. CI log'ini o'qing va qaysi qadam yiqilganini toping.
 2. Sababchi commit'ni toping. Odatda bu oxirgi promote'dagi commit'lardan biri.
-3. Tuzatish bir soatdan kam vaqt olsa, tuzatish PR'ini oching.
+3. Tuzatish bir soatdan kam vaqt olsa, tuzatish tiketi va PR'ini oching (BETA-03).
 4. Aks holda sababchi commit'ni revert qiling.
 5. Tuzatish ham, revert ham oddiy yo'ldan yuradi: PR, `dev`, promote.
 
 </Steps>
 
-<Rule level="MUST NOT">
-
-Beta'ni tuzatish uchun `beta` branch'iga to'g'ridan-to'g'ri commit yoki push qilmang. `beta` faqat `dev`ni fast-forward qiladi.
-
-</Rule>
+<Band id="PROMOTE-T1" />
 
 ## Prod'dagi muammo: rollback, keyin hotfix
 
@@ -101,15 +85,12 @@ Prod'da muammo bo'lsa, ikki ish bor: foydalanuvchini himoya qilish va xatoni tuz
 3. Xatoni oddiy yo'l bilan tuzating: tuzatish PR'i, `dev`, promote, beta yashil.
 4. Release owner release window'dan tashqarida release PR ochadi.
 5. Agar kutish mumkin bo'lmasa, release owner favqulodda hotfix tartibini qo'llaydi. Bu tartib repo profilida yoziladi.
-6. Favqulodda hotfix'dan keyin `main` darhol `dev`ga merge qilinadi va promote qilinadi.
+6. Favqulodda hotfix'dan keyin `main` darhol `dev`ga PR orqali (merge commit bilan) qo'shiladi va promote qilinadi (PROD-05).
+7. Hotfix ham release kabi yoziladi: tag va GitHub Release, tiket yopiladi (PROD-06).
 
 </Steps>
 
-<Rule level="MUST">
-
-Favqulodda hotfix yo'lini faqat release owner tanlaydi. Oddiy yo'l bilan tuzatish mumkin bo'lsa, oddiy yo'l ishlatiladi.
-
-</Rule>
+<Band id="PROD-03" />
 
 <Warning>
 
@@ -148,17 +129,16 @@ Siz local `dev`da yoki boshqa tiketning branch'ida commit qildingiz. Commit hali
 
 <Steps>
 
-1. Joriy holatdan to'g'ri branch oching: `git switch -c 180-to-gri-nom`. Commit yangi branch'da qoladi.
-2. Eski branch'ga qayting: `git switch dev`.
-3. Eski branch'ni remote holatiga qaytaring: `git reset --hard origin/dev`.
+1. Joriy holatdan to'g'ri branch oching: `git switch -c 180-to-gri-nom`. Commit yangi branch'da qoladi va siz endi shu branch'dasiz.
+2. Local `dev`ni remote holatiga qaytaring, `dev`ga o'tmasdan: `git branch -f dev origin/dev`.
 
 </Steps>
 
-<Warning>
+<Note>
 
-`git reset --hard` commit qilinmagan o'zgarishlarni o'chiradi. Undan oldin `git status` bilan ish papkasi toza ekanini tekshiring. Bu buyruqni faqat local branch'da yoki o'zingizning feature branch'ingizda bajaring.
+`git branch -f` faqat local branch ko'rsatkichini suradi: ish papkasiga va remote'ga tegmaydi. `git reset --hard` esa commit qilinmagan o'zgarishlarni o'chiradi, shuning uchun protocol uni ishlatmaydi (GIT-02).
 
-</Warning>
+</Note>
 
 Commit boshqa tiketning branch'iga tushgan bo'lsa, uni to'g'ri branch'ga <Term t="cherry-pick" /> qiling. Keyin eski branch'dan olib tashlang. Eski branch push qilingan bo'lsa, keyingi push `--force-with-lease --force-if-includes` bilan bo'ladi.
 
@@ -185,13 +165,13 @@ c5d2e91 HEAD@{2}: rebase (start): checkout origin/dev
 1. `git reflog` bilan rebase'dan oldingi commit'ni toping. Misolda bu `HEAD@{3}`.
 2. Avval uni xavfsiz joyga saqlang: `git branch rescue-172 7aa0c51`.
 3. `git log rescue-172` bilan to'g'ri commit ekanini tekshiring.
-4. Kerak bo'lsa, branch'ingizni shu commit'ga qaytaring: `git reset --hard rescue-172`.
+4. Ishni shu branch'dan davom ettiring: `git switch rescue-172`.
 
 </Steps>
 
 <Warning>
 
-`git reset --hard` faqat o'zingizning feature branch'ingizda. Branch push qilingan bo'lsa, keyingi push `--force-with-lease --force-if-includes` bilan bo'ladi.
+Tiklangan branch push qilingan branch o'rnini bossa, keyingi push `--force-with-lease --force-if-includes` bilan bo'ladi (GIT-06).
 
 </Warning>
 
@@ -201,11 +181,7 @@ Yo'qolgan commit uchun ham shu yo'l ishlaydi. Reflog faqat local'da va odatda 90
 
 Siz `dev`, `beta` yoki `main`ga tasodifan push qildingiz. Odatda hook buni to'xtatadi, lekin hook har doim ham ishlamaydi.
 
-<Rule level="MUST NOT">
-
-Xato push'ni force-push bilan «tuzatmang». Boshqalar bu commit'ni allaqachon fetch qilgan bo'lishi mumkin.
-
-</Rule>
+<Band id="UM-T2" />
 
 <Steps>
 
@@ -225,7 +201,7 @@ Nima qilish branch turiga bog'liq.
 | Branch | Sabab | Nima qilish kerak |
 |---|---|---|
 | O'z feature branch'ingiz | `dev`ga yangi commit'lar kirdi | `git fetch origin` va `git rebase origin/dev`. |
-| Local `dev` yoki `beta` | Siz unda commit qilgansiz | Commit'larni yangi branch'ga ko'chiring, keyin `git reset --hard origin/dev`. «Commit noto'g'ri branch'da» bo'limiga qarang. |
+| Local `dev` yoki `beta` | Siz unda commit qilgansiz | Commit'larni yangi branch'ga ko'chiring, keyin `git branch -f dev origin/dev`. «Commit noto'g'ri branch'da» bo'limiga qarang. |
 
 <Phrase ok="Pull rad etildi, local dev ajralib qolgan ekan. Commit'ni yangi branch'ga ko'chirdim." bad="Pull ishlamayapti, git buzildi.">
 
@@ -241,4 +217,4 @@ Git buzilmagan: u sizni tasodifiy merge commit'dan himoya qildi.
 - Prod: avval rollback, keyin hotfix. Favqulodda hotfix'dan keyin `main` `dev`ga merge qilinadi.
 - Sir push bo'lsa — avval kalitni almashtiring.
 - Rebase buzilsa — `git rebase --abort`. Tugagan bo'lsa — `git reflog`.
-- `git reset --hard` faqat o'z branch'ingizda va `git status`dan keyin.
+- `git reset --hard` o'rniga zaxira branch va `git branch -f` (GIT-01, GIT-02).

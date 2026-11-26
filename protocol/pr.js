@@ -78,7 +78,7 @@ export default {
          id: "PR-T1",
          daraja: "taqiq",
          tekshiruvchi: "reviewer",
-         matn: "PR matnida issue'ni yopadigan kalit so'z (`Closes`, `Fixes`, `Resolves` va ularning shakllari) yozilmaydi: integration branch'ga merge issue'ni prodga chiqmasdan yopadi. Issue kod prodga chiqqanda yopiladi.",
+         matn: "PR matnida va commit xabarida issue'ni yopadigan kalit so'z (`Closes`, `Fixes`, `Resolves` va ularning shakllari) yozilmaydi: integration branch'ga merge issue'ni prodga chiqmasdan yopadi. Issue kod prodga chiqqanda yopiladi.",
          manba: ["05#3", "08#8"],
       },
    ],

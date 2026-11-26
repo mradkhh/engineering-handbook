@@ -4,7 +4,7 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
-import { cardFlow, loadProtocol, toMarkdown } from "../src/protocol.js";
+import { cardFlow, checkHandbook, loadProtocol, toMarkdown } from "../src/protocol.js";
 
 const chapters = [{ n: "5" }, { n: "8" }];
 
@@ -267,6 +267,35 @@ test("havola tekshiruvi: lokal band (CRM-PR-99) o'tkaziladi; shart, belgi va sav
    assert.equal(refs.length, 4, errors.join("\n"));
    for (const s of ["PR-07", "PR-08", "PR-T5", "NOMA"]) hasError(refs, s);
    assert.ok(!refs.some((e) => e.includes("PR-99")), "lokal band xato deb olindi");
+});
+
+test("handbook: o'z matnli qoida qutisi va mavjud bo'lmagan bandga havola xato; to'g'ri havola o'tadi", async () => {
+   const { protocol } = await load();
+   const errors = checkHandbook(
+      [
+         { file: "05-a.mdx", text: 'Matn.\n\n<Band id="PR-01" />\n\n<Band id="UM-01" />' },
+         { file: "08-b.mdx", text: '<Rule level="MUST">\nEski qoida.\n</Rule>\n\n<Band id="PR-42" />' },
+      ],
+      protocol,
+   );
+   assert.equal(errors.length, 2, errors.join("\n"));
+   hasError(errors, "08-b.mdx", "Rule");
+   hasError(errors, "08-b.mdx", "PR-42");
+});
+
+test("handbook: matndagi band havolasi tekshiriladi, kod bloki va lokal band o'tkaziladi", async () => {
+   const { protocol } = await load();
+   const errors = checkHandbook(
+      [
+         {
+            file: "09-c.mdx",
+            text: "Qarang: PR-02 va UM-01. Noto'g'ri: PR-77.\n\n```md\n<Rule level=\"MUST\">eski</Rule>\nPR-99\n```\n\nLokal: CRM-PR-55.",
+         },
+      ],
+      protocol,
+   );
+   assert.equal(errors.length, 1, errors.join("\n"));
+   hasError(errors, "09-c.mdx:1", "PR-77");
 });
 
 test("haqiqiy protocol tekshiruvdan o'tadi", async () => {

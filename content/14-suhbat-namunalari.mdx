@@ -8,23 +8,11 @@ Maqsad — har bir gap bitta ma'noga ega bo'lishi. Eshitgan odam qayta so'ramasd
 
 Har bir namuna quyidagi qoidalarga tayanadi.
 
-<Rule level="MUST">
+<Band id="UM-12" />
 
-Git va ish oqimi amallari inglizcha so'z va «qilmoq» bilan aytiladi: «rebase qildim», «push qildim», «review qildim». «Rebase oldim», «pushladim» kabi shakllar ishlatilmaydi.
+<Band id="UM-14" />
 
-</Rule>
-
-<Rule level="SHOULD">
-
-Amalning aniq nomini ayting. «Yangiladim» emas, «fetch qildim» yoki «rebase qildim».
-
-</Rule>
-
-<Rule level="SHOULD">
-
-Ish haqida gapirganda tiket, PR yoki commit raqamini qo'shing: «#172», «PR #181», «`4b7c1d3`». Yozma xabarda havola bering.
-
-</Rule>
+<Band id="UM-13" />
 
 Yaxshi xabarning shakli: **amal + nima + natija + keyingi qadam**.
 
@@ -32,19 +20,19 @@ Yaxshi xabarning shakli: **amal + nima + natija + keyingi qadam**.
 
 Stand-up — qisqa kunlik uchrashuv. Har bir odam uchta savolga javob beradi: kecha nima qildi, bugun nima qiladi, nima to'sib turibdi.
 
-<Phrase ok="Kecha #172'ning oluvchilar modulini tugatdim, PR #181 ochdim." bad="Kecha bildirishnomalar ustida ishladim.">
+<Phrase ok="Kecha #172 Bildirishnomalar: oluvchilar modulini tugatdim, PR #181 ochdim." bad="Kecha bildirishnomalar ustida ishladim.">
 
 Natijani ayting: tugadimi, PR bormi. «Ishladim» natijani bildirmaydi.
 
 </Phrase>
 
-<Phrase ok="Bugun #181'dagi review izohlarini tuzataman, keyin #175'ni boshlayman." bad="Bugun ham shu ishni davom ettiraman.">
+<Phrase ok="Bugun PR #181 dagi review izohlarini tuzataman, keyin #175 Bildirishnomalar: doskalararo xabarlarni boshlayman." bad="Bugun ham shu ishni davom ettiraman.">
 
-Bugungi ishni tiket raqami bilan ayting.
+Bugungi ishni tiket raqami va nomi bilan ayting (UM-13).
 
 </Phrase>
 
-<Phrase ok="Blocker: #175 #172'ni kutyapti. #181'ga review kerak." bad="Hammasi yaxshi, faqat biroz qiyin.">
+<Phrase ok="Blocker: #175 Bildirishnomalar #172 ni kutyapti. PR #181 ga review kerak." bad="Hammasi yaxshi, faqat biroz qiyin.">
 
 Blocker — ishni to'xtatib turgan narsa. Uni kim yechishini ham ayting.
 
@@ -52,7 +40,7 @@ Blocker — ishni to'xtatib turgan narsa. Uni kim yechishini ham ayting.
 
 ## Tiketni boshlash
 
-<Phrase ok="#172'ni oldim, 172-notification-recipients branch'ini origin/dev'dan ochdim." bad="Ishni boshladim.">
+<Phrase ok="#172 Bildirishnomalar: oluvchi modulini oldim, 172-notification-recipients branch'ini origin/dev'dan ochdim." bad="Ishni boshladim.">
 
 Qaysi tiket va qaysi branch ekanini ayting. Boshqalar shu tiketni ikkinchi marta olmaydi.
 
@@ -62,7 +50,7 @@ Qaysi tiket va qaysi branch ekanini ayting. Boshqalar shu tiketni ikkinchi marta
 
 <Term t="PTAL" /> — «iltimos, ko'rib chiqing». U review so'rash yoki tuzatishdan keyin qayta so'rash uchun ishlatiladi.
 
-<Phrase ok="PTAL: PR #181, #172 bo'yicha. 280 qator, testlar o'tdi." bad="Kodni qarab qo'ying.">
+<Phrase ok="PTAL: PR #181, #172 Bildirishnomalar bo'yicha. 280 qator, testlar o'tdi." bad="Kodni qarab qo'ying.">
 
 PR havolasi, hajmi va tekshiruv holatini yozing. Reviewer qancha vaqt kerakligini darhol ko'radi.
 
@@ -149,9 +137,9 @@ Qaysi faylda va natija qanday ekanini ayting.
 
 <Term t="promote" /> va <Term t="release" /> e'lonini <Term t="release owner" /> yozadi. E'lon jamoaga nima chiqqanini va nima tekshirish kerakligini aytadi.
 
-<Phrase ok="Dev'ni beta'ga promote qildim: #172, #173, #174. Deploy yashil, tekshirib ko'ringlar." bad="Beta'ga ship qildim.">
+<Phrase ok="Dev'ni beta'ga promote qildim. Bildirishnomalar #171: #172, #173, #174. Deploy yashil, tekshirib ko'ringlar." bad="Beta'ga ship qildim.">
 
-«Ship» bu kitobda ishlatilmaydi. To'g'ri so'z — promote. Qaysi tiketlar kirganini yozing.
+«Ship» bu kitobda ishlatilmaydi. To'g'ri so'z — promote. Qaysi spec va tiketlar kirganini yozing (PROMOTE-08).
 
 </Phrase>
 
@@ -199,11 +187,7 @@ Bu qisqartmalar inglizcha ish yozishmalarida keng ishlatiladi. Ular bizda ham sh
 | TL;DR | Too long; didn't read | Uzun matnning bir-ikki jumlalik xulosasi. |
 | ACK | Acknowledged | Ko'rdim, qabul qildim. |
 
-<Rule level="MUST NOT">
-
-PR'ni faqat «LGTM» izohi bilan tasdiqlamang. Rasmiy qaror — GitHub'dagi <Term t="approve" /> tugmasi.
-
-</Rule>
+<Band id="REVIEW-07" />
 
 ## Noto'g'ri → To'g'ri
 
@@ -217,7 +201,7 @@ PR'ni faqat «LGTM» izohi bilan tasdiqlamang. Rasmiy qaror — GitHub'dagi <Ter
 | Beta'ga ship qildim. | Dev'ni beta'ga promote qildim. | «Ship» bu kitobda ishlatilmaydi. |
 | Deploy qildim. (promote paytida) | Promote qildim, deploy yashil. | Promote — amal, deploy — uning natijasi. |
 | Yangiladim. | Fetch qildim / rebase qildim / pull qildim. | Aniq amal nomi aytiladi. |
-| Kod tayyor. | PR #181 tayyor, review kerak. | Havolasiz «tayyor» tekshirib bo'lmaydi. |
+| Kod tayyor. | PR #181 (#172 Bildirishnomalar) tayyor, review kerak. | Havolasiz «tayyor» tekshirib bo'lmaydi. |
 
 ## Eslab qoling
 

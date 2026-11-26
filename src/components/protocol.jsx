@@ -1,6 +1,6 @@
 // Protocol kitobi: karta sahifasi va kartadan chiziladigan sxema.
 // Ma'lumot faqat `src/protocol.js` to'plamidan keladi; bu yerda hech narsa protocol faylini o'qimaydi.
-import { cardFlow, DARAJALAR, GURUHLAR, protocolRef, TEKSHIRUVCHILAR } from "../protocol.js";
+import { cardFlow, DARAJALAR, findBand, GURUHLAR, protocolRef, TEKSHIRUVCHILAR } from "../protocol.js";
 import { inlineCode } from "./index.jsx";
 
 // ---------- sxema ----------
@@ -406,3 +406,31 @@ export function ProtocolFront({ protocol }) {
    );
 }
 
+
+// ---------- handbook'dagi band havolasi ----------
+
+// Handbook qutisining ko'rinishi protocol darajasidan: taqiq va majburiy — v1 dagi MUST NOT va MUST, tavsiya — SHOULD.
+const BAND_RULE_CLASS = { taqiq: "must-not", majburiy: "must", tavsiya: "should" };
+
+/** Handbook bobidagi qoida qutisi: matn, daraja va tekshiruvchi protocol'dan olinadi. */
+export function BandRef({ protocol, id, protocolHref }) {
+   const found = findBand(protocol, id);
+   if (!found) throw new Error(`Handbook: protocol'da ${id} bandi yo'q`);
+   const { card, band } = found;
+   return (
+      <div className={`rule rule--${BAND_RULE_CLASS[band.daraja]} band-ref`}>
+         <div className="rule__badge">
+            <a className="rule__level" href={`${protocolHref}#${id}`}>
+               {id}
+            </a>
+            <span className="rule__meaning">{band.daraja}</span>
+         </div>
+         <div className="rule__body">
+            <p>{inlineCode(band.matn)}</p>
+            <p className="band-ref__meta">
+               {card.kod} — {card.nom} · tekshiruvchi: {band.tekshiruvchi}
+            </p>
+         </div>
+      </div>
+   );
+}

@@ -23,25 +23,15 @@ Har bir himoyalangan branch faqat bitta yo'l bilan o'zgaradi. Boshqa yo'l yo'q.
 
 | Branch | Yagona yo'l | Kim |
 |---|---|---|
-| `dev` | PR'ni squash-merge qilish | PR muallifi, approve'dan keyin |
+| `dev` | PR'ni squash-merge qilish | PR muallifi, review qaroridan keyin (MERGE-01) |
 | `beta` | `dev`ga fast-forward va push: promote | Release owner |
 | `main` | Release PR'ini merge commit bilan qo'shish: release | Release owner |
 
-<Rule level="MUST NOT">
-
-`dev`, `beta` yoki `main`ga to'g'ridan-to'g'ri commit qilmang va push qilmang. Bu branch'larga faqat release owner push qiladi.
-
-</Rule>
-
-<Rule level="MUST NOT">
-
-Himoyalangan branch'larni rebase qilmang va force-push qilmang.
-
-</Rule>
+<Band id="UM-T2" />
 
 <Note>
 
-Release owner o'z ishini ham `dev`ga PR orqali yoki fast-forward bilan qo'shadi. U ham `dev`da to'g'ridan-to'g'ri commit qilmaydi.
+Release owner o'z ishini ham `dev`ga PR orqali qo'shadi (PR-01). U ham `dev`da to'g'ridan-to'g'ri commit qilmaydi.
 
 </Note>
 
@@ -51,11 +41,7 @@ Release owner o'z ishini ham `dev`ga PR orqali yoki fast-forward bilan qo'shadi.
 
 `dev`da CI ishlamaydi. Sabab — narx: har bir CI yurishi pul va vaqt oladi. Shuning uchun `dev`ga keladigan kodni faqat dasturchining local tekshiruvi kafolatlaydi (10-bob).
 
-<Rule level="MUST">
-
-`dev`dagi hamma narsa prod'ga chiqishga yaroqli bo'ladi. Tugallanmagan ish o'z branch'ida qoladi yoki <Term t="feature flag" /> ortida o'chiq turadi.
-
-</Rule>
+<Band id="XAVF-04" />
 
 ## Promote: dev'dan beta'ga
 
@@ -87,26 +73,26 @@ Ba'zi PR'lar boshqalar bilan birga emas, alohida promote qilinadi: migratsiya, p
 <Steps>
 
 1. Release owner `beta`ning CI va deploy'i yashil ekanini tekshiradi.
-2. `beta`dan `main`ga release PR ochiladi.
-3. Migratsiya bo'lsa, <Term t="rehearsal" /> bajariladi: migratsiya prod nusxasida sinaladi.
-4. Release window'da PR **merge commit** bilan qo'shiladi.
-5. `main`ga push'dan keyin <Term t="gate" /> tekshiradi: bu kod beta'da sinalganmi. Keyin prod deploy.
+2. `beta`dan `main`ga release PR ochiladi; shu paytdan freeze.
+3. Yangi env kalitlari prod'ga qo'shiladi, `beta-ok`'siz tiketlar va chetlanishlar ro'yxati PR'ga yoziladi.
+4. Migratsiya bo'lsa, <Term t="rehearsal" /> bajariladi: migratsiya prod nusxasida sinaladi.
+5. Release window'da PR **merge commit** bilan qo'shiladi.
+6. `main`ga push'dan keyin <Term t="gate" /> tekshiradi: bu kod beta'da sinalganmi. Keyin prod deploy va smoke.
+7. Prod deploy yashil bo'lgach: milestone, `vYYYY.MM.DD` tag, GitHub Release; prod'ga chiqqan tiketlar yopiladi.
+
+Har qadamning bandi — protocol'ning RELIZ kartasida.
 
 </Steps>
 
-<Rule level="MUST">
+<Band id="RELIZ-07" />
 
-Release PR faqat merge commit bilan qo'shiladi. Squash va rebase qilinmaydi.
-
-</Rule>
-
-Release boshlangandan keyin `dev`ga faqat shu release'ga tegishli tuzatishlar keladi. Bu «release freeze» deyiladi.
+Release PR ochilgandan keyin `dev`ga faqat shu release'ga tegishli tuzatishlar keladi. Bu «release freeze» deyiladi.
 
 ## Nega release merge'lari dev'ga qaytarilmaydi
 
 Har bir release `main`da merge commit qoldiradi. Bu commit'lar `dev`ga qaytarib merge qilinmaydi. Bu xavfsiz, chunki gate commit tarixini emas, fayllar holatini solishtiradi: `main`dagi kod beta'da sinalgan commit bilan bir xilmi.
 
-Istisno — shoshilinch <Term t="hotfix" />. Agar tuzatish to'g'ridan-to'g'ri `main`ga tushgan bo'lsa, keyin `main` darhol `dev`ga merge qilinadi va promote qilinadi. Aks holda keyingi release bu tuzatishni o'chirib yuboradi. Tartibi 12-bobda.
+Istisno — shoshilinch <Term t="hotfix" />. Agar tuzatish to'g'ridan-to'g'ri `main`ga tushgan bo'lsa, keyin `main` darhol `dev`ga PR orqali qo'shiladi va promote qilinadi. Aks holda keyingi release bu tuzatishni o'chirib yuboradi. Tartibi 12-bobda.
 
 ## Nega aynan shu model
 

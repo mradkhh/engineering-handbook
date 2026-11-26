@@ -1,15 +1,20 @@
 // Protocol'ni tekshiradi va har protocol uchun Markdown nusxa yozadi: dist/protocol/<KOD>.md
 // `--check` — faqat tekshiradi, fayl yozmaydi.
-import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { book } from "../src/book.config.js";
-import { loadProtocol, toMarkdown } from "../src/protocol.js";
+import { checkHandbook, loadProtocol, toMarkdown } from "../src/protocol.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const checkOnly = process.argv.includes("--check");
 
-const { protocol, errors } = await loadProtocol(join(ROOT, "protocol"));
+const { protocol, errors: protocolErrors } = await loadProtocol(join(ROOT, "protocol"));
+const content = join(ROOT, "content");
+const sources = readdirSync(content)
+   .filter((f) => f.endsWith(".mdx"))
+   .map((file) => ({ file: `content/${file}`, text: readFileSync(join(content, file), "utf8") }));
+const errors = [...protocolErrors, ...checkHandbook(sources, protocol)];
 if (errors.length) {
    console.error(`Protocol tekshiruvi: ${errors.length} ta xato\n${errors.map((e) => `  ✕ ${e}`).join("\n")}`);
    process.exit(1);

@@ -1,6 +1,6 @@
 # Kitobni qanday o'qish kerak
 
-Bu kitob jamoaning git, ish oqimi va atamalar bo'yicha yagona qoidalarini beradi. U ikki vazifani bajaradi. Birinchidan, u reglament: unda bajarilishi shart bo'lgan qoidalar bor. Ikkinchidan, u qo'llanma: har bir qoida va atama izohlanadi.
+Bu kitob jamoaning git, ish oqimi va atamalar bo'yicha qo'llanmasi: u qoidalarning sababini va atamalarni tushuntiradi. Qoidalarning o'zi — ikkinchi kitobda, Engineering Protocol'da. Bu kitobdagi qoida qutilari protocol bandlarini ko'rsatadi.
 
 ## Kitob nima uchun kerak
 
@@ -8,7 +8,7 @@ Jamoada bir xil narsa har xil so'z bilan aytilsa, xato chiqadi. Masalan, «dev'n
 
 Kitob uch maqsadga xizmat qiladi:
 
-- Hamma bir xil qoida bilan ishlaydi.
+- Hamma qoidaning nega borligini tushunadi.
 - Hamma bir xil atamani bir xil ma'noda ishlatadi.
 - Har qanday yangi dasturchi bu kitobni o'qib, jamoada ishlashni boshlay oladi.
 
@@ -18,42 +18,44 @@ Kitob darajasi FAANG kompaniyalaridagi muhandislik amaliyotiga mos. Kitobni o'qi
 
 | O'quvchi | Qaysi boblar muhim |
 |---|---|
-| Yangi dasturchi | 1–7, 13, 15. Keyin qolganlari. |
+| Yangi dasturchi | 1–7, 13, 15 va protocol'ning saralash jadvali. Keyin qolganlari. |
 | Har kuni ishlaydigan dasturchi | 7, 8, 9, 12 va 15-bob. |
 | Reviewer | 8 va 9-bob. |
 | Release owner | 3, 4, 10, 11 va 12-bob. |
-| Agent | Repo'dagi agent yo'riqnomasi shu kitobga havola qiladi. |
+| Agent | Protocol. Repo'dagi agent yo'riqnomasi repo profiliga, profil esa protocol nusxasiga havola qiladi. |
 
 Kitob o'quvchi git'ni umuman bilmaydi deb hisoblamaydi. U `commit` nima ekanini biladi deb hisoblaydi, lekin har bir atamani baribir aniq ta'riflaydi. Asosiy tushunchalar 2-bobda.
 
+## Kitob va protocol
+
+Jamoaning qoidalari ikki hujjatda.
+
+| Hujjat | Nima beradi | Qachon o'qiladi |
+|---|---|---|
+| **Engineering Protocol** | Har vaziyat uchun karta: qachon, kim, qadamlar, qaror nuqtalari, tugash mezoni. Hamma qoida — shu yerda, raqamli band bo'lib. | Ish paytida: «hozir nima qilaman». |
+| **Engineering Handbook** (shu kitob) | Qoidalarning sababi, atamalar, misollar. Yangi qoida qo'shmaydi. | O'rganishda va «nega shunday» degan savolda. |
+
+Protocol'ni saralash jadvalidan boshlab o'qing: belgini toping va o'sha karta bo'yicha ishlang. Protocol'da yo'q narsa qoida emas (<Term t="band" /> UM-03).
+
 ## Qoida darajalari
 
-Har bir qoida to'rt darajadan biri bilan boshlanadi. Bu so'zlar RFC 2119 standartidan olingan va butun dunyoda muhandislik hujjatlarida ishlatiladi.
+Protocol'ning har bandi uch darajadan birida.
 
-| Daraja | Ma'nosi | Buzilsa nima bo'ladi |
+| Daraja | Ma'nosi | Chetga chiqish |
 |---|---|---|
-| **MUST** | Shart. Istisno yo'q. | PR merge qilinmaydi yoki amal to'xtatiladi. |
-| **MUST NOT** | Qilinmaydi. Istisno yo'q. | PR merge qilinmaydi yoki amal to'xtatiladi. |
-| **SHOULD** | Tavsiya. Jiddiy sabab bo'lsa, buzish mumkin. | Sababni PR'da yoki suhbatda ayting. |
-| **MAY** | Ixtiyoriy. O'zingiz tanlaysiz. | Hech narsa. |
+| **taqiq** | Hech kim, hech qachon qilmaydi. | Yo'q. Faqat protocol'ni o'zgartiradigan PR olib tashlaydi. |
+| **majburiy** | Bajariladi. | Faqat oldindan yozilgan <Term t="chetlanish" /> va release owner roziligi bilan. |
+| **tavsiya** | Odatda bajariladi. | Sababsiz o'tkazib yuborish mumkin. |
 
-Kitobda qoidalar quyidagi qutilarda keladi:
+Kitobda qoida quyidagi qutida keladi. Qutining matni protocol'dan olinadi, chap tomonda band raqami va darajasi turadi; raqam protocol kartasiga olib boradi.
 
-<Rule level="MUST">
+<Band id="BOSH-01" />
 
-Har bir tiket o'z branch'ida qilinadi.
-
-</Rule>
-
-<Rule level="SHOULD">
-
-PR 400 qatordan oshmaydi.
-
-</Rule>
+<Band id="PR-08" />
 
 <Note>
 
-Qoida qutisidan tashqaridagi matn — izoh. U qoidani tushuntiradi, lekin yangi qoida qo'shmaydi.
+Qoida qutisidan tashqaridagi matn — izoh. U qoidani tushuntiradi, lekin yangi qoida qo'shmaydi. Izoh bandga zid bo'lsa, bu kitobdagi xato: amal qiladigani band (UM-03).
 
 </Note>
 
@@ -61,28 +63,20 @@ Qoida qutisidan tashqaridagi matn — izoh. U qoidani tushuntiradi, lekin yangi 
 
 Kitob ikki qatlamdan iborat.
 
-- **Umumiy kitob** — shu kitob. Undagi qoidalar jamoaning barcha repo'lariga tegishli.
-- **Repo profili** — har bir repo'ning o'z hujjatlari. Unda faqat shu repo'ga xos narsalar yoziladi: aniq buyruqlar, muhitlar manzili, release window, belgilar nomi.
+- **Umumiy kitob va protocol** — jamoaning barcha repo'lariga tegishli.
+- **Repo profili** — har bir repo'ning o'z hujjatlari. Unda faqat shu repo'ga xos narsalar yoziladi: aniq buyruqlar, muhitlar manzili, release window, belgilar nomi va <Term t="lokal band" />lar.
 
 Kitobda «repo profilida yoziladi» degan gap shu ikkinchi qatlamni bildiradi. Profil qanday yozilishi Ilova A'da.
 
-<Rule level="MUST">
+<Band id="UM-07" />
 
-Repo profili kitobni aniqlashtiradi yoki qattiqlashtiradi. U kitobga zid bo'lmaydi.
-
-</Rule>
-
-Profil kitobga zid bo'lishi kerak bo'lsa, avval kitob o'zgartiriladi. Keyin profil.
+Profil protocol'ga zid bo'lishi kerak bo'lsa, avval protocol o'zgartiriladi. Keyin profil.
 
 ## Atamalar va til
 
 Kitob o'zbek tilida yozilgan. Git va ish oqimi atamalari esa inglizcha qoladi: ham otlar, ham fe'llar. Sabab oddiy: asboblar, xato matnlari va boshqa jamoalar shu so'zlarda gapiradi.
 
-<Rule level="MUST">
-
-Git amali inglizcha fe'l va «qilmoq» bilan aytiladi: «push qildim», «rebase qildim», «merge qildim».
-
-</Rule>
+<Band id="UM-12" />
 
 <Phrase ok="Branch'ni dev'ga rebase qildim." bad="Rebase oldim.">
 
@@ -98,7 +92,7 @@ Kitob bosqichma-bosqich ingliz tiliga o'tadi. Har bir yangi versiyada inglizcha 
 
 | Belgi | Ma'nosi |
 |---|---|
-| Qizil yoki ko'k chiziqli quti | Qoida. Chap tomonda daraja yozilgan. |
+| Qizil yoki ko'k chiziqli quti | Protocol bandi. Chap tomonda band raqami va darajasi. |
 | «Eslatma» qutisi | Foydali ma'lumot. |
 | «Ogohlantirish» qutisi | Xavf. U tegishli qadamdan oldin keladi. |
 | ✓ va ✕ ustunlari | To'g'ri va noto'g'ri amal. |
@@ -108,7 +102,7 @@ Kitob bosqichma-bosqich ingliz tiliga o'tadi. Har bir yangi versiyada inglizcha 
 
 ## Kitob qanday yangilanadi
 
-Kitob o'z repo'sida yuritiladi. U kod kabi o'zgaradi: PR orqali.
+Kitob va protocol bitta repo'da yuritiladi va bitta versiyani oladi. Ular kod kabi o'zgaradi: PR orqali (protocol'ning QOIDA kartasi).
 
 <Steps>
 
@@ -119,11 +113,12 @@ Kitob o'z repo'sida yuritiladi. U kod kabi o'zgaradi: PR orqali.
 
 </Steps>
 
-Versiya semver bo'yicha: `v1.2.0`. Yangi qoida yoki bob — o'rta raqam. Xato tuzatish — oxirgi raqam. Qoidaning ma'nosini o'zgartiradigan tahrir — birinchi raqam.
+Versiya semver bo'yicha: `v2.1.0`. Yangi band, karta yoki bob — o'rta raqam. Xato tuzatish — oxirgi raqam. Band ma'nosini o'zgartiradigan yoki bandni olib tashlaydigan tahrir — birinchi raqam.
 
 ## Eslab qoling
 
-- Qoida darajalari: MUST, MUST NOT, SHOULD, MAY.
-- Kitob — umumiy qoida. Repo profili — aniq qiymatlar. Profil kitobga zid bo'lmaydi.
+- Qoidalar — protocol'da; kitob sababini tushuntiradi.
+- Daraja uchta: taqiq, majburiy, tavsiya.
+- Repo profili — aniq qiymatlar va lokal bandlar. Profil protocol bandiga qiymat beradi yoki uni qattiqlashtiradi, bo'shashtirmaydi.
 - Git atamalari inglizcha, fe'l «qilmoq» bilan: «rebase qildim».
 - Kitob PR orqali o'zgaradi. Har bir versiyaning PDF'i bor.

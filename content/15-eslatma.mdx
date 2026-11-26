@@ -30,25 +30,37 @@
 | Branch | `<N>-<slug>`: `172-notification-recipients` |
 | Commit va PR sarlavhasi | `type(scope): sarlavha (#N)` |
 | Turlar | `feat` `fix` `refactor` `perf` `test` `docs` `chore` `ci` `revert` |
-| PR tanasi | Summary · Evidence · Merge Danger · `Closes #N` |
+| PR tanasi | `Tiket: #N — …` · `Spec: #P — …` · Summary · Evidence · Merge Danger; `Closes` yo'q |
+| Tiket sarlavhasi | `<Spec nomi>: …` yoki `<Soha>: …`, raqamsiz |
 | Review izohi | `blocking:` `nit:` `question:` `suggestion:` |
 
 </div>
 <div className="cs-col">
 
-## Asosiy qoidalar
+## Qaysi protocol
 
-- **MUST** — har bir tiket `origin/dev`dan ochilgan o'z branch'ida.
-- **MUST NOT** — `dev`, `beta`, `main`da commit yoki push.
-- **MUST** — feature branch'ni faqat `rebase origin/dev` bilan yangilash.
-- **MUST NOT** — `-f` bilan push. Faqat `--force-with-lease`, faqat o'z branch'ingizda.
-- **MUST** — push'dan oldin local tekshiruv o'tadi.
-- **MUST** — PR faqat `dev`ga, faqat squash-merge, kamida bitta approve.
-- **MUST** — xavfli PR'ni release owner merge qiladi va alohida promote qiladi.
-- **MUST** — `dev`dagi har narsa prod'ga yaroqli.
-- **MUST** — qizil beta o'sha kuni tuzatiladi yoki revert qilinadi.
-- **MUST NOT** — sir, parol, `.env` commit qilish.
-- **SHOULD** — PR 400 qatordan kichik; review bir ish kunida.
+Ishni boshlashdan oldin protocol'ning saralash jadvalidan belgini toping va o'sha karta bo'yicha ishlang (UM-01). Mos karta bo'lmasa — to'xtang va release owner'dan so'rang (UM-02).
+
+| Vaziyat | Protocol |
+|---|---|
+| Yangi g'oya yoki xato xabari | YANGI → SPEC |
+| Tiketni boshlash | BOSH → COMMIT → MOS → PUSH |
+| PR, review, merge | PR → REVIEW → JAVOB → MERGE → TOZA |
+| Migratsiya, pul, rol, CI, env, ADR | XAVF |
+| Beta'ga, prod'ga chiqarish | PROMOTE → RELIZ |
+| Beta qizil, prod buzildi | BETA, PROD, REVERT |
+| Sir oshkor bo'ldi, git chalkashdi | SIR, GIT |
+
+## Eng ko'p kerak bo'ladigan bandlar
+
+- **taqiq** — himoyalangan branch'da commit, rebase, force-push (UM-T2, COMMIT-T1).
+- **taqiq** — sir, `.env`, shaxsiy ma'lumotni commit qilish (COMMIT-T2).
+- **taqiq** — PR matnida `Closes` (PR-T1).
+- **majburiy** — bitta tiket — bitta branch — bitta PR (BOSH-01, PR-01).
+- **majburiy** — push'dan oldin lokal tekshiruv (PUSH-02).
+- **majburiy** — xavfli PR: risk label, release owner merge qiladi (XAVF-01, XAVF-03).
+- **majburiy** — qizil beta o'sha kuni yashil (BETA-01).
+- **tavsiya** — PR 400 qatordan kichik (PR-08); review bir ish kunida (REVIEW-01).
 
 ## Branch'lar
 
@@ -68,7 +80,7 @@
 | Branch | Vetka |
 | PR ochdim | Merj reqvest tashladim |
 | Dev'ni beta'ga promote qildim | Ship qildim |
-| PR #172 dev'ga merge bo'ldi | Kod tayyor |
+| #172 Bildirishnomalar dev'ga merge bo'ldi | Kod tayyor |
 
 </div>
 </div>
