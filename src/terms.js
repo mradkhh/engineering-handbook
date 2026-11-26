@@ -365,7 +365,7 @@ export const terms = {
    },
    "risk label": {
       cat: "PR va review",
-      def: "Xavfli PR'ga qo'yiladigan belgi. Bunday PR'ni release owner merge qiladi va yolg'iz promote qiladi. Nomi repo profilida.",
+      def: "Xavfli PR'ga qo'yiladigan belgi. Bunday PR'ni release owner merge qiladi va o'z spec'ining riskli tiketlari bilan bitta guruhda (spec'siz bo'lsa yolg'iz) promote qiladi. Nomi repo profilida.",
    },
    WIP: {
       cat: "PR va review",
@@ -438,7 +438,7 @@ export const terms = {
    "lokal band": {
       cat: "Protocol",
       def: "Faqat bitta repo'ga tegishli band. Repo profilida `<REPO>-<KOD>-NN` raqami bilan yoziladi va protocol'ni faqat qattiqlashtiradi.",
-      ok: "CRM-PROMOTE-01: avval kutayotgan ishlar, keyin xavfli PR yolg'iz.",
+      ok: "CRM-RELIZ-01: deploy'dan keyin 5 daqiqa smoke va 30 daqiqa xato jurnali.",
    },
    freeze: {
       cat: "Ish oqimi va muhitlar",

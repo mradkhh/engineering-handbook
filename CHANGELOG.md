@@ -6,12 +6,14 @@ Versiyalar semver bo'yicha: birinchi raqam — qoidaning ma'nosi o'zgardi, o'rta
 
 Engineering Protocol — ikkinchi kitob, yagona qoida manbai (blago-vsem/crm#208). Hali chiqmagan; v1.0.0 amalda.
 
-- `protocol/`: vaziyat bo'yicha kartalar, `pnpm check` va `pnpm protocol`. Yozilgan: Umumiy qoidalar, PR ochish.
+- `protocol/`: vaziyat bo'yicha kartalar, `pnpm check` va `pnpm protocol`. Yozilgan: Umumiy qoidalar, PR ochish, Xavfli o'zgarish, Promote, Release.
 - Protocol kitobi (`dist/protocol.html`, PDF): saralash jadvali, darajalar, har karta va uning kartadan chizilgan sxemasi.
 - Ma'nosi o'zgaradigan qoidalar (chiqishda major sababi):
   - Darajalar uchta: taqiq, majburiy, tavsiya. MAY yo'q; tavsiya sababsiz o'tkazib yuborilishi mumkin (v1.0.0 SHOULD: «jiddiy sabab bo'lsa»).
   - PR matnida `Closes #N` o'rniga `Tiket:` va `Spec:` qatorlari; issue'ni yopadigan kalit so'z taqiq (05#3, 08#8).
   - Release owner'ning o'z ishi ham PR orqali.
+  - Xavf belgili PR «yolg'iz» emas, o'z spec'ining riskli tiketlari bilan bitta guruhda promote qilinadi (11#5).
+  - Issue faqat prodga chiqqach yopiladi; reliz milestone, `vYYYY.MM.DD` tag va GitHub Release bilan yoziladi.
 
 ## v1.0.0 — 2026-11-24
 
