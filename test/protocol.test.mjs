@@ -247,6 +247,28 @@ test("haqiqiy «PR ochish» sxemasida kartaning har bandi (taqiqsiz) va har qaro
    assert.equal(flow.at(-1).tur, "tugash");
 });
 
+test("matndagi band havolasi yozilgan kartada mavjud bo'lmasa xato; yozilmagan kartaga havola xato emas", async () => {
+   const c = pr();
+   c.bandlar[0].matn = "UM-01 va PR-T1 ga qarang; XAVF-07 keyin yoziladi.";
+   c.tugash = ["PR-09 bajarilgan"];
+   const { errors } = await load({ cards: [umumiy(), c] });
+   hasError(errors, "tugash", "PR-09");
+   assert.equal(errors.filter((e) => e.includes("havola")).length, 1, errors.join("\n"));
+});
+
+test("havola tekshiruvi: lokal band (CRM-PR-99) o'tkaziladi; shart, belgi va savoldagi havolalar ham, qavsdagi protocol kodi ham tekshiriladi", async () => {
+   const c = pr();
+   c.bandlar[0].matn = "Lokal CRM-PR-99 bandi bor.";
+   c.shart = ["PR-07 bajarilgan", "Push tugagan (NOMA)"];
+   c.belgilar = ["PR-08 kerak"];
+   c.qarorlar[0].savol = "PR-T5 buzildimi?";
+   const { errors } = await load({ cards: [umumiy(), c] });
+   const refs = errors.filter((e) => e.includes("havola"));
+   assert.equal(refs.length, 4, errors.join("\n"));
+   for (const s of ["PR-07", "PR-08", "PR-T5", "NOMA"]) hasError(refs, s);
+   assert.ok(!refs.some((e) => e.includes("PR-99")), "lokal band xato deb olindi");
+});
+
 test("haqiqiy protocol tekshiruvdan o'tadi", async () => {
    const { errors } = await loadProtocol(new URL("../protocol/", import.meta.url).pathname);
    assert.deepEqual(errors, []);
