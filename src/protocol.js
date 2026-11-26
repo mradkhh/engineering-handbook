@@ -30,6 +30,10 @@ export const TEKSHIRUVCHILAR = {
 };
 
 const KOD_RE = /^[A-Z]{2,8}$/;
+// Matndagi band havolasi (`XAVF-08`, `PR-T1`); oldida harf yoki `-` bo'lsa — lokal band (`CRM-PR-01`), o'tkaziladi.
+const BAND_REF = /(?<![A-Za-z0-9-])([A-Z]{2,8})-(T?\d+)\b/g;
+// Qavsdagi protocol kodi: `(BETA)`.
+const CARD_REF = /\(([A-Z]{2,8})\)/g;
 // Karta qismlari va ularning turi. Umumiy kartada faqat bandlar.
 const KARTA_QISMLARI = {
    belgilar: "list",
@@ -144,6 +148,26 @@ export async function loadProtocol(dir, { chapters = bookChapters } = {}) {
          if (q.ha == null && q.yoq == null) errors.push(`${where} — hech qaysi javob boshqa protocol'ga olib bormaydi`);
          if (q.ha != null && q.yoq != null) {
             errors.push(`${where} — ikkala javob ham boshqa protocol'ga olib boradi: keyingi bandlarga yetib bo'lmaydi`);
+         }
+      }
+   }
+
+   // Matndagi havolalar: band (`XAVF-08`) kartasi yozilgan bo'lsa mavjud bo'lishi shart; qavsdagi kod (`(BETA)`) ro'yxatda bo'lishi shart.
+   const written = new Set(cards.map((c) => c.kod));
+   const texts = (c) => [
+      ...(Array.isArray(c.bandlar) ? c.bandlar.map((b) => [b?.id ?? "?", b?.matn]) : []),
+      ...["belgilar", "shart", "tugash"].flatMap((k) => (Array.isArray(c[k]) ? c[k].map((t) => [k, t]) : [])),
+      ...["ijrochi", "murojaat"].map((k) => [k, c[k]]),
+      ...(Array.isArray(c.qarorlar) ? c.qarorlar.map((q) => [`qaror (${q?.keyin ?? "?"})`, q?.savol]) : []),
+   ];
+   for (const c of cards) {
+      for (const [where, text] of texts(c)) {
+         if (typeof text !== "string") continue;
+         for (const [ref, kod] of text.matchAll(BAND_REF)) {
+            if (written.has(kod) && !allIds.has(ref)) errors.push(`${c.kod}: ${where} — havola ${ref}: ${kod} kartasida bunday band yo'q`);
+         }
+         for (const [, kod] of text.matchAll(CARD_REF)) {
+            if (!registry.has(kod)) errors.push(`${c.kod}: ${where} — havola (${kod}): bunday protocol ro'yxatda yo'q`);
          }
       }
    }

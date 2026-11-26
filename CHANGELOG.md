@@ -6,7 +6,8 @@ Versiyalar semver bo'yicha: birinchi raqam — qoidaning ma'nosi o'zgardi, o'rta
 
 Engineering Protocol — ikkinchi kitob, yagona qoida manbai (blago-vsem/crm#208). Hali chiqmagan; v1.0.0 amalda.
 
-- `protocol/`: vaziyat bo'yicha kartalar, `pnpm check` va `pnpm protocol`. Yozilgan: Umumiy qoidalar, PR ochish, Xavfli o'zgarish, Promote, Release.
+- `protocol/`: vaziyat bo'yicha kartalar, `pnpm check` va `pnpm protocol`. Yozilgan: Umumiy qoidalar, PR ochish, Xavfli o'zgarish, Promote, Release, Beta qizil, Prod buzildi, Revert, Sir oshkor bo'ldi, Lokal git xatosi.
+- Tekshiruv matndagi havolalarni ham tekshiradi: band (`XAVF-08`) va qavsdagi protocol kodi (`(BETA)`); lokal band (`CRM-PR-01`) o'tkaziladi.
 - Protocol kitobi (`dist/protocol.html`, PDF): saralash jadvali, darajalar, har karta va uning kartadan chizilgan sxemasi.
 - Ma'nosi o'zgaradigan qoidalar (chiqishda major sababi):
   - Darajalar uchta: taqiq, majburiy, tavsiya. MAY yo'q; tavsiya sababsiz o'tkazib yuborilishi mumkin (v1.0.0 SHOULD: «jiddiy sabab bo'lsa»).

@@ -42,8 +42,8 @@ export default {
          id: "UM-T2",
          daraja: "taqiq",
          tekshiruvchi: "hook",
-         matn: "Himoyalangan branch'lar (`dev`, `beta`, `main`; ro'yxati repo profilida) rebase yoki force-push qilinmaydi va ulardagi commit `git reset` bilan o'chirilmaydi. Ularga faqat release owner push qiladi.",
-         manba: ["03#1", "03#2"],
+         matn: "Himoyalangan branch'lar (`dev`, `beta`, `main`; ro'yxati repo profilida) rebase yoki force-push qilinmaydi va ulardagi commit `git reset` bilan o'chirilmaydi; xato faqat revert bilan qaytariladi. Ularga faqat release owner push qiladi.",
+         manba: ["03#1", "03#2", "07#6", "12#2", "12#6"],
       },
       {
          id: "UM-06",
@@ -75,6 +75,13 @@ export default {
          daraja: "majburiy",
          tekshiruvchi: "skript",
          matn: "Band raqami o'zgarmaydi va qayta ishlatilmaydi. Olib tashlangan band raqami kartaning o'chirilganlar ro'yxatiga yoziladi.",
+      },
+      {
+         id: "UM-11",
+         daraja: "majburiy",
+         tekshiruvchi: "release owner",
+         matn: "Himoyalangan branch yoki biror muhitga tegadigan muammoni ko'rgan odam release owner'ga darhol yozadi: nima bo'ldi, qaysi branch, commit yoki release. Avval xabar, keyin tuzatish; faqat oshkor bo'lgan kalitni bekor qilish xabardan oldin bo'lishi mumkin (SIR-01).",
+         manba: ["12#1"],
       },
    ],
 };
