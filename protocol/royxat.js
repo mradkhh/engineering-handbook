@@ -32,7 +32,9 @@ export const protokollar = [
 ];
 
 // v1.0.0 qoidasi (`v1-qoidalar.json` kaliti) → protocol'ga ko'chmagani sababi.
-export const olibTashlandi = {};
+export const olibTashlandi = {
+   "10#4": "Protocol'da «ixtiyoriy» daraja yo'q. Faqat hujjat o'zgargan push PUSH-T2 ga kirmaydi; uning tartibini repo profili yozadi.",
+};
 
 // true bo'lganda v1.0.0 dagi har qoida bandga ko'chgan yoki shu yerda sababi bilan yozilgan bo'lishi shart.
 export const kochishToliq = false;
