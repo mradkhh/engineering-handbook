@@ -207,7 +207,7 @@ const protocolMeta = {
    kicker: "Protocol · vaziyat bo'yicha qoidalar",
    title: "Engineering Protocol",
    subtitle: "Nimani, qachon, qanday qilish va kim tekshiradi",
-   edition: "Qoralama",
+   edition: book.protocolEdition,
    version: book.protocolVersion,
    other: { href: "handbook.html", label: "Handbook" },
 };

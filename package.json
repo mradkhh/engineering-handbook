@@ -1,6 +1,6 @@
 {
   "name": "engineering-handbook",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "description": "Git, ish oqimi va atamalar reglamenti",
@@ -8,7 +8,8 @@
     "build": "esbuild scripts/build.jsx --bundle --platform=node --format=esm --packages=external --jsx=automatic --outfile=.build/build.mjs && node .build/build.mjs",
     "pdf": "node scripts/pdf.mjs",
     "protocol": "node scripts/protocol.mjs",
-    "check": "node --test test/ && node scripts/protocol.mjs --check"
+    "check": "node --test test/ && node scripts/protocol.mjs --check",
+    "release:assets": "pnpm build && pnpm pdf && pnpm protocol && node scripts/release-assets.mjs"
   },
   "devDependencies": {
     "@mdx-js/mdx": "3.1.0",
