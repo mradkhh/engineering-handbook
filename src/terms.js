@@ -9,6 +9,7 @@ export const categories = [
    "PR va review",
    "Tekshiruv va deploy",
    "Agent oqimi",
+   "Protocol",
 ];
 
 export const terms = {
@@ -397,6 +398,47 @@ export const terms = {
    incident: {
       cat: "Tekshiruv va deploy",
       def: "Foydalanuvchiga ta'sir qiladigan muammo, odatda prod'da.",
+   },
+   // Protocol
+   protocol: {
+      cat: "Protocol",
+      def: "Bitta vaziyat uchun qoida kartasi: qachon qo'llanadi, kim bajaradi, qadamlar, qaror nuqtalari va tugash mezoni. Hamma majburiy qoida protocol'da; kitob sababini tushuntiradi.",
+      ok: "PR protocol'i bo'yicha ishlayman.",
+   },
+   band: {
+      cat: "Protocol",
+      def: "Protocol'ning bitta qoidasi: o'zgarmas raqam (`PR-03`, taqiq `PR-T1`), daraja, tekshiruvchi va matn. Raqam qayta ishlatilmaydi.",
+      ok: "blocking: PR-04 bajarilmagan — `Tiket:` qatori yo'q.",
+   },
+   "saralash jadvali": {
+      cat: "Protocol",
+      def: "«Belgi → protocol» jadvali. Ishni boshlashdan oldin qaysi protocol bo'yicha ishlashni shu jadvaldan topasiz.",
+   },
+   chetlanish: {
+      cat: "Protocol",
+      def: "Majburiy banddan oldindan yozilgan chetga chiqish: `Chetlanish: <band> — <sabab>` qatori va release owner roziligi. Taqiq bandidan chetlanish yo'q.",
+      ok: "Chetlanish: PR-08 — migratsiya fayli katta, bo'lib bo'lmaydi.",
+   },
+   tekshiruvchi: {
+      cat: "Protocol",
+      def: "Bandning bajarilganini tekshiradigan narsa yoki odam: avtomat (hook, CI, skript) yoki odam (muallif, reviewer, release owner).",
+   },
+   "qaror nuqtasi": {
+      cat: "Protocol",
+      def: "Protocol kartasidagi savol: javobga qarab ish shu protocol'da davom etadi yoki boshqa protocol'ga o'tadi.",
+   },
+   "tugash mezoni": {
+      cat: "Protocol",
+      def: "Protocol bajarilgan hisoblanishi uchun tekshirsa bo'ladigan shartlar.",
+   },
+   "ko'chish xaritasi": {
+      cat: "Protocol",
+      def: "v1.0.0 kitobidagi har qoida qaysi bandga ko'chgani yoki nega olib tashlangani ro'yxati.",
+   },
+   "lokal band": {
+      cat: "Protocol",
+      def: "Faqat bitta repo'ga tegishli band. Repo profilida `<REPO>-<KOD>-NN` raqami bilan yoziladi va protocol'ni faqat qattiqlashtiradi.",
+      ok: "CRM-PROMOTE-01: avval kutayotgan ishlar, keyin xavfli PR yolg'iz.",
    },
    freeze: {
       cat: "Ish oqimi va muhitlar",

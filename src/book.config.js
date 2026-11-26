@@ -7,6 +7,8 @@ export const book = {
    date: "2026-11-24",
    author: "mradkhh",
    license: "CC BY 4.0",
+   // Protocol (ikkinchi kitob) v2.0.0 da chiqadi; ungacha qoralama.
+   protocolVersion: "v2.0.0 (qoralama)",
 };
 
 export const chapters = [

@@ -2,6 +2,16 @@
 
 Versiyalar semver bo'yicha: birinchi raqam — qoidaning ma'nosi o'zgardi, o'rta raqam — yangi qoida yoki bob, oxirgi raqam — xato tuzatish.
 
+## v2.0.0 — qoralama (chiqmagan)
+
+Engineering Protocol — ikkinchi kitob, yagona qoida manbai (blago-vsem/crm#208). Hali chiqmagan; v1.0.0 amalda.
+
+- `protocol/`: vaziyat bo'yicha kartalar, `pnpm check` va `pnpm protocol`. Yozilgan: Umumiy qoidalar, PR ochish.
+- Ma'nosi o'zgaradigan qoidalar (chiqishda major sababi):
+  - Darajalar uchta: taqiq, majburiy, tavsiya. MAY yo'q; tavsiya sababsiz o'tkazib yuborilishi mumkin (v1.0.0 SHOULD: «jiddiy sabab bo'lsa»).
+  - PR matnida `Closes #N` o'rniga `Tiket:` va `Spec:` qatorlari; issue'ni yopadigan kalit so'z taqiq (05#3, 08#8).
+  - Release owner'ning o'z ishi ham PR orqali.
+
 ## v1.0.0 — 2026-11-24
 
 Birinchi nashr.

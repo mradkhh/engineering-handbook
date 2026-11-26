@@ -1,0 +1,507 @@
+[
+ {
+  "kalit": "01#1",
+  "daraja": "MUST",
+  "matn": "Har bir tiket o'z branch'ida qilinadi."
+ },
+ {
+  "kalit": "01#2",
+  "daraja": "SHOULD",
+  "matn": "PR 400 qatordan oshmaydi."
+ },
+ {
+  "kalit": "01#3",
+  "daraja": "MUST",
+  "matn": "Repo profili kitobni aniqlashtiradi yoki qattiqlashtiradi. U kitobga zid bo'lmaydi."
+ },
+ {
+  "kalit": "01#4",
+  "daraja": "MUST",
+  "matn": "Git amali inglizcha fe'l va «qilmoq» bilan aytiladi: «push qildim», «rebase qildim», «merge qildim»."
+ },
+ {
+  "kalit": "02#1",
+  "daraja": "MUST NOT",
+  "matn": "Sir, parol, kalit va `.env` fayllarini commit qilmang. `.gitignore` sizni har doim himoya qilmaydi: `git add -f` uni chetlab o'tadi."
+ },
+ {
+  "kalit": "02#2",
+  "daraja": "SHOULD",
+  "matn": "Kompyuteringizga xos fayllarni (muharrir sozlamalari, shaxsiy skriptlar) repo'dagi `.gitignore`ga emas, `.git/info/exclude`ga yozing."
+ },
+ {
+  "kalit": "03#1",
+  "daraja": "MUST NOT",
+  "matn": "`dev`, `beta` yoki `main`ga to'g'ridan-to'g'ri commit qilmang va push qilmang. Bu branch'larga faqat release owner push qiladi."
+ },
+ {
+  "kalit": "03#2",
+  "daraja": "MUST NOT",
+  "matn": "Himoyalangan branch'larni rebase qilmang va force-push qilmang."
+ },
+ {
+  "kalit": "03#3",
+  "daraja": "MUST",
+  "matn": "`dev`dagi hamma narsa prod'ga chiqishga yaroqli bo'ladi. Tugallanmagan ish o'z branch'ida qoladi yoki feature flag ortida o'chiq turadi."
+ },
+ {
+  "kalit": "03#4",
+  "daraja": "MUST",
+  "matn": "Release PR faqat merge commit bilan qo'shiladi. Squash va rebase qilinmaydi."
+ },
+ {
+  "kalit": "04#1",
+  "daraja": "MUST",
+  "matn": "Dasturchi har bir tiketni `origin/dev`dan ochilgan o'z branch'ida qiladi va PR orqali `dev`ga yuboradi."
+ },
+ {
+  "kalit": "04#2",
+  "daraja": "MUST",
+  "matn": "Har bir PR merge'dan oldin kamida bitta approve oladi. Muallif o'z PR'iga approve bermaydi."
+ },
+ {
+  "kalit": "04#3",
+  "daraja": "MUST NOT",
+  "matn": "Agent odamning shu safargi aniq buyrug'isiz push, merge, promote yoki release qilmaydi. Oldingi ruxsat keyingi safarga o'tmaydi."
+ },
+ {
+  "kalit": "04#4",
+  "daraja": "MUST NOT",
+  "matn": "Agent himoyalangan branch'da commit qilmaydi va hech qaysi branch'ni `--force-with-lease`siz force-push qilmaydi."
+ },
+ {
+  "kalit": "04#5",
+  "daraja": "MUST",
+  "matn": "Release owner'dan boshqa odam yozgan issue bo'yicha kod yozish release owner'ning tasdiq izohidan keyin boshlanadi."
+ },
+ {
+  "kalit": "05#1",
+  "daraja": "MUST",
+  "matn": "Kod yozish qabul mezonlari bor issue'dan boshlanadi. Qabul mezonlari — tekshirsa bo'ladigan shartlar ro'yxati."
+ },
+ {
+  "kalit": "05#2",
+  "daraja": "MUST",
+  "matn": "Push'dan oldin local tekshiruv o'tadi: lint, typecheck va testlar. Repo'da bu `pre-push` hook'i."
+ },
+ {
+  "kalit": "05#3",
+  "daraja": "MUST",
+  "matn": "PR sarlavhasi commit formatida: `type(scope): sarlavha (#N)`. PR tanasida `Closes #N` bor."
+ },
+ {
+  "kalit": "05#4",
+  "daraja": "MUST",
+  "matn": "Xavfli PR'ni (migratsiya, pul mantig'i, rollar, CI, yangi env kaliti) muallif emas, release owner merge qiladi (11-bob)."
+ },
+ {
+  "kalit": "05#5",
+  "daraja": "MUST",
+  "matn": "Beta qizil bo'lsa, o'sha kuni tuzatiladi yoki revert qilinadi."
+ },
+ {
+  "kalit": "06#1",
+  "daraja": "MUST",
+  "matn": "Qarorlarni odam qabul qiladi. Agent faktni o'zi topadi, lekin qarorni so'raydi."
+ },
+ {
+  "kalit": "06#2",
+  "daraja": "SHOULD",
+  "matn": "Savol-javob mantiq darajasida qoladi: nima va nega. Qanday yozilishi — keyinroq, agentning ishi."
+ },
+ {
+  "kalit": "06#3",
+  "daraja": "MUST",
+  "matn": "Agent har doim feature branch'da ishlaydi. `dev`, `beta` yoki `main`da hech qachon commit qilmaydi."
+ },
+ {
+  "kalit": "06#4",
+  "daraja": "MUST NOT",
+  "matn": "Agent odamning shu safargi aniq buyrug'isiz push, merge, promote yoki release qilmaydi."
+ },
+ {
+  "kalit": "06#5",
+  "daraja": "MUST",
+  "matn": "Agent yozgan kod uchun dasturchi javob beradi. Push'dan oldin diff'ni o'zingiz o'qing."
+ },
+ {
+  "kalit": "06#6",
+  "daraja": "MUST",
+  "matn": "Agent kodning sezilarli qismini yozgan bo'lsa, commit'ga `Co-Authored-By` trailer'i qo'shiladi (8-bob)."
+ },
+ {
+  "kalit": "06#7",
+  "daraja": "SHOULD",
+  "matn": "Agentga bitta tiket bering. Bir nechta tiketni bitta topshiriqda bermang: natija bitta PR'ga sig'maydi."
+ },
+ {
+  "kalit": "07#1",
+  "daraja": "MUST",
+  "matn": "Har bir dasturchi quyidagi sozlamalarni bir marta, `--global` bilan o'rnatadi. Ism va email GitHub profilidagi bilan bir xil bo'ladi."
+ },
+ {
+  "kalit": "07#2",
+  "daraja": "MUST",
+  "matn": "Har bir tiket uchun `origin/dev`dan yangi branch oching. Nomi `<tiket raqami>-<qisqa-nom>` shaklida bo'ladi."
+ },
+ {
+  "kalit": "07#3",
+  "daraja": "MUST NOT",
+  "matn": "`dev`, `beta` yoki `main` branch'ida commit qilmang."
+ },
+ {
+  "kalit": "07#4",
+  "daraja": "MUST NOT",
+  "matn": "Maxfiy ma'lumotni commit qilmang: `.env`, kalitlar, parollar, mijoz ma'lumotlari. Push qilingan sirni tarixdan to'liq o'chirib bo'lmaydi, uni almashtirish kerak bo'ladi."
+ },
+ {
+  "kalit": "07#5",
+  "daraja": "MUST",
+  "matn": "Feature branch'ni faqat `fetch` va `rebase origin/dev` bilan yangilang."
+ },
+ {
+  "kalit": "07#6",
+  "daraja": "MUST NOT",
+  "matn": "`dev`, `beta`, `main` yoki boshqa odam ishlayotgan branch'ni rebase qilmang. Rebase tarixni qayta yozadi va boshqalarning nusxasi buziladi."
+ },
+ {
+  "kalit": "07#7",
+  "daraja": "SHOULD",
+  "matn": "Conflict'ni hal qilgandan keyin push'dan oldin testlarni qayta ishga tushiring. To'g'ri ko'ringan birlashma ham kodni buzishi mumkin."
+ },
+ {
+  "kalit": "07#8",
+  "daraja": "MUST",
+  "matn": "Qayta yozilgan branch'ni faqat `--force-with-lease --force-if-includes` bilan push qiling."
+ },
+ {
+  "kalit": "07#9",
+  "daraja": "MUST NOT",
+  "matn": "`git push -f` va `git push --force` ishlatmang. `dev`, `beta` va `main`ga hech qanday force-push qilmang."
+ },
+ {
+  "kalit": "07#10",
+  "daraja": "SHOULD",
+  "matn": "Bir soatdan uzoq turadigan ishni stash'da saqlamang. Uni commit qiling yoki boshqa ishni alohida worktree'da oching."
+ },
+ {
+  "kalit": "08#1",
+  "daraja": "MUST",
+  "matn": "Push qilinadigan har bir branch nomi `<N>-<slug>` shaklida bo'ladi. `N` — tiket raqami. `slug` — inglizcha, kebab-case, 2–5 so'z."
+ },
+ {
+  "kalit": "08#2",
+  "daraja": "MUST NOT",
+  "matn": "Bitta branch'da bir nechta tiketni bajarmang. Har bir tiket o'z branch'ida, o'z PR'ida bo'ladi."
+ },
+ {
+  "kalit": "08#3",
+  "daraja": "MUST NOT",
+  "matn": "`<N>-<slug>` shaklida bo'lmagan branch'ni push qilmang."
+ },
+ {
+  "kalit": "08#4",
+  "daraja": "MUST",
+  "matn": "Har bir commit sarlavhasi `type(scope): sarlavha (#N)` shaklida bo'ladi. `type` quyidagi ro'yxatdan olinadi. `(#N)` — tiket raqami."
+ },
+ {
+  "kalit": "08#5",
+  "daraja": "SHOULD",
+  "matn": "Sababi kodning o'zidan ko'rinmaydigan har bir commit'ga tana yozing: qaysi muammo bor edi, qaysi variant tanlandi, nima uchun."
+ },
+ {
+  "kalit": "08#6",
+  "daraja": "MUST",
+  "matn": "Kodni agent yozgan yoki sezilarli qismini yozgan bo'lsa, commit'ga `Co-Authored-By` trailer'ini qo'shing."
+ },
+ {
+  "kalit": "08#7",
+  "daraja": "MUST",
+  "matn": "PR sarlavhasi `type(scope): sarlavha (#N)` shaklida bo'ladi."
+ },
+ {
+  "kalit": "08#8",
+  "daraja": "MUST",
+  "matn": "PR tanasida Summary, Evidence va Merge Danger bo'limlari va `Closes #N` qatori bo'ladi."
+ },
+ {
+  "kalit": "08#9",
+  "daraja": "MUST",
+  "matn": "Feature PR'ning base branch'i — `dev`."
+ },
+ {
+  "kalit": "08#10",
+  "daraja": "SHOULD",
+  "matn": "Katta yoki noaniq ishda birinchi kundan draft PR oching. Tayyor bo'lganda uni «Ready for review» holatiga o'tkazing."
+ },
+ {
+  "kalit": "08#11",
+  "daraja": "SHOULD",
+  "matn": "PR 400 o'zgargan qatordan oshmasin. Avtomatik yaratilgan fayllar hisobga kirmaydi: lock fayllar, migratsiya snapshot'lari, generatsiya qilingan kod."
+ },
+ {
+  "kalit": "08#12",
+  "daraja": "MUST NOT",
+  "matn": "Approve'siz PR'ni merge qilmang. O'z PR'ingizga o'zingiz approve bermang."
+ },
+ {
+  "kalit": "08#13",
+  "daraja": "MUST",
+  "matn": "Release PR `main`ga faqat merge commit bilan qo'shiladi."
+ },
+ {
+  "kalit": "08#14",
+  "daraja": "MUST NOT",
+  "matn": "Release PR'ini squash yoki rebase bilan merge qilmang."
+ },
+ {
+  "kalit": "09#1",
+  "daraja": "MUST",
+  "matn": "Review so'rashdan oldin PR'ni o'zingiz to'liq o'qing."
+ },
+ {
+  "kalit": "09#2",
+  "daraja": "MUST",
+  "matn": "Reviewer har bir acceptance criteria bandini PR'dagi kod yoki test bilan solishtiradi."
+ },
+ {
+  "kalit": "09#3",
+  "daraja": "MUST",
+  "matn": "Agent yozgan PR'ni odam yozgan PR kabi to'liq review qiling. «Agent yozgan, demak to'g'ri» degan taxmin qilinmaydi."
+ },
+ {
+  "kalit": "09#4",
+  "daraja": "SHOULD",
+  "matn": "Reviewer review so'rovidan keyin bir ish kuni ichida javob beradi: approve, request changes yoki izohlar."
+ },
+ {
+  "kalit": "09#5",
+  "daraja": "MUST",
+  "matn": "Har bir review izohi `blocking:`, `nit:`, `question:` yoki `suggestion:` prefiksi bilan boshlanadi."
+ },
+ {
+  "kalit": "09#6",
+  "daraja": "SHOULD",
+  "matn": "`blocking:` izohida muammo va kutilgan natijani yozing. Iloji bo'lsa, tuzatish yo'lini ham ko'rsating."
+ },
+ {
+  "kalit": "09#7",
+  "daraja": "MUST",
+  "matn": "Muallif har bir izohga javob yozadi. Tuzatgan bo'lsa, tuzatish commit'ini ko'rsatadi."
+ },
+ {
+  "kalit": "09#8",
+  "daraja": "SHOULD",
+  "matn": "Review boshlangandan keyin tuzatishlarni yangi commit bilan qo'shing. `--amend` va interaktiv rebase ishlatmang."
+ },
+ {
+  "kalit": "09#9",
+  "daraja": "MUST",
+  "matn": "`blocking:` thread'ini faqat reviewer yopadi."
+ },
+ {
+  "kalit": "09#10",
+  "daraja": "MUST",
+  "matn": "Reviewer qarorni «Approve» yoki «Request changes» tugmasi bilan beradi."
+ },
+ {
+  "kalit": "09#11",
+  "daraja": "MUST",
+  "matn": "Og'zaki kelishilgan har bir qaror PR'ga yozib qo'yiladi."
+ },
+ {
+  "kalit": "10#1",
+  "daraja": "MUST NOT",
+  "matn": "Hook'larni o'chirmang va ularning skriptlarini local'da o'zgartirmang. Hook'da xato bo'lsa, uni alohida PR bilan tuzating."
+ },
+ {
+  "kalit": "10#2",
+  "daraja": "SHOULD",
+  "matn": "Ish paytida faqat o'zgargan qismning testlarini ishga tushiring. To'liq tekshiruvni `pre-push` bajaradi."
+ },
+ {
+  "kalit": "10#3",
+  "daraja": "MUST NOT",
+  "matn": "Kod o'zgargan commit yoki push'da `--no-verify` ishlatmang."
+ },
+ {
+  "kalit": "10#4",
+  "daraja": "MAY",
+  "matn": "Faqat hujjat o'zgargan push'da `--no-verify` ishlatish mumkin, agar repo profili bunga ruxsat bersa."
+ },
+ {
+  "kalit": "10#5",
+  "daraja": "MUST NOT",
+  "matn": "CI run'larini qo'lda bekor qilmang. Yangi push eski run'ni o'zi bekor qiladi. Qo'lda bekor qilingan run'dagi kod sinalmagan hisoblanadi va prod'ga chiqa olmaydi."
+ },
+ {
+  "kalit": "10#6",
+  "daraja": "MUST",
+  "matn": "PR'ning Evidence bo'limida `pre-push` tekshiruvi o'tganini yozing. Oxirgi push'dan keyin kod o'zgarmagan bo'lishi shart."
+ },
+ {
+  "kalit": "10#7",
+  "daraja": "MUST",
+  "matn": "Reviewer Evidence bo'limida tekshiruv o'tgani yozilmagan PR'ga approve bermaydi."
+ },
+ {
+  "kalit": "10#8",
+  "daraja": "MUST",
+  "matn": "Qizil beta o'sha kuni tuzatiladi yoki xato commit revert qilinadi."
+ },
+ {
+  "kalit": "10#9",
+  "daraja": "MUST NOT",
+  "matn": "Beta'ni tuzatish uchun to'g'ridan-to'g'ri `beta`ga commit yoki push qilmang. Tuzatish ham `dev` va promote orqali boradi."
+ },
+ {
+  "kalit": "11#1",
+  "daraja": "MUST",
+  "matn": "`dev`ga faqat prod'ga chiqishga tayyor kodni merge qiling."
+ },
+ {
+  "kalit": "11#2",
+  "daraja": "MUST",
+  "matn": "Yangi feature flag prod'da sukut bo'yicha o'chiq bo'ladi. Uni yoqish — alohida, ongli qaror."
+ },
+ {
+  "kalit": "11#3",
+  "daraja": "SHOULD",
+  "matn": "Funksiya to'liq ishga tushgandan keyin feature flag'ni va eski yo'lni olib tashlang. Eski flag'lar kodni chalkashtiradi."
+ },
+ {
+  "kalit": "11#4",
+  "daraja": "MUST",
+  "matn": "Yuqoridagi turlardan biri bor PR'ga repo'ning xavf belgisi qo'yiladi. Belgi nomi repo profilida yoziladi, masalan `alohida-deploy`."
+ },
+ {
+  "kalit": "11#5",
+  "daraja": "MUST",
+  "matn": "Xavf belgili PR'ni faqat release owner merge qiladi va uni yolg'iz promote qiladi."
+ },
+ {
+  "kalit": "11#6",
+  "daraja": "MUST",
+  "matn": "Xavf belgili PR tavsifida ikki narsa bo'ladi: nima buzilishi mumkin va buzilsa qanday qaytariladi."
+ },
+ {
+  "kalit": "11#7",
+  "daraja": "MUST",
+  "matn": "Har bir migratsiya oldingi release kodi bilan ishlaydi."
+ },
+ {
+  "kalit": "11#8",
+  "daraja": "MUST NOT",
+  "matn": "Release'ga chiqqan migratsiya faylini o'zgartirmang. Tuzatish uchun yangi migratsiya yozing."
+ },
+ {
+  "kalit": "11#9",
+  "daraja": "MUST",
+  "matn": "Ma'lumotni o'chiradigan migratsiya release'dan oldin prod ma'lumotining nusxasida sinaladi. Bu sinov — rehearsal. Uning tartibi repo profilida yoziladi."
+ },
+ {
+  "kalit": "11#10",
+  "daraja": "MUST NOT",
+  "matn": "Sirni git'ga commit qilmang. Env fayllar `.gitignore`da bo'ladi."
+ },
+ {
+  "kalit": "11#11",
+  "daraja": "MUST",
+  "matn": "Example env faylda faqat kalit nomlari va xavfsiz namuna qiymatlari bo'ladi. Haqiqiy qiymat hech qachon unga yozilmaydi."
+ },
+ {
+  "kalit": "11#12",
+  "daraja": "MUST",
+  "matn": "Yangi kalit yo'q bo'lsa, ilova aniq xato bilan to'xtaydi yoki xavfsiz sukut qiymat bilan ishlaydi. Jim ishlab, noto'g'ri natija bermaydi."
+ },
+ {
+  "kalit": "11#13",
+  "daraja": "MUST",
+  "matn": "Release boshlangach, `dev`ga faqat joriy release uchun tuzatishlarni merge qiling. Yangi funksiyalar release tugaguncha o'z branch'ida kutadi."
+ },
+ {
+  "kalit": "11#14",
+  "daraja": "MUST NOT",
+  "matn": "Release window'dan tashqarida release qilmang. Istisno — 12-bobdagi hotfix tartibi."
+ },
+ {
+  "kalit": "12#1",
+  "daraja": "MUST",
+  "matn": "`dev`, `beta`, `main` yoki biror muhitga tegadigan muammo haqida release ownerga darhol yozing. Avval xabar bering, keyin tuzating."
+ },
+ {
+  "kalit": "12#2",
+  "daraja": "MUST NOT",
+  "matn": "`dev`, `beta` yoki `main`da `git reset` qilmang va force-push qilmang. Xatoni faqat revert bilan qaytaring."
+ },
+ {
+  "kalit": "12#3",
+  "daraja": "MUST",
+  "matn": "Qizil beta o'sha kuni tuzatiladi yoki revert qilinadi."
+ },
+ {
+  "kalit": "12#4",
+  "daraja": "MUST NOT",
+  "matn": "Beta'ni tuzatish uchun `beta` branch'iga to'g'ridan-to'g'ri commit yoki push qilmang. `beta` faqat `dev`ni fast-forward qiladi."
+ },
+ {
+  "kalit": "12#5",
+  "daraja": "MUST",
+  "matn": "Favqulodda hotfix yo'lini faqat release owner tanlaydi. Oddiy yo'l bilan tuzatish mumkin bo'lsa, oddiy yo'l ishlatiladi."
+ },
+ {
+  "kalit": "12#6",
+  "daraja": "MUST NOT",
+  "matn": "Xato push'ni force-push bilan «tuzatmang». Boshqalar bu commit'ni allaqachon fetch qilgan bo'lishi mumkin."
+ },
+ {
+  "kalit": "13#1",
+  "daraja": "MUST",
+  "matn": "Atama lug'atdagi ma'nosida ishlatiladi. Lug'atda yo'q yangi atama kerak bo'lsa, avval kitobga PR yuboring."
+ },
+ {
+  "kalit": "14#1",
+  "daraja": "MUST",
+  "matn": "Git va ish oqimi amallari inglizcha so'z va «qilmoq» bilan aytiladi: «rebase qildim», «push qildim», «review qildim». «Rebase oldim», «pushladim» kabi shakllar ishlatilmaydi."
+ },
+ {
+  "kalit": "14#2",
+  "daraja": "SHOULD",
+  "matn": "Amalning aniq nomini ayting. «Yangiladim» emas, «fetch qildim» yoki «rebase qildim»."
+ },
+ {
+  "kalit": "14#3",
+  "daraja": "SHOULD",
+  "matn": "Ish haqida gapirganda tiket, PR yoki commit raqamini qo'shing: «#172», «PR #181», «`4b7c1d3`». Yozma xabarda havola bering."
+ },
+ {
+  "kalit": "14#4",
+  "daraja": "MUST NOT",
+  "matn": "PR'ni faqat «LGTM» izohi bilan tasdiqlamang. Rasmiy qaror — GitHub'dagi approve tugmasi."
+ },
+ {
+  "kalit": "A#1",
+  "daraja": "MUST",
+  "matn": "Har bir repo'da profil bor. Repo'ning agent yo'riqnomasi (masalan, `AGENTS.md`) profilga havola qiladi."
+ },
+ {
+  "kalit": "A#2",
+  "daraja": "MUST NOT",
+  "matn": "Profil kitobga zid bo'lmaydi. U kitobni faqat aniqlashtiradi yoki qattiqlashtiradi (1-bob)."
+ },
+ {
+  "kalit": "A#3",
+  "daraja": "SHOULD",
+  "matn": "Profilning asosiy fayli repo ildizidagi agent yo'riqnomasidan bitta havola bilan topiladi."
+ },
+ {
+  "kalit": "A#4",
+  "daraja": "MUST",
+  "matn": "Kitobda qoida o'zgarsa, profil shu PR'da yoki darhol keyingi PR'da yangilanadi."
+ },
+ {
+  "kalit": "A#5",
+  "daraja": "MUST",
+  "matn": "Profilning yuqorisida u mos keladigan kitob versiyasi yoziladi."
+ }
+]
